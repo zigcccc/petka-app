@@ -4,13 +4,12 @@
     "strict": true,
     "paths": {
       "@/*": [
-        "./*"
+        "./src/*"
       ]
     }
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
+    "./src",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
   ]

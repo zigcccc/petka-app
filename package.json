@@ -2,9 +2,9 @@
   "name": "routable-external",
   "main": "expo-router/entry",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -15,6 +15,8 @@
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "expo": "~53.0.9",
     "expo-blur": "~14.1.4",
     "expo-constants": "~17.1.6",
@@ -34,16 +36,19 @@
     "react-native-gesture-handler": "~2.24.0",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
-    "react-native-screens": "~4.10.0",
+    "react-native-screens": "~4.11.1",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "~19.0.10",
-    "typescript": "~5.8.3",
     "eslint": "^9.25.0",
-    "eslint-config-expo": "~9.2.0"
+    "eslint-config-expo": "~9.2.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.1",
+    "prettier": "^3.5.3",
+    "typescript": "~5.8.3"
   },
   "private": true,
   "packageManager": "pnpm@10.11.0+sha512.6540583f41cc5f628eb3d9773ecee802f4f9ef9923cc45b69890fb47991d4b092964694ec3a4f738a420c918a333062c8b925d312f42e4f0c263eb603551f977"
