@@ -16,6 +16,13 @@
     "*.{js,ts,tsx,jsx,json,css,md}": "prettier --write",
     "*.{js,ts,tsx,jsx}": "eslint --fix"
   },
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "listUnknownPackages": false
+      }
+    }
+  },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
     "@react-navigation/bottom-tabs": "^7.3.10",
