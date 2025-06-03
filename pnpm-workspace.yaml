@@ -1,3 +1,5 @@
 nodeLinker: hoisted
+packages:
+  - '**'
 onlyBuiltDependencies:
   - react-native-nitro-modules
