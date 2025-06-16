@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "routable-external",
-    "slug": "routable-external",
+    "name": "Petka",
+    "slug": "petka-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
-    "scheme": "routableexternal",
+    "scheme": "petkaapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.expo.app.routableexternal",
+      "bundleIdentifier": "com.expo.app.petkaapp",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -21,7 +21,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.expo.app.routableexternal"
+      "package": "com.expo.app.petkaapp"
     },
     "web": {
       "bundler": "metro",
@@ -49,6 +49,6 @@
         "projectId": "7ee200a1-67a4-4193-9809-deeb90d1a290"
       }
     },
-    "owner": "routable"
+    "owner": "optifarm"
   }
 }

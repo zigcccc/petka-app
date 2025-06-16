@@ -1,5 +1,10 @@
-nodeLinker: hoisted
 packages:
   - '**'
+
+ignoredBuiltDependencies:
+  - unrs-resolver
+
+nodeLinker: hoisted
+
 onlyBuiltDependencies:
   - react-native-nitro-modules
