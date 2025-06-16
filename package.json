@@ -1,5 +1,5 @@
 {
-  "name": "routable-external",
+  "name": "expo-starter",
   "main": "expo-router/entry",
   "version": "0.0.1",
   "type": "module",

@@ -5,7 +5,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView>
       <View>
-        <Text style={styles.heading}>Welcome to Routable!</Text>
+        <Text style={styles.heading}>Welcome to Expo Starter!</Text>
       </View>
     </SafeAreaView>
   );
