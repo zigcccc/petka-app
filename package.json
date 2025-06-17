@@ -32,6 +32,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-unused-imports": "^4.1.4",
     "expo": "~53.0.11",
+    "expo-asset": "~11.1.5",
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.6",
     "expo-dev-client": "~5.2.0",
@@ -56,12 +57,14 @@
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
+    "react-native-svg": "15.11.2",
     "react-native-unistyles": "3.0.0-rc.4",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@testing-library/react-native": "^13.2.0",
     "@types/jest": "^30.0.0",
     "@types/react": "~19.0.10",
     "eslint": "^9.25.0",
@@ -71,6 +74,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.1.0",
     "prettier": "^3.5.3",
+    "react-native-svg-transformer": "^1.5.1",
     "ts-jest": "^29.3.4",
     "typescript": "~5.8.3"
   },

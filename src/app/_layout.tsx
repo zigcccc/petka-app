@@ -1,12 +1,17 @@
+import { Asset } from 'expo-asset';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
 
+import 'react-native-reanimated';
 import '@/styles/unistyles';
 
 export default function RootLayout() {
-  const [loaded] = useFonts({
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [fontsLoaded] = useFonts({
     SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
     'Inter-Bold': require('@/assets/fonts/inter/Inter-Bold.ttf'),
     'Inter-Light': require('@/assets/fonts/inter/Inter-Light.ttf'),
@@ -15,18 +20,39 @@ export default function RootLayout() {
     'Inter-SemiBold': require('@/assets/fonts/inter/Inter-SemiBold.ttf'),
   });
 
-  if (!loaded) {
-    // Async font loading only occurs in development.
+  const isReady = fontsLoaded && imagesLoaded;
+
+  useEffect(() => {
+    async function loadLocalImageAssets() {
+      await Asset.loadAsync([
+        require('@/assets/images/petka-app-icon.png'),
+        require('@/assets/images/petka-app-wordmark.png'),
+      ]);
+      setImagesLoaded(true);
+    }
+
+    if (!imagesLoaded) {
+      loadLocalImageAssets();
+    }
+  }, [imagesLoaded, setImagesLoaded]);
+
+  if (!isReady) {
     return null;
   }
 
   return (
-    <>
-      <Stack initialRouteName="index">
+    <SafeAreaView style={{ flex: 1 }}>
+      <Stack initialRouteName="index" screenOptions={{ contentStyle: styles.content }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
-    </>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  content: {
+    backgroundColor: theme.colors.white,
+  },
+}));

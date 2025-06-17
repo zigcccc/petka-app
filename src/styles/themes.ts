@@ -2,6 +2,11 @@ export const defaultTheme = {
   colors: {
     white: 'rgb(255, 255, 255)',
     black: 'rgb(46, 47, 51)',
+    petka: {
+      green: '#528D4D',
+      yellow: '#B59F3A',
+      black: '#121212',
+    },
     grey: {
       5: 'rgb(249, 249, 249)',
       10: 'rgb(235, 235, 235)',
