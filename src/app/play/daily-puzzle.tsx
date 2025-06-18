@@ -24,7 +24,12 @@ export default function DailyPuzzleScreen() {
           <GuessGrid grid={grid} />
         </View>
         <View style={styles.spacer} />
-        <Keyboard onKeyPress={onInput} />
+        <Keyboard
+          correctCharacters={['i', 'j']}
+          invalidCharacters={['d', 'e', 'f']}
+          misplacedCharacters={['a', 'b', 'c']}
+          onKeyPress={onInput}
+        />
       </View>
     </>
   );

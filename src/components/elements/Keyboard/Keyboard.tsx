@@ -1,30 +1,49 @@
-import { useState } from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
-import { keys, type KeyboardKey as KeyboardKeyType } from './Keyboard.constants';
-import { KeyboardKey } from './KeyboardKey';
+import { Text } from '@/components/ui';
+
+import { keys, keysToIconMap, type KeyboardKey as KeyboardKeyType } from './Keyboard.constants';
 
 type Props = {
   onKeyPress: (key: KeyboardKeyType) => void;
+  misplacedCharacters: KeyboardKeyType[];
+  invalidCharacters: KeyboardKeyType[];
+  correctCharacters: KeyboardKeyType[];
 };
 
-export function Keyboard({ onKeyPress }: Props) {
-  const [charBubble, setCharBubble] = useState<null | KeyboardKeyType>(null);
-
+export function Keyboard({ onKeyPress, misplacedCharacters, invalidCharacters, correctCharacters }: Props) {
   return (
     <View style={styles.keyboard}>
       {keys.map((keysRow, idx) => (
         <View key={idx} style={styles.keyboardRow({ isShrunk: idx === 1 })}>
-          {keysRow.map((key) => (
-            <KeyboardKey
-              key={key}
-              charBubble={charBubble}
-              onKeyPress={onKeyPress}
-              onSetCharBubble={setCharBubble}
-              value={key}
-            />
-          ))}
+          {keysRow.map((key) => {
+            const isCorrect = correctCharacters.includes(key);
+            const isInvalid = invalidCharacters.includes(key);
+            const isMisplaced = misplacedCharacters.includes(key);
+
+            return (
+              <Pressable
+                key={key}
+                onPress={() => onKeyPress(key)}
+                style={({ pressed }) =>
+                  styles.keyContainer({
+                    pressed,
+                    isCorrect,
+                    isInvalid,
+                    isMisplaced,
+                  })
+                }
+              >
+                <Text
+                  style={styles.keyText({ isIcon: keysToIconMap.has(key), isInvalid, isMisplaced, isCorrect })}
+                  weight="bold"
+                >
+                  {keysToIconMap.get(key) ?? key}
+                </Text>
+              </Pressable>
+            );
+          })}
         </View>
       ))}
     </View>
@@ -41,6 +60,47 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: 'row',
     gap: theme.spacing[2],
     justifyContent: 'space-around',
-    paddingHorizontal: isShrunk ? 8 : 0,
+    paddingHorizontal: isShrunk ? 16 : 0,
+  }),
+  keyContainer: ({
+    isCorrect,
+    isInvalid,
+    isMisplaced,
+    pressed,
+  }: {
+    pressed: boolean;
+    isInvalid: boolean;
+    isMisplaced: boolean;
+    isCorrect: boolean;
+  }) => ({
+    backgroundColor: isInvalid
+      ? theme.colors.grey[70]
+      : isMisplaced
+        ? theme.colors.petka.yellow
+        : isCorrect
+          ? theme.colors.petka.green
+          : theme.colors.grey[20],
+    opacity: pressed ? 0.4 : 1,
+    flexGrow: 1,
+    height: 72,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }),
+  keyText: ({
+    isIcon,
+    isCorrect,
+    isInvalid,
+    isMisplaced,
+  }: {
+    isIcon: boolean;
+    isInvalid: boolean;
+    isMisplaced: boolean;
+    isCorrect: boolean;
+  }) => ({
+    textTransform: 'uppercase',
+    width: isIcon ? 'auto' : 16,
+    textAlign: 'center',
+    color: isInvalid || isMisplaced || isCorrect ? theme.colors.white : theme.colors.petka.black,
   }),
 }));
