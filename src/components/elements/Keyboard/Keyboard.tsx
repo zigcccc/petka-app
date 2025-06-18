@@ -41,6 +41,6 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: 'row',
     gap: theme.spacing[2],
     justifyContent: 'space-around',
-    paddingHorizontal: isShrunk ? 12 : 0,
+    paddingHorizontal: isShrunk ? 8 : 0,
   }),
 }));

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { type LayoutRectangle, View } from 'react-native';
+import { type LayoutRectangle, Pressable, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { StyleSheet } from 'react-native-unistyles';
@@ -126,12 +126,21 @@ export function KeyboardKey({ charBubble, onKeyPress, onSetCharBubble, value }: 
         </View>
       </GestureDetector>
       {charBubble === value && (
-        <View style={[styles.charBubble, { left: (keyLayout?.x ?? 0) - 4, opacity: pressed ? 0.7 : 1 }]}>
+        <Pressable
+          onPress={() => {
+            charBubbleOverlayY.value = withSpring(-64, { duration: 500, dampingRatio: 1 }, (finished) => {
+              if (finished) {
+                runOnJS(handleCharBubblePress)();
+              }
+            });
+          }}
+          style={[styles.charBubble, { left: (keyLayout?.x ?? 0) - 4 }]}
+        >
           <Animated.View style={[styles.charBubbleOverlay, charBubbleOverlayStyles]} />
           <Text style={styles.keyText({ isIcon: false })} weight="bold">
             {specialKeysPairingMap.get(value)}
           </Text>
-        </View>
+        </Pressable>
       )}
     </>
   );

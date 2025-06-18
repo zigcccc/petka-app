@@ -27,7 +27,6 @@ export const getUpdatedGrid = (
   const copy = deepClone(grid);
 
   if (key === '{Backspace}') {
-    console.log({ cellIdxToUpdate });
     if (cellIdxToUpdate !== 0) {
       copy[rowIdx][cellIdxToUpdate - 1] = null;
     }
