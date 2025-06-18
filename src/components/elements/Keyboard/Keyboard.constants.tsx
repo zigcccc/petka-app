@@ -1,8 +1,8 @@
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 export const keys = [
-  ['a', 'b', 'c', 'č', 'd', 'e', 'f', 'g', 'h', 'i'],
-  ['j', 'k', 'l', 'm', 'n', 'o', 'p', 'r'],
+  ['a', 'b', 'c', 'č', 'd', 'e', 'f', 'g', 'h'],
+  ['i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r'],
   ['{Enter}', 's', 'š', 't', 'u', 'v', 'z', 'ž', '{Backspace}'],
 ] as const;
 

@@ -16,7 +16,7 @@ export function Keyboard({ onKeyPress, misplacedCharacters, invalidCharacters, c
   return (
     <View style={styles.keyboard}>
       {keys.map((keysRow, idx) => (
-        <View key={idx} style={styles.keyboardRow({ isShrunk: idx === 1 })}>
+        <View key={idx} style={styles.keyboardRow}>
           {keysRow.map((key) => {
             const isCorrect = correctCharacters.includes(key);
             const isInvalid = invalidCharacters.includes(key);
@@ -35,10 +35,7 @@ export function Keyboard({ onKeyPress, misplacedCharacters, invalidCharacters, c
                   })
                 }
               >
-                <Text
-                  style={styles.keyText({ isIcon: keysToIconMap.has(key), isInvalid, isMisplaced, isCorrect })}
-                  weight="bold"
-                >
+                <Text style={styles.keyText({ isInvalid, isMisplaced, isCorrect })} weight="bold">
                   {keysToIconMap.get(key) ?? key}
                 </Text>
               </Pressable>
@@ -56,12 +53,11 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing[2],
     paddingHorizontal: theme.spacing[4],
   },
-  keyboardRow: ({ isShrunk }: { isShrunk: boolean }) => ({
+  keyboardRow: {
     flexDirection: 'row',
     gap: theme.spacing[2],
     justifyContent: 'space-around',
-    paddingHorizontal: isShrunk ? 16 : 0,
-  }),
+  },
   keyContainer: ({
     isCorrect,
     isInvalid,
@@ -88,18 +84,16 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: 'center',
   }),
   keyText: ({
-    isIcon,
     isCorrect,
     isInvalid,
     isMisplaced,
   }: {
-    isIcon: boolean;
     isInvalid: boolean;
     isMisplaced: boolean;
     isCorrect: boolean;
   }) => ({
     textTransform: 'uppercase',
-    width: isIcon ? 'auto' : 16,
+    width: 22,
     textAlign: 'center',
     color: isInvalid || isMisplaced || isCorrect ? theme.colors.white : theme.colors.petka.black,
   }),
