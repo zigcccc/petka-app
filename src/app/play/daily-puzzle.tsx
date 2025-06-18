@@ -3,11 +3,10 @@ import { View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { GuessGrid, Keyboard, useGuessGrid } from '@/components/elements';
-import { Button } from '@/components/ui';
 
 export default function DailyPuzzleScreen() {
   const { theme } = useUnistyles();
-  const { grid, onInput, onReset } = useGuessGrid();
+  const { grid, onInput } = useGuessGrid();
 
   return (
     <>
@@ -25,11 +24,6 @@ export default function DailyPuzzleScreen() {
           <GuessGrid grid={grid} />
         </View>
         <View style={styles.spacer} />
-        <View style={{ padding: 20 }}>
-          <Button onPress={() => onReset()} size="large" variant="terciary">
-            Reset
-          </Button>
-        </View>
         <Keyboard onKeyPress={onInput} />
       </View>
     </>
