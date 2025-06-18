@@ -4,6 +4,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native-unistyles';
 
 import 'react-native-reanimated';
@@ -41,13 +42,15 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Stack initialRouteName="index" screenOptions={{ contentStyle: styles.content }}>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </SafeAreaView>
+    <GestureHandlerRootView>
+      <SafeAreaView style={{ flex: 1 }}>
+        <Stack initialRouteName="index" screenOptions={{ contentStyle: styles.content }}>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
 
