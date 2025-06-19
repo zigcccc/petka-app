@@ -7,5 +7,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["./src", ".expo/types/**/*.ts", "expo-env.d.ts"]
+  "include": ["./src", "./convex", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }

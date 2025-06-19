@@ -1,14 +1,18 @@
 import { createContext, useContext, useMemo, type PropsWithChildren } from 'react';
-import { Pressable, type StyleProp, Text, type ViewStyle } from 'react-native';
-import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
+import { ActivityIndicator, Pressable, type StyleProp, Text, type ViewStyle } from 'react-native';
+import { StyleSheet, useUnistyles, type UnistylesVariants } from 'react-native-unistyles';
 
 type Props = PropsWithChildren<{
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
+  disabled?: boolean;
+  loading?: boolean;
 }> &
   UnistylesVariants<typeof styles>;
 
-const ButtonContext = createContext<Pick<Props, 'fullwidth' | 'size' | 'variant'> | null>(null);
+const ButtonContext = createContext<Pick<Props, 'fullwidth' | 'size' | 'variant' | 'disabled' | 'loading'> | null>(
+  null
+);
 
 function useButtonContext() {
   const buttonContext = useContext(ButtonContext);
@@ -20,21 +24,44 @@ function useButtonContext() {
   return buttonContext;
 }
 
-export function Button({ children, onPress, size = 'medium', fullwidth, style, variant = 'primary' }: Props) {
-  styles.useVariants({ size, fullwidth, variant });
+export function Button({
+  children,
+  disabled = false,
+  fullwidth,
+  loading = false,
+  onPress,
+  size = 'medium',
+  style,
+  variant = 'primary',
+}: Props) {
+  const { theme } = useUnistyles();
+
+  styles.useVariants({ size, fullwidth, variant, disabled });
 
   const buttonText = useMemo(() => {
     return typeof children === 'string' ? <Text style={styles.text}>{children}</Text> : children;
   }, [children]);
 
   return (
-    <ButtonContext.Provider value={{ size, variant, fullwidth }}>
+    <ButtonContext.Provider value={{ size, variant, fullwidth, disabled, loading }}>
       <Pressable
         accessibilityRole="button"
+        disabled={disabled || loading}
         onPress={onPress}
         style={({ pressed }) => [styles.container, pressed && styles.containerPressed, style]}
       >
-        {buttonText}
+        {loading ? (
+          <ActivityIndicator
+            accessibilityLabel="Loading..."
+            accessibilityRole="spinbutton"
+            accessible
+            color={theme.colors.white}
+            size={size === 'large' ? 22 : 20}
+            style={styles.loader}
+          />
+        ) : (
+          buttonText
+        )}
       </Pressable>
     </ButtonContext.Provider>
   );
@@ -86,10 +113,28 @@ const styles = StyleSheet.create((theme) => ({
           width: 'auto',
         },
       },
+      disabled: {
+        true: {
+          opacity: 0.2,
+        },
+        false: {
+          opacity: 1,
+        },
+      },
     },
   },
   containerPressed: {
     opacity: 0.4,
+  },
+  loader: {
+    variants: {
+      size: {
+        medium: {},
+        large: {},
+      },
+      variant: {},
+      fullwidth: {},
+    },
   },
   text: {
     color: theme.colors.white,
@@ -100,7 +145,7 @@ const styles = StyleSheet.create((theme) => ({
           fontSize: 16,
         },
         large: {
-          fontSize: 20,
+          fontSize: 18,
         },
       },
       fullwidth: {},

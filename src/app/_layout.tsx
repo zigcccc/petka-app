@@ -49,8 +49,12 @@ function RootLayout() {
   return (
     <GestureHandlerRootView>
       <SafeAreaView style={{ flex: 1 }}>
-        <Stack initialRouteName="index" screenOptions={{ contentStyle: styles.content }}>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack screenOptions={{ contentStyle: styles.content }}>
+          <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="create-account"
+            options={{ presentation: 'modal', title: '', headerShadowVisible: false }}
+          />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />

@@ -7,8 +7,8 @@ type Props = PropsWithChildren<{
 }> &
   UnistylesVariants<typeof styles>;
 
-export function Text({ children, size = 'base', style, weight = 'regular' }: Props) {
-  styles.useVariants({ size, weight });
+export function Text({ children, size = 'base', style, weight = 'regular', color = 'black' }: Props) {
+  styles.useVariants({ size, weight, color });
 
   return <RNText style={[styles.text, style]}>{children}</RNText>;
 }
@@ -16,12 +16,35 @@ export function Text({ children, size = 'base', style, weight = 'regular' }: Pro
 const styles = StyleSheet.create((theme) => ({
   text: {
     variants: {
+      color: {
+        black: {
+          color: theme.colors.black,
+        },
+        grey70: {
+          color: theme.colors.grey[70],
+        },
+        grey50: {
+          color: theme.colors.grey[50],
+        },
+        grey20: {
+          color: theme.colors.grey[20],
+        },
+        red40: {
+          color: theme.colors.red[40],
+        },
+        white: {
+          color: theme.colors.white,
+        },
+        default: {
+          color: theme.colors.black,
+        },
+      },
       size: {
         xs: {
-          fontSize: 10,
+          fontSize: 12,
         },
         sm: {
-          fontSize: 12,
+          fontSize: 14,
         },
         base: {
           fontSize: 16,
