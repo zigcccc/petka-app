@@ -6,7 +6,7 @@ import { GuessGrid, Keyboard, useGuessGrid } from '@/components/elements';
 
 export default function DailyPuzzleScreen() {
   const { theme } = useUnistyles();
-  const { grid, onInput } = useGuessGrid();
+  const { grid, onInput, isValidating } = useGuessGrid();
 
   return (
     <>
@@ -21,7 +21,7 @@ export default function DailyPuzzleScreen() {
       />
       <View style={styles.container}>
         <View style={styles.content}>
-          <GuessGrid grid={grid} />
+          <GuessGrid grid={grid} isValidating={isValidating} />
         </View>
         <View style={styles.spacer} />
         <Keyboard

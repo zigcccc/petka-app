@@ -5,11 +5,12 @@ import { Text } from '@/components/ui';
 
 type Props = {
   grid: (string | null)[][];
+  isValidating?: boolean;
 };
 
-export function GuessGrid({ grid }: Props) {
+export function GuessGrid({ grid, isValidating = false }: Props) {
   return (
-    <View style={styles.grid}>
+    <View style={styles.grid({ isValidating })}>
       {grid.map((row, rowIdx) => (
         <View key={rowIdx} style={styles.row}>
           {row.map((cell, cellIdx) => (
@@ -26,10 +27,11 @@ export function GuessGrid({ grid }: Props) {
 }
 
 const styles = StyleSheet.create((theme, rt) => ({
-  grid: {
+  grid: ({ isValidating }: Pick<Props, 'isValidating'>) => ({
     flexDirection: 'column',
     gap: theme.spacing[4],
-  },
+    opacity: isValidating ? 0.4 : 1,
+  }),
   row: {
     flexDirection: 'row',
     gap: theme.spacing[4],

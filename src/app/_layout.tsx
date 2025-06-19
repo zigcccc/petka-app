@@ -1,3 +1,4 @@
+import { ConvexProvider, ConvexReactClient } from 'convex/react';
 import { Asset } from 'expo-asset';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -10,7 +11,11 @@ import { StyleSheet } from 'react-native-unistyles';
 import 'react-native-reanimated';
 import '@/styles/unistyles';
 
-export default function RootLayout() {
+const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
+  unsavedChangesWarning: false,
+});
+
+function RootLayout() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [fontsLoaded] = useFonts({
     SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
@@ -51,6 +56,14 @@ export default function RootLayout() {
         <StatusBar style="auto" />
       </SafeAreaView>
     </GestureHandlerRootView>
+  );
+}
+
+export default function RootLayoutWithProviders() {
+  return (
+    <ConvexProvider client={convex}>
+      <RootLayout />
+    </ConvexProvider>
   );
 }
 

@@ -41,3 +41,6 @@ app-example
 # Builds
 android/
 ios/
+
+# Seeders
+db/seeders/**/*.jsonl

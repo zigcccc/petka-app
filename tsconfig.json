@@ -3,14 +3,9 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/convex/*": ["./convex/*"],
+      "@/*": ["./src/*"]
     }
   },
-  "include": [
-    "./src",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-  ]
+  "include": ["./src", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }
