@@ -2,7 +2,7 @@ import { defineTable } from 'convex/server';
 import { zodToConvex } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
-import { baseDbModel } from '@/convex/shared/models';
+import { baseDbModel } from '../shared/models';
 
 export const puzzleType = z.enum(['daily', 'training']);
 

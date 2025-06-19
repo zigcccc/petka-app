@@ -39,7 +39,7 @@ export default function CreateAccountScreen() {
       await toaster.toast(errMsg, { intent: 'error' });
 
       if (isConflictError) {
-        setError('nickname', { message: 'Ta vzdevek je zaseden.', type: 'value' });
+        setError('nickname', { message: `Vzdevek "${data.nickname}" je zaseden.`, type: 'value' });
       }
     }
   };

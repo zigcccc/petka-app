@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { query } from '@/convex/shared/queries';
+import { query } from '../shared/queries';
 
 export const read = query({
   args: {
