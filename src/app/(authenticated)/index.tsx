@@ -24,18 +24,18 @@ export default function HomeScreen() {
       <Image source={require('@/assets/images/petka-app-wordmark.png')} style={styles.image} />
       <View style={styles.spacer} />
       <View style={styles.actions}>
-        <Button onPress={() => router.navigate('/play/daily-puzzle')} size="large">
+        <Button onPress={() => router.navigate('/play/daily-puzzle')} size="lg">
           Igraj
         </Button>
         <View style={styles.buttonRow}>
           <View style={styles.action}>
-            <Button onPress={() => handleUnsupportedFeaturePress('Trening')} size="large" variant="secondary">
+            <Button intent="secondary" onPress={() => handleUnsupportedFeaturePress('Trening')} size="lg">
               <Octicons color="white" name="mortar-board" size={22} />
               <Button.Text>Trening</Button.Text>
             </Button>
           </View>
           <View style={styles.action}>
-            <Button onPress={() => router.navigate('/leaderboard')} size="large" variant="secondary">
+            <Button intent="secondary" onPress={() => router.navigate('/leaderboard')} size="lg">
               <Octicons color="white" name="graph" size={22} />
               <Button.Text>Lestvica</Button.Text>
             </Button>
@@ -43,17 +43,17 @@ export default function HomeScreen() {
         </View>
         <View style={styles.buttonRow}>
           <View style={styles.action}>
-            <Button onPress={() => router.navigate('/app-info')} size="large" variant="terciary">
+            <Button intent="terciary" onPress={() => router.navigate('/app-info')} size="lg">
               <Octicons color="white" name="info" size={22} />
             </Button>
           </View>
           <View style={styles.action}>
-            <Button onPress={() => router.navigate('/history')} size="large" variant="terciary">
+            <Button intent="terciary" onPress={() => router.navigate('/history')} size="lg">
               <Octicons color="white" name="history" size={22} />
             </Button>
           </View>
           <View style={styles.action}>
-            <Button onPress={() => router.navigate('/settings')} size="large" variant="terciary">
+            <Button intent="terciary" onPress={() => router.navigate('/settings')} size="lg">
               <Octicons color="white" name="gear" size={22} />
             </Button>
           </View>

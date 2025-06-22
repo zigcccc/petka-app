@@ -11,8 +11,11 @@ export const userModel = baseDbModel.extend({
 export type User = z.infer<typeof userModel>;
 
 export const createUserModel = z.object({
-  nickname: z.string().min(4, { message: 'Vzdevek mora vsebovati vsaj 4 znake.' }),
+  nickname: z.string().min(3, { message: 'Vzdevek mora vsebovati vsaj 3 znake.' }),
 });
 export type CreateUser = z.infer<typeof createUserModel>;
+
+export const patchUserModel = createUserModel.partial();
+export type PatchUser = z.infer<typeof patchUserModel>;
 
 export const usersTable = defineTable(zodToConvex(userModel));

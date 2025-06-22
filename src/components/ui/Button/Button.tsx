@@ -1,6 +1,8 @@
 import { createContext, useContext, useMemo, type PropsWithChildren } from 'react';
 import { ActivityIndicator, Pressable, type StyleProp, Text, type ViewStyle } from 'react-native';
-import { StyleSheet, useUnistyles, type UnistylesVariants } from 'react-native-unistyles';
+import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
+
+import { defaultTheme } from '@/styles/themes';
 
 type Props = PropsWithChildren<{
   onPress: () => void;
@@ -9,6 +11,13 @@ type Props = PropsWithChildren<{
   loading?: boolean;
 }> &
   UnistylesVariants<typeof styles>;
+
+const intentToSpinnerColorMap = new Map<Props['intent'], string>([
+  ['danger', defaultTheme.colors.red[40]],
+  ['primary', defaultTheme.colors.petka.green],
+  ['secondary', defaultTheme.colors.petka.yellow],
+  ['terciary', defaultTheme.colors.petka.black],
+]);
 
 const ButtonContext = createContext<Pick<Props, 'fullwidth' | 'size' | 'variant' | 'disabled' | 'loading'> | null>(
   null
@@ -28,15 +37,22 @@ export function Button({
   children,
   disabled = false,
   fullwidth,
+  intent = 'primary',
   loading = false,
   onPress,
-  size = 'medium',
+  size = 'md',
   style,
-  variant = 'primary',
+  variant = 'fill',
 }: Props) {
-  const { theme } = useUnistyles();
+  styles.useVariants({ size, intent, fullwidth, variant, disabled });
 
-  styles.useVariants({ size, fullwidth, variant, disabled });
+  const spinnerColor = useMemo(() => {
+    if (variant === 'fill') {
+      return defaultTheme.colors.white;
+    }
+
+    return intentToSpinnerColorMap.get(intent);
+  }, [intent, variant]);
 
   const buttonText = useMemo(() => {
     return typeof children === 'string' ? <Text style={styles.text}>{children}</Text> : children;
@@ -55,8 +71,8 @@ export function Button({
             accessibilityLabel="Loading..."
             accessibilityRole="spinbutton"
             accessible
-            color={theme.colors.white}
-            size={size === 'large' ? 22 : 20}
+            color={spinnerColor}
+            size={size === 'lg' ? 22 : 20}
             style={styles.loader}
           />
         ) : (
@@ -85,24 +101,33 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing[4],
     variants: {
       size: {
-        medium: {
+        xs: {
+          paddingVertical: theme.spacing[4],
+          paddingHorizontal: theme.spacing[5],
+        },
+        sm: {
+          paddingVertical: theme.spacing[4],
+          paddingHorizontal: theme.spacing[5],
+        },
+        md: {
           paddingVertical: theme.spacing[5],
           paddingHorizontal: theme.spacing[6],
         },
-        large: {
+        lg: {
           paddingVertical: theme.spacing[6],
           paddingHorizontal: theme.spacing[7],
         },
       },
+      intent: {
+        primary: {},
+        secondary: {},
+        terciary: {},
+        danger: {},
+      },
       variant: {
-        primary: {
-          backgroundColor: theme.colors.petka.green,
-        },
-        secondary: {
-          backgroundColor: theme.colors.petka.yellow,
-        },
-        terciary: {
-          backgroundColor: theme.colors.petka.black,
+        fill: {},
+        outline: {
+          borderWidth: 1,
         },
       },
       fullwidth: {
@@ -122,34 +147,136 @@ const styles = StyleSheet.create((theme) => ({
         },
       },
     },
+    compoundVariants: [
+      {
+        variant: 'fill',
+        intent: 'primary',
+        styles: {
+          backgroundColor: theme.colors.petka.green,
+        },
+      },
+      {
+        variant: 'fill',
+        intent: 'secondary',
+        styles: {
+          backgroundColor: theme.colors.petka.yellow,
+        },
+      },
+      {
+        variant: 'fill',
+        intent: 'terciary',
+        styles: {
+          backgroundColor: theme.colors.petka.black,
+        },
+      },
+      {
+        variant: 'fill',
+        intent: 'danger',
+        styles: {
+          backgroundColor: theme.colors.red[40],
+        },
+      },
+      {
+        variant: 'outline',
+        intent: 'primary',
+        styles: {
+          borderColor: theme.colors.petka.green,
+        },
+      },
+      {
+        variant: 'outline',
+        intent: 'secondary',
+        styles: {
+          borderColor: theme.colors.petka.yellow,
+        },
+      },
+      {
+        variant: 'outline',
+        intent: 'terciary',
+        styles: {
+          borderColor: theme.colors.petka.black,
+        },
+      },
+      {
+        variant: 'outline',
+        intent: 'danger',
+        styles: {
+          borderColor: theme.colors.red[40],
+        },
+      },
+    ],
   },
   containerPressed: {
     opacity: 0.4,
   },
   loader: {
     variants: {
-      size: {
-        medium: {},
-        large: {},
-      },
+      size: {},
       variant: {},
+      intent: {},
       fullwidth: {},
     },
   },
   text: {
-    color: theme.colors.white,
     fontFamily: theme.fonts.sans.bold,
     variants: {
       size: {
-        medium: {
+        xs: {
+          fontSize: 12,
+        },
+        sm: {
+          fontSize: 14,
+        },
+        md: {
           fontSize: 16,
         },
-        large: {
+        lg: {
           fontSize: 18,
         },
       },
       fullwidth: {},
-      variant: {},
+      intent: {
+        primary: {},
+        secondary: {},
+        terciary: {},
+        danger: {},
+      },
+      variant: {
+        fill: {
+          color: theme.colors.white,
+        },
+        outline: {},
+      },
     },
+    compoundVariants: [
+      {
+        variant: 'outline',
+        intent: 'primary',
+        styles: {
+          color: theme.colors.petka.green,
+        },
+      },
+      {
+        variant: 'outline',
+        intent: 'seconary',
+        styles: {
+          color: theme.colors.petka.yellow,
+        },
+      },
+      {
+        variant: 'outline',
+        intent: 'primary',
+        styles: {
+          color: theme.colors.petka.black,
+        },
+      },
+      {
+        variant: 'outline',
+        intent: 'danger',
+        styles: {
+          color: theme.colors.red[40],
+        },
+      },
+    ],
   },
 }));

@@ -88,7 +88,7 @@ export default function CreateAccountScreen() {
           disabled={!isValid}
           loading={isSubmitting}
           onPress={handleSubmit(onSubmit, onValidationError)}
-          size="large"
+          size="lg"
         >
           Ustvari profil
         </Button>

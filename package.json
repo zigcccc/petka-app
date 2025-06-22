@@ -34,6 +34,7 @@
     "burnt": "^0.13.0",
     "convex": "^1.24.8",
     "convex-helpers": "^0.1.94",
+    "dayjs": "^1.11.13",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-unused-imports": "^4.1.4",
     "expo": "~53.0.12",
