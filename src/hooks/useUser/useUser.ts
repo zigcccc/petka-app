@@ -7,7 +7,7 @@ import { api } from '@/convex/_generated/api';
 
 import { useToaster } from '../useToaster';
 
-const LOADING_USER_ID = Symbol('LoadingUserId');
+export const LOADING_USER_ID = Symbol('LoadingUserId');
 
 export function useUser() {
   const toaster = useToaster();
@@ -15,6 +15,8 @@ export function useUser() {
   const [isDeleting, setIsDeleting] = useState(false);
   const hasUserId = userId !== LOADING_USER_ID && userId !== null;
   const shouldCreateAccount = userId !== LOADING_USER_ID && userId === null;
+
+  const patchUser = useMutation(api.users.queries.patch);
   const deleteUser = useMutation(api.users.queries.destroy);
   const user = useQuery(api.users.queries.read, hasUserId ? { id: userId } : 'skip');
 
@@ -69,6 +71,7 @@ export function useUser() {
     shouldCreateAccount,
     setUserId: handleSetUserId,
     deleteUser: handleDeleteUserAccount,
+    updateUser: patchUser,
     user,
   } as const;
 }

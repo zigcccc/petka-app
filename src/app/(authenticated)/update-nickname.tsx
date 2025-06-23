@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useConvex, useMutation } from 'convex/react';
+import { useConvex } from 'convex/react';
 import { ConvexError } from 'convex/values';
 import { router } from 'expo-router';
 import { useForm, type SubmitHandler, type SubmitErrorHandler, Controller } from 'react-hook-form';
@@ -16,8 +16,7 @@ import { useUser } from '@/hooks/useUser';
 export default function UpdateNicknameScreen() {
   const toaster = useToaster();
   const convex = useConvex();
-  const patchUser = useMutation(api.users.queries.patch);
-  const { userId } = useUser();
+  const { userId, updateUser } = useUser();
   const {
     control,
     handleSubmit,
@@ -34,7 +33,7 @@ export default function UpdateNicknameScreen() {
 
   const onSubmit: SubmitHandler<CreateUser> = async (data) => {
     try {
-      await patchUser({ id: userId as string, data });
+      await updateUser({ id: userId as string, data });
       router.back();
     } catch (err) {
       const isConflictError = err instanceof ConvexError && err.data.code === 409;
@@ -52,6 +51,7 @@ export default function UpdateNicknameScreen() {
     const errMessage = errors.nickname?.message || errors.root?.message ? 'Popravite napake' : 'Nekaj je šlo narobe';
     await toaster.toast(errMessage, { intent: 'error' });
   };
+
   return (
     <View style={styles.container}>
       <Text size="2xl" weight="bold">
