@@ -8,18 +8,23 @@
  * @module
  */
 
+import type * as dictionary_models from "../dictionary/models.js";
+import type * as dictionary_queries from "../dictionary/queries.js";
+import type * as migrations from "../migrations.js";
+import type * as puzzleGuessAttempts_models from "../puzzleGuessAttempts/models.js";
+import type * as puzzleGuessAttempts_queries from "../puzzleGuessAttempts/queries.js";
+import type * as puzzles_models from "../puzzles/models.js";
+import type * as puzzles_queries from "../puzzles/queries.js";
+import type * as shared_models from "../shared/models.js";
+import type * as shared_queries from "../shared/queries.js";
+import type * as users_models from "../users/models.js";
+import type * as users_queries from "../users/queries.js";
+
 import type {
   ApiFromModules,
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as dictionary_models from "../dictionary/models.js";
-import type * as dictionary_queries from "../dictionary/queries.js";
-import type * as puzzles_models from "../puzzles/models.js";
-import type * as shared_models from "../shared/models.js";
-import type * as shared_queries from "../shared/queries.js";
-import type * as users_models from "../users/models.js";
-import type * as users_queries from "../users/queries.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -32,17 +37,111 @@ import type * as users_queries from "../users/queries.js";
 declare const fullApi: ApiFromModules<{
   "dictionary/models": typeof dictionary_models;
   "dictionary/queries": typeof dictionary_queries;
+  migrations: typeof migrations;
+  "puzzleGuessAttempts/models": typeof puzzleGuessAttempts_models;
+  "puzzleGuessAttempts/queries": typeof puzzleGuessAttempts_queries;
   "puzzles/models": typeof puzzles_models;
+  "puzzles/queries": typeof puzzles_queries;
   "shared/models": typeof shared_models;
   "shared/queries": typeof shared_queries;
   "users/models": typeof users_models;
   "users/queries": typeof users_queries;
 }>;
+declare const fullApiWithMounts: typeof fullApi;
+
 export declare const api: FilterApi<
-  typeof fullApi,
+  typeof fullApiWithMounts,
   FunctionReference<any, "public">
 >;
 export declare const internal: FilterApi<
-  typeof fullApi,
+  typeof fullApiWithMounts,
   FunctionReference<any, "internal">
 >;
+
+export declare const components: {
+  migrations: {
+    lib: {
+      cancel: FunctionReference<
+        "mutation",
+        "internal",
+        { name: string },
+        {
+          batchSize?: number;
+          cursor?: string | null;
+          error?: string;
+          isDone: boolean;
+          latestEnd?: number;
+          latestStart: number;
+          name: string;
+          next?: Array<string>;
+          processed: number;
+          state: "inProgress" | "success" | "failed" | "canceled" | "unknown";
+        }
+      >;
+      cancelAll: FunctionReference<
+        "mutation",
+        "internal",
+        { sinceTs?: number },
+        Array<{
+          batchSize?: number;
+          cursor?: string | null;
+          error?: string;
+          isDone: boolean;
+          latestEnd?: number;
+          latestStart: number;
+          name: string;
+          next?: Array<string>;
+          processed: number;
+          state: "inProgress" | "success" | "failed" | "canceled" | "unknown";
+        }>
+      >;
+      clearAll: FunctionReference<
+        "mutation",
+        "internal",
+        { before?: number },
+        null
+      >;
+      getStatus: FunctionReference<
+        "query",
+        "internal",
+        { limit?: number; names?: Array<string> },
+        Array<{
+          batchSize?: number;
+          cursor?: string | null;
+          error?: string;
+          isDone: boolean;
+          latestEnd?: number;
+          latestStart: number;
+          name: string;
+          next?: Array<string>;
+          processed: number;
+          state: "inProgress" | "success" | "failed" | "canceled" | "unknown";
+        }>
+      >;
+      migrate: FunctionReference<
+        "mutation",
+        "internal",
+        {
+          batchSize?: number;
+          cursor?: string | null;
+          dryRun: boolean;
+          fnHandle: string;
+          name: string;
+          next?: Array<{ fnHandle: string; name: string }>;
+        },
+        {
+          batchSize?: number;
+          cursor?: string | null;
+          error?: string;
+          isDone: boolean;
+          latestEnd?: number;
+          latestStart: number;
+          name: string;
+          next?: Array<string>;
+          processed: number;
+          state: "inProgress" | "success" | "failed" | "canceled" | "unknown";
+        }
+      >;
+    };
+  };
+};

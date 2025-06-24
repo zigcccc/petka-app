@@ -9,6 +9,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "prepare": "husky",
     "test": "jest"
@@ -25,6 +26,7 @@
     }
   },
   "dependencies": {
+    "@convex-dev/migrations": "^0.2.9",
     "@expo/vector-icons": "^14.1.0",
     "@hookform/resolvers": "^5.1.1",
     "@react-native-async-storage/async-storage": "2.1.2",
@@ -68,6 +70,7 @@
     "react-native-unistyles": "3.0.0-rc.4",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5",
+    "usehooks-ts": "^3.1.1",
     "zod": "^3.25.67"
   },
   "devDependencies": {
@@ -89,5 +92,5 @@
     "typescript": "~5.8.3"
   },
   "private": true,
-  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
+  "packageManager": "pnpm@10.12.2+sha512.a32540185b964ee30bb4e979e405adc6af59226b438ee4cc19f9e8773667a66d302f5bfee60a39d3cac69e35e4b96e708a71dd002b7e9359c4112a1722ac323f"
 }

@@ -4,13 +4,18 @@ import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
 
 type Props = PropsWithChildren<{
   style?: StyleProp<TextStyle>;
+  numberOfLines?: number;
 }> &
   UnistylesVariants<typeof styles>;
 
-export function Text({ children, size = 'base', style, weight = 'regular', color = 'black' }: Props) {
+export function Text({ children, numberOfLines, size = 'base', style, weight = 'regular', color = 'black' }: Props) {
   styles.useVariants({ size, weight, color });
 
-  return <RNText style={[styles.text, style]}>{children}</RNText>;
+  return (
+    <RNText numberOfLines={numberOfLines} style={[styles.text, style]}>
+      {children}
+    </RNText>
+  );
 }
 
 const styles = StyleSheet.create((theme) => ({

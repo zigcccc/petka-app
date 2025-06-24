@@ -1,5 +1,4 @@
 import { Octicons } from '@expo/vector-icons';
-import * as toaster from 'burnt';
 import { useRouter } from 'expo-router';
 import { Image, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
@@ -8,16 +7,6 @@ import { Button } from '@/components/ui';
 
 export default function HomeScreen() {
   const router = useRouter();
-
-  const handleUnsupportedFeaturePress = async (featureName: string) => {
-    await toaster.toast({
-      title: 'Uporabi besedo iz SSKJ',
-      message: `Beseda "${featureName}" ni veljavna`,
-      haptic: 'error',
-      preset: 'error',
-      from: 'top',
-    });
-  };
 
   return (
     <View style={styles.container}>
@@ -29,7 +18,7 @@ export default function HomeScreen() {
         </Button>
         <View style={styles.buttonRow}>
           <View style={styles.action}>
-            <Button intent="secondary" onPress={() => handleUnsupportedFeaturePress('Trening')} size="lg">
+            <Button intent="secondary" onPress={() => router.navigate('/play/training-puzzle')} size="lg">
               <Octicons color="white" name="mortar-board" size={22} />
               <Button.Text>Trening</Button.Text>
             </Button>

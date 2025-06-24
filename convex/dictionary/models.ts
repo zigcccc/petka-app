@@ -7,6 +7,7 @@ import { baseDbModel } from '../shared/models';
 export const dictionaryEntryModel = baseDbModel.extend({
   frequency: z.number(),
   word: z.string(),
+  numOfTimesUsed: z.number(),
 });
 export type DictionaryEntry = z.infer<typeof dictionaryEntryModel>;
 

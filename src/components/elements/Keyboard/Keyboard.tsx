@@ -2,25 +2,25 @@ import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Text } from '@/components/ui';
+import { type CheckedLetter, checkedLetterStatus } from '@/convex/puzzleGuessAttempts/models';
 
 import { keys, keysToIconMap, type KeyboardKey as KeyboardKeyType } from './Keyboard.constants';
 
 type Props = {
   onKeyPress: (key: KeyboardKeyType) => void;
-  misplacedCharacters: KeyboardKeyType[];
-  invalidCharacters: KeyboardKeyType[];
-  correctCharacters: KeyboardKeyType[];
+  checkedLetters?: CheckedLetter[];
 };
 
-export function Keyboard({ onKeyPress, misplacedCharacters, invalidCharacters, correctCharacters }: Props) {
+export function Keyboard({ onKeyPress, checkedLetters = [] }: Props) {
   return (
     <View style={styles.keyboard}>
       {keys.map((keysRow, idx) => (
         <View key={idx} style={styles.keyboardRow}>
           {keysRow.map((key) => {
-            const isCorrect = correctCharacters.includes(key);
-            const isInvalid = invalidCharacters.includes(key);
-            const isMisplaced = misplacedCharacters.includes(key);
+            const checkedLetter = checkedLetters.find((checkedLetter) => checkedLetter.letter === key);
+            const isCorrect = checkedLetter?.status === checkedLetterStatus.Enum.correct;
+            const isInvalid = checkedLetter?.status === checkedLetterStatus.Enum.invalid;
+            const isMisplaced = checkedLetter?.status === checkedLetterStatus.Enum.misplaced;
 
             return (
               <Pressable
@@ -69,16 +69,16 @@ const styles = StyleSheet.create((theme) => ({
     isMisplaced: boolean;
     isCorrect: boolean;
   }) => ({
-    backgroundColor: isInvalid
-      ? theme.colors.grey[70]
+    backgroundColor: isCorrect
+      ? theme.colors.petka.green
       : isMisplaced
         ? theme.colors.petka.yellow
-        : isCorrect
-          ? theme.colors.petka.green
+        : isInvalid
+          ? theme.colors.grey[70]
           : theme.colors.grey[20],
     opacity: pressed ? 0.4 : 1,
     flexGrow: 1,
-    height: 72,
+    height: 68,
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'center',

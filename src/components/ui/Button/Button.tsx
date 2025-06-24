@@ -19,9 +19,10 @@ const intentToSpinnerColorMap = new Map<Props['intent'], string>([
   ['terciary', defaultTheme.colors.petka.black],
 ]);
 
-const ButtonContext = createContext<Pick<Props, 'fullwidth' | 'size' | 'variant' | 'disabled' | 'loading'> | null>(
-  null
-);
+const ButtonContext = createContext<Pick<
+  Props,
+  'fullwidth' | 'size' | 'variant' | 'disabled' | 'loading' | 'intent'
+> | null>(null);
 
 function useButtonContext() {
   const buttonContext = useContext(ButtonContext);
@@ -59,7 +60,7 @@ export function Button({
   }, [children]);
 
   return (
-    <ButtonContext.Provider value={{ size, variant, fullwidth, disabled, loading }}>
+    <ButtonContext.Provider value={{ size, variant, intent, fullwidth, disabled, loading }}>
       <Pressable
         accessibilityRole="button"
         disabled={disabled || loading}
@@ -98,24 +99,27 @@ const styles = StyleSheet.create((theme) => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: theme.spacing[4],
     variants: {
       size: {
         xs: {
           paddingVertical: theme.spacing[4],
           paddingHorizontal: theme.spacing[5],
+          gap: theme.spacing[2],
         },
         sm: {
           paddingVertical: theme.spacing[4],
           paddingHorizontal: theme.spacing[5],
+          gap: theme.spacing[3],
         },
         md: {
           paddingVertical: theme.spacing[5],
           paddingHorizontal: theme.spacing[6],
+          gap: theme.spacing[4],
         },
         lg: {
           paddingVertical: theme.spacing[6],
           paddingHorizontal: theme.spacing[7],
+          gap: theme.spacing[4],
         },
       },
       intent: {
@@ -265,7 +269,7 @@ const styles = StyleSheet.create((theme) => ({
       },
       {
         variant: 'outline',
-        intent: 'primary',
+        intent: 'terciary',
         styles: {
           color: theme.colors.petka.black,
         },

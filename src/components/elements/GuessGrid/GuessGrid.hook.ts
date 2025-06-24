@@ -1,20 +1,34 @@
 import { useConvex } from 'convex/react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { api } from '@/convex/_generated/api';
+import { type CheckedLetter, type PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
 import { useToaster } from '@/hooks/useToaster';
+import { deepClone } from '@/utils/clone';
 
 import { type KeyboardKey } from '../Keyboard';
 
 import { findCurrentGridRowIdx, getUpdatedGrid } from './GuessGrid.helpers';
 
-const initialGuesses = new Array(5).fill(new Array(5).fill(null));
+const initialGuesses = new Array(6).fill(new Array(5).fill(null));
 
-export function useGuessGrid() {
+type Options = {
+  attempts?: PuzzleGuessAttempt[];
+  onSubmitAttempt: (attempt: string) => Promise<void>;
+};
+
+export function useGuessGrid({ attempts, onSubmitAttempt }: Options) {
   const toaster = useToaster();
   const convex = useConvex();
   const [guesses, setGuesses] = useState<(string | null)[][]>(initialGuesses);
   const [isValidating, setIsValidating] = useState(false);
+
+  const allCheckedLetters = useMemo(() => {
+    return attempts?.reduce((acc, attempt) => {
+      acc.push(...attempt.checkedLetters);
+      return acc;
+    }, [] as CheckedLetter[]);
+  }, [attempts]);
 
   const handleReset = useCallback(() => {
     setGuesses(initialGuesses);
@@ -29,10 +43,9 @@ export function useGuessGrid() {
         return;
       }
 
-      // Proceed with logic
-      console.log('Guessing: ', filteredGuess.join(''));
+      onSubmitAttempt(filteredGuess.join());
     },
-    [toaster]
+    [toaster, onSubmitAttempt]
   );
 
   const handleInput = useCallback(
@@ -57,7 +70,7 @@ export function useGuessGrid() {
             setGuesses(getUpdatedGrid(updatedGuesses, rowIdx, '{Backspace}'));
           } else {
             // Logic to check if the word is the correct word
-            console.log({ term });
+            await onSubmitAttempt(term.word);
           }
         } catch {
           toaster.toast('Prišlo je do napake', { intent: 'error' });
@@ -67,8 +80,23 @@ export function useGuessGrid() {
         }
       }
     },
-    [checkGuessLength, convex, guesses, isValidating, toaster]
+    [checkGuessLength, convex, guesses, isValidating, onSubmitAttempt, toaster]
   );
+
+  useEffect(() => {
+    if (!attempts) {
+      setGuesses(initialGuesses);
+      return;
+    }
+
+    setGuesses((currentGuesses) => {
+      const copy = deepClone(currentGuesses);
+      attempts.forEach((attempt, idx) => {
+        copy[idx] = attempt.attempt.split('');
+      });
+      return copy;
+    });
+  }, [attempts]);
 
   return useMemo(
     () => ({
@@ -76,7 +104,8 @@ export function useGuessGrid() {
       isValidating,
       onInput: handleInput,
       onReset: handleReset,
+      allCheckedLetters,
     }),
-    [guesses, handleInput, handleReset, isValidating]
+    [allCheckedLetters, guesses, handleInput, handleReset, isValidating]
   );
 }
