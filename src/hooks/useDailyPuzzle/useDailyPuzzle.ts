@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from 'convex/react';
-import { useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { api } from '@/convex/_generated/api';
 import { isAttemptCorrect } from '@/convex/puzzleGuessAttempts/helpers';
@@ -35,9 +35,18 @@ export function useDailyPuzzle() {
     }
   };
 
-  const handleMarkPuzzleAsSolved = async () => {
-    return markPuzzleAsSolved({ puzzleId: puzzle?._id!, userId: user?._id! });
-  };
+  const handleMarkPuzzleAsSolved = useCallback(
+    async (puzzleId: string, userId: string) => {
+      await markPuzzleAsSolved({ puzzleId, userId });
+    },
+    [markPuzzleAsSolved]
+  );
+
+  useEffect(() => {
+    if (isSolved && puzzle && !puzzle.solvedBy.includes(user?._id as string)) {
+      handleMarkPuzzleAsSolved(puzzle._id, user?._id!);
+    }
+  }, [handleMarkPuzzleAsSolved, isSolved, puzzle, user?._id]);
 
   return {
     attempts,
@@ -46,6 +55,5 @@ export function useDailyPuzzle() {
     isSolved,
     isFailed,
     onSubmitAttempt: handleCreatePuzzleGuessAttempt,
-    onMarkAsSolved: handleMarkPuzzleAsSolved,
   };
 }
