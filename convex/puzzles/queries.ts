@@ -47,6 +47,26 @@ export const readUserActiveTrainingPuzzle = query({
   },
 });
 
+export const readActiveDailyPuzzle = query({
+  args: { timestamp: z.number() },
+  async handler(ctx, { timestamp }) {
+    const date = new Date(timestamp);
+    const dailyPuzzle = await ctx.db
+      .query('puzzles')
+      .withIndex('by_type', (q) => q.eq('type', puzzleType.Enum.daily))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field('year'), date.getFullYear()),
+          q.eq(q.field('month'), date.getMonth() + 1),
+          q.eq(q.field('day'), date.getDate())
+        )
+      )
+      .first();
+
+    return dailyPuzzle;
+  },
+});
+
 export const readUserPuzzlesStatistics = query({
   args: { userId: z.string(), type: puzzleType },
   async handler(ctx, { userId, type }) {
@@ -66,16 +86,16 @@ export const readUserPuzzlesStatistics = query({
       allPuzzles.map((puzzle) =>
         ctx.db
           .query('puzzleGuessAttempts')
-          .withIndex('by_puzzle', (q) => q.eq('puzzleId', puzzle._id))
+          .withIndex('by_user_puzzle', (q) => q.eq('userId', normalizedUserId).eq('puzzleId', puzzle._id))
           .collect()
       )
     );
+    const startedPuzzleAttempts = allPuzzlesAttempts.filter((attempts) => attempts.length > 0);
     const failedPuzzlesAttempts = allPuzzlesAttempts.filter(
       (attempts) => attempts.length === 6 && !isAttemptCorrect(attempts.at(-1))
     );
-    const solvedPuzzlesAttempts = allPuzzlesAttempts.filter((attempts) => isAttemptCorrect(attempts.at(-1)));
-    const numOfSolvedPuzzles = allPuzzles.length - (failedPuzzlesAttempts?.length ?? 0);
-    const solvedPercentage = Math.floor((numOfSolvedPuzzles / allPuzzles.length) * 100);
+    const numOfSolvedPuzzles = startedPuzzleAttempts.length - (failedPuzzlesAttempts?.length ?? 0);
+    const solvedPercentage = Math.floor((numOfSolvedPuzzles / startedPuzzleAttempts.length) * 100);
 
     const attemptsDistribution: Record<number, number> = {
       1: 0,
@@ -89,7 +109,7 @@ export const readUserPuzzlesStatistics = query({
     let currentStreak = 0;
     const streaks = [];
 
-    for (const attempts of solvedPuzzlesAttempts) {
+    for (const attempts of startedPuzzleAttempts) {
       const numOfAttempts = attempts.length;
       const lastAttempt = attempts.at(-1);
       const isLastAttemptCorrect = lastAttempt?.checkedLetters.every(
@@ -110,7 +130,7 @@ export const readUserPuzzlesStatistics = query({
 
     return {
       attemptsDistribution,
-      numberOfAllPuzzles: allPuzzles.length,
+      numberOfAllPuzzles: startedPuzzleAttempts.length,
       numberOfSolvedPuzzles: numOfSolvedPuzzles,
       solvedPercentage,
       streak: streaks[0],

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from 'convex/react';
-import { useState, useCallback, useEffect } from 'react';
+import { useRef } from 'react';
 
 import { api } from '@/convex/_generated/api';
 import { isAttemptCorrect } from '@/convex/puzzleGuessAttempts/helpers';
@@ -7,14 +7,13 @@ import { isAttemptCorrect } from '@/convex/puzzleGuessAttempts/helpers';
 import { useToaster } from '../useToaster';
 import { useUser } from '../useUser';
 
-export function useTrainingPuzzle() {
+export function useDailyPuzzle() {
   const { user } = useUser();
   const toaster = useToaster();
-  const [isCreatingPuzzle, setIsCreatingPuzzle] = useState(false);
-  const createTrainingPuzzle = useMutation(api.puzzles.queries.createTrainingPuzzle);
   const markPuzzleAsSolved = useMutation(api.puzzles.queries.markAsSolved);
   const createPuzzleGuessAttempt = useMutation(api.puzzleGuessAttempts.queries.create);
-  const puzzle = useQuery(api.puzzles.queries.readUserActiveTrainingPuzzle, user?._id ? { userId: user._id } : 'skip');
+  const timestampRef = useRef(Date.now());
+  const puzzle = useQuery(api.puzzles.queries.readActiveDailyPuzzle, { timestamp: timestampRef.current });
   const attempts = useQuery(
     api.puzzleGuessAttempts.queries.listPuzzleAttempts,
     user?._id && puzzle?._id ? { userId: user._id, puzzleId: puzzle._id } : 'skip'
@@ -36,33 +35,14 @@ export function useTrainingPuzzle() {
     }
   };
 
-  const handleCreateTrainingPuzzle = useCallback(async () => {
-    try {
-      setIsCreatingPuzzle(true);
-      await createTrainingPuzzle({ userId: user?._id! });
-    } catch {
-      toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
-    } finally {
-      setIsCreatingPuzzle(false);
-    }
-  }, [createTrainingPuzzle, toaster, user?._id]);
-
   const handleMarkPuzzleAsSolved = async () => {
     return markPuzzleAsSolved({ puzzleId: puzzle?._id!, userId: user?._id! });
   };
-
-  useEffect(() => {
-    // Puzzle query has finished but not puzzles were found - we need to create a new one!
-    if (puzzle === null && !isCreatingPuzzle) {
-      handleCreateTrainingPuzzle();
-    }
-  }, [handleCreateTrainingPuzzle, puzzle, isCreatingPuzzle]);
 
   return {
     attempts,
     puzzle,
     isLoading: typeof puzzle === 'undefined',
-    isCreating: isCreatingPuzzle,
     isSolved,
     isFailed,
     onSubmitAttempt: handleCreatePuzzleGuessAttempt,

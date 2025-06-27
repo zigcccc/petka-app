@@ -34,6 +34,10 @@ export default function AuthenticatedLayout() {
         }}
       />
       <Stack.Screen
+        name="play/daily-puzzle-solved"
+        options={{ gestureEnabled: false, headerShadowVisible: false, title: '', presentation: 'modal' }}
+      />
+      <Stack.Screen
         name="play/training-puzzle"
         options={{
           headerBackTitle: 'Nazaj',

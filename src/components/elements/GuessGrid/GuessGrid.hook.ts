@@ -2,7 +2,7 @@ import { useConvex } from 'convex/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { api } from '@/convex/_generated/api';
-import { type CheckedLetter, type PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
+import { checkedLetterStatus, type CheckedLetter, type PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
 import { useToaster } from '@/hooks/useToaster';
 import { deepClone } from '@/utils/clone';
 
@@ -24,10 +24,37 @@ export function useGuessGrid({ attempts, onSubmitAttempt }: Options) {
   const [isValidating, setIsValidating] = useState(false);
 
   const allCheckedLetters = useMemo(() => {
-    return attempts?.reduce((acc, attempt) => {
-      acc.push(...attempt.checkedLetters);
-      return acc;
-    }, [] as CheckedLetter[]);
+    const lettersMap = new Map<CheckedLetter['letter'], CheckedLetter>();
+
+    if (!attempts) {
+      return [];
+    }
+
+    for (const attempt of attempts) {
+      for (const letter of attempt.checkedLetters) {
+        const existingLetter = lettersMap.get(letter.letter);
+
+        if (!existingLetter) {
+          lettersMap.set(letter.letter, letter);
+          continue;
+        }
+
+        const isExistingLetterCorrect = existingLetter.status === checkedLetterStatus.Enum.correct;
+        const isExistingLetterMisplaced = existingLetter.status === checkedLetterStatus.Enum.misplaced;
+
+        if (isExistingLetterCorrect) {
+          continue;
+        }
+
+        if (isExistingLetterMisplaced && letter.status === checkedLetterStatus.Enum.invalid) {
+          continue;
+        }
+
+        lettersMap.set(letter.letter, letter);
+      }
+    }
+
+    return Array.from(lettersMap.values());
   }, [attempts]);
 
   const handleReset = useCallback(() => {

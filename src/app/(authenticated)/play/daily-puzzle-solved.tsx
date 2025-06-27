@@ -1,41 +1,25 @@
 import { Octicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { AttemptsDistributionGraph } from '@/components/elements';
-import { Button, Card, Text } from '@/components/ui';
+import { Card, Button, Text } from '@/components/ui';
 import { puzzleType } from '@/convex/puzzles/models';
+import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
 import { usePuzzlesStatistics } from '@/hooks/usePuzzlesStatistics';
-import { useToaster } from '@/hooks/useToaster';
-import { useTrainingPuzzle } from '@/hooks/useTrainingPuzzle';
 
-export default function TrainingPuzzleSolvedScreen() {
+export default function DailyPuzzleSolvedScreen() {
   const router = useRouter();
-  const toaster = useToaster();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { attempts, onMarkAsSolved } = useTrainingPuzzle();
-  const { isLoading, data } = usePuzzlesStatistics(puzzleType.Enum.training);
-
-  const handleCreateNewChallenge = async () => {
-    try {
-      setIsSubmitting(true);
-      onMarkAsSolved();
-      router.back();
-    } catch {
-      toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const { attempts } = useDailyPuzzle();
+  const { isLoading, data } = usePuzzlesStatistics(puzzleType.Enum.daily);
 
   return (
     <View style={styles.container}>
       <Text size="2xl" weight="bold">
         Čestitke 🥳
       </Text>
-      <Text size="lg">Uspešno si opravil/a trening izziv.</Text>
+      <Text size="lg">Uspešno si opravil/a dnevni izziv.</Text>
       <View style={styles.content}>
         {isLoading ? (
           <View style={styles.contentLoadingContainer}>
@@ -44,7 +28,7 @@ export default function TrainingPuzzleSolvedScreen() {
         ) : (
           <>
             <Text size="lg" weight="medium">
-              Trening statistika
+              Statistika dnevnih izzivov
             </Text>
             <View style={styles.gameStatsContainer}>
               <View style={styles.gameStatsEntry}>
@@ -90,9 +74,7 @@ export default function TrainingPuzzleSolvedScreen() {
         <Button onPress={() => router.back()} variant="outline">
           Nazaj
         </Button>
-        <Button loading={isSubmitting} onPress={handleCreateNewChallenge}>
-          Začni nov izziv
-        </Button>
+        <Button onPress={() => router.navigate('/leaderboard')}>Lestvica</Button>
       </View>
     </View>
   );
