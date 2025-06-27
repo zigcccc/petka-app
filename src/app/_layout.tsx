@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react-native';
 import { ConvexProvider, ConvexReactClient } from 'convex/react';
 import { Asset } from 'expo-asset';
 import { useFonts } from 'expo-font';
@@ -13,6 +14,24 @@ import '@/styles/unistyles';
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,
+});
+
+Sentry.init({
+  dsn: 'https://5239823974f8936789a62d8edb9beeb6@o4506279940587520.ingest.us.sentry.io/4509553115791360',
+  sendDefaultPii: true,
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  tracesSampleRate: 1.0,
+  profilesSampleRate: 1.0,
+  integrations: [
+    Sentry.reactNavigationIntegration({ enableTimeToInitialDisplay: true }),
+    Sentry.reactNativeTracingIntegration(),
+    Sentry.mobileReplayIntegration({
+      maskAllText: false,
+      maskAllImages: false,
+      maskAllVectors: false,
+    }),
+  ],
 });
 
 function RootLayout() {
@@ -63,7 +82,7 @@ function RootLayout() {
   );
 }
 
-export default function RootLayoutWithProviders() {
+function RootLayoutWithProviders() {
   return (
     <ConvexProvider client={convex}>
       <RootLayout />
@@ -76,3 +95,5 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.white,
   },
 }));
+
+export default Sentry.wrap(RootLayoutWithProviders);

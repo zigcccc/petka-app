@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react-native';
 import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
 import { Switch, View } from 'react-native';
@@ -36,7 +37,9 @@ export default function SettingsScreen() {
             </Text>
           </Card.ActionRow>
           <Card.ActionRow title="Profil ustvarjen">{dayjs(user?._creationTime).format('DD. MMM YYYY')}</Card.ActionRow>
-          <Card.ActionRow title="ID profila">{user?._id}</Card.ActionRow>
+          <Card.ActionRow title="ID profila">
+            <Sentry.Mask>{user?._id}</Sentry.Mask>
+          </Card.ActionRow>
           <Button
             intent="danger"
             loading={isDeleting}

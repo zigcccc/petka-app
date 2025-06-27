@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import { pickRandomWord } from '@/utils/words';
 
+import { isAttemptCorrect } from '../puzzleGuessAttempts/helpers';
 import { checkedLetterStatus } from '../puzzleGuessAttempts/models';
 import { mutation, query } from '../shared/queries';
 
@@ -55,21 +56,26 @@ export const readUserPuzzlesStatistics = query({
       throw new ConvexError({ message: 'Invalid user id provided.', code: 400 });
     }
 
-    const allPuzzles = await ctx.db
-      .query('puzzles')
-      .withIndex('by_type_creator', (q) => q.eq('creatorId', userId).eq('type', type))
-      .collect();
+    const basePuzzlesQuery =
+      type === puzzleType.Enum.daily
+        ? ctx.db.query('puzzles').withIndex('by_type', (q) => q.eq('type', type))
+        : ctx.db.query('puzzles').withIndex('by_type_creator', (q) => q.eq('creatorId', userId).eq('type', type));
 
-    const solvedPuzzles = allPuzzles.filter((puzzle) => puzzle.solvedBy.includes(userId));
-    const solvedPercentage = Math.floor((solvedPuzzles.length / allPuzzles.length) * 100);
-    const solvedPuzzlesAttempts = await Promise.all(
-      solvedPuzzles.map((puzzle) =>
+    const allPuzzles = await basePuzzlesQuery.collect();
+    const allPuzzlesAttempts = await Promise.all(
+      allPuzzles.map((puzzle) =>
         ctx.db
           .query('puzzleGuessAttempts')
-          .withIndex('by_user_puzzle', (q) => q.eq('userId', userId).eq('puzzleId', puzzle._id))
+          .withIndex('by_puzzle', (q) => q.eq('puzzleId', puzzle._id))
           .collect()
       )
     );
+    const failedPuzzlesAttempts = allPuzzlesAttempts.filter(
+      (attempts) => attempts.length === 6 && !isAttemptCorrect(attempts.at(-1))
+    );
+    const solvedPuzzlesAttempts = allPuzzlesAttempts.filter((attempts) => isAttemptCorrect(attempts.at(-1)));
+    const numOfSolvedPuzzles = allPuzzles.length - (failedPuzzlesAttempts?.length ?? 0);
+    const solvedPercentage = Math.floor((numOfSolvedPuzzles / allPuzzles.length) * 100);
 
     const attemptsDistribution: Record<number, number> = {
       1: 0,
@@ -80,27 +86,35 @@ export const readUserPuzzlesStatistics = query({
       6: 0,
     };
 
-    let streak = 0;
+    let currentStreak = 0;
+    const streaks = [];
 
     for (const attempts of solvedPuzzlesAttempts) {
       const numOfAttempts = attempts.length;
       const lastAttempt = attempts.at(-1);
+      const isLastAttemptCorrect = lastAttempt?.checkedLetters.every(
+        (checkedLetter) => checkedLetter.status === checkedLetterStatus.Enum.correct
+      );
 
-      if (
-        lastAttempt?.checkedLetters.every((checkedLetter) => checkedLetter.status === checkedLetterStatus.Enum.correct)
-      ) {
-        streak = streak + 1;
+      if (isLastAttemptCorrect) {
+        currentStreak = currentStreak + 1;
+      } else {
+        streaks.push(currentStreak);
+        currentStreak = 0;
       }
 
       attemptsDistribution[numOfAttempts] = (attemptsDistribution[numOfAttempts] ?? 0) + 1;
     }
 
+    streaks.push(currentStreak);
+
     return {
       attemptsDistribution,
       numberOfAllPuzzles: allPuzzles.length,
-      numberOfSolvedPuzzles: solvedPuzzles.length,
+      numberOfSolvedPuzzles: numOfSolvedPuzzles,
       solvedPercentage,
-      streak,
+      streak: streaks[0],
+      maxStreak: Math.max(...streaks),
     };
   },
 });
@@ -114,6 +128,7 @@ export const createTrainingPuzzle = mutation({
       throw new ConvexError({ message: 'Invalid user id provided.', code: 400 });
     }
 
+    const today = new Date();
     const words = await ctx.db.query('dictionaryEntries').collect();
     const word = pickRandomWord(words);
 
@@ -122,6 +137,9 @@ export const createTrainingPuzzle = mutation({
       creatorId: userId,
       solution: word,
       solvedBy: [],
+      year: today.getFullYear(),
+      month: today.getMonth() + 1,
+      day: today.getDate(),
     });
 
     return puzzleId;

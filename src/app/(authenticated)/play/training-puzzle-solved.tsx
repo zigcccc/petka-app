@@ -1,4 +1,5 @@
 import { Octicons } from '@expo/vector-icons';
+import * as Sentry from '@sentry/react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
@@ -79,7 +80,7 @@ export default function TrainingPuzzleSolved() {
                 numberOfCurrentAttempts={attempts?.length}
               />
             </Card>
-            <Button onPress={() => null} size="sm" variant="outline">
+            <Button onPress={() => Sentry.captureException('Test exception')} size="sm" variant="outline">
               <Button.Text>Deli</Button.Text>
               <Octicons color="green" name="share" size={16} />
             </Button>

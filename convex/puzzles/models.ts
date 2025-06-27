@@ -12,6 +12,9 @@ export const puzzleModel = baseDbModel.extend({
   solution: z.string().min(5).max(5),
   creatorId: z.string().nullable(),
   solvedBy: z.array(z.string()),
+  year: z.number(),
+  month: z.number(),
+  day: z.number(),
 });
 export type Puzzle = z.infer<typeof puzzleModel>;
 
