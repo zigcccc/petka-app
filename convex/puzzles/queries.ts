@@ -232,5 +232,35 @@ export const markAsSolved = mutation({
     }
 
     await ctx.db.patch(normalizedPuzzleId, { solvedBy: [...puzzle.solvedBy, userId] });
+
+    if (puzzle.type === puzzleType.Enum.daily) {
+      const globalLeaderboard = await ctx.db
+        .query('leaderboards')
+        .withIndex('by_type', (q) => q.eq('type', 'global'))
+        .unique();
+      const privateLeaderboards = await ctx.db
+        .query('leaderboards')
+        .withIndex('by_type', (q) => q.eq('type', 'private'))
+        .collect();
+      const userLeaderboards = privateLeaderboards.filter((leaderboard) =>
+        leaderboard.users?.includes(normalizedUserId)
+      );
+
+      const leaderboardsToUpdate = globalLeaderboard ? [globalLeaderboard, ...userLeaderboards] : userLeaderboards;
+      const puzzleAttempts = await ctx.db
+        .query('puzzleGuessAttempts')
+        .withIndex('by_user_puzzle', (q) => q.eq('userId', normalizedUserId).eq('puzzleId', normalizedPuzzleId))
+        .collect();
+      const puzzleScore = 7 - puzzleAttempts.length;
+
+      for (const leaderboard of leaderboardsToUpdate) {
+        await ctx.db.insert('leaderboardEntries', {
+          leaderboardId: leaderboard._id,
+          userId: normalizedUserId,
+          puzzleId: normalizedPuzzleId,
+          score: puzzleScore,
+        });
+      }
+    }
   },
 });

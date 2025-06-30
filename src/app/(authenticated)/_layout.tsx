@@ -29,6 +29,16 @@ export default function AuthenticatedLayout() {
           headerLargeTitle: true,
         }}
       />
+      <Stack.Screen
+        name="leaderboards"
+        options={{
+          title: 'Lestvica',
+          headerTintColor: theme.colors.petka.black,
+          headerBackTitle: 'Nazaj',
+          headerBackTitleStyle: styles.back,
+          headerLargeTitle: true,
+        }}
+      />
       <Stack.Screen name="leaderboard" />
       <Stack.Screen name="settings" />
       <Stack.Screen name="update-nickname" options={{ presentation: 'modal', title: '', headerShadowVisible: false }} />

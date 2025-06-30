@@ -24,7 +24,7 @@ export default function HomeScreen() {
             </Button>
           </View>
           <View style={styles.action}>
-            <Button intent="secondary" onPress={() => router.navigate('/leaderboard')} size="lg">
+            <Button intent="secondary" onPress={() => router.navigate('/leaderboards/weekly-leaderboard')} size="lg">
               <Octicons color="white" name="graph" size={22} />
               <Button.Text>Lestvica</Button.Text>
             </Button>
@@ -37,7 +37,7 @@ export default function HomeScreen() {
             </Button>
           </View>
           <View style={styles.action}>
-            <Button intent="terciary" onPress={() => router.navigate('/history')} size="lg">
+            <Button intent="terciary" onPress={() => router.navigate('/history/daily-challenges')} size="lg">
               <Octicons color="white" name="history" size={22} />
             </Button>
           </View>
