@@ -15,8 +15,8 @@
     "test": "jest"
   },
   "lint-staged": {
-    "*.{js,ts,tsx,jsx,json,css,md,!convex/_generated/**}": "prettier --write",
-    "*.{js,ts,tsx,jsx,!convex/_generated/**}": "eslint --fix"
+    "*.{js,ts,tsx,jsx,json,css,md}": "prettier --write",
+    "*.{js,ts,tsx,jsx}": "eslint --fix"
   },
   "expo": {
     "doctor": {

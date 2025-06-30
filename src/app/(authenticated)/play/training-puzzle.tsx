@@ -46,7 +46,7 @@ export default function TrainingPuzzleScreen() {
         <GuessGrid attempts={attempts} grid={grid} isValidating={isValidating} />
       </View>
       <View style={styles.spacer} />
-      <Keyboard checkedLetters={allCheckedLetters} onKeyPress={onInput} />
+      <Keyboard checkedLetters={allCheckedLetters} isDisabled={isSolved} onKeyPress={onInput} />
     </View>
   );
 }

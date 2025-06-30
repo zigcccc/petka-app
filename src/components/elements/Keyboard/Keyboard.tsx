@@ -9,9 +9,10 @@ import { keys, keysToIconMap, type KeyboardKey as KeyboardKeyType } from './Keyb
 type Props = {
   onKeyPress: (key: KeyboardKeyType) => void;
   checkedLetters?: CheckedLetter[];
+  isDisabled: boolean;
 };
 
-export function Keyboard({ onKeyPress, checkedLetters = [] }: Props) {
+export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Props) {
   return (
     <View style={styles.keyboard}>
       {keys.map((keysRow, idx) => (
@@ -25,7 +26,7 @@ export function Keyboard({ onKeyPress, checkedLetters = [] }: Props) {
             return (
               <Pressable
                 key={key}
-                onPress={() => onKeyPress(key)}
+                onPress={isDisabled ? undefined : () => onKeyPress(key)}
                 style={({ pressed }) =>
                   styles.keyContainer({
                     pressed,
