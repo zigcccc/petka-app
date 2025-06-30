@@ -2,37 +2,37 @@ import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Text } from '@/components/ui';
-import { checkedLetterStatus, type PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
+import { checkedLetterStatus } from '@/convex/puzzleGuessAttempts/models';
 
-type Props = {
-  attempts?: PuzzleGuessAttempt[];
-  grid: (string | null)[][];
-  isValidating?: boolean;
-};
+import { type GuessGridCellProps, type GuessGridProps } from './GuessGrid.types';
 
-export function GuessGrid({ attempts = [], grid, isValidating = false }: Props) {
+function GuessGridCell({ value, idx, checkedLetters = [], cellWidth }: GuessGridCellProps) {
+  const checkedLetter = checkedLetters.find(
+    (checkedLetter) => checkedLetter.index === idx && checkedLetter.letter === value
+  );
+  const isCorrect = value ? checkedLetter?.status === checkedLetterStatus.Enum.correct : false;
+  const isMisplaced = value ? checkedLetter?.status === checkedLetterStatus.Enum.misplaced : false;
+  const isInvalid = value ? checkedLetter?.status === checkedLetterStatus.Enum.invalid : false;
+
+  return (
+    <View style={styles.cell({ isCorrect, isInvalid, isMisplaced, cellWidth })}>
+      <Text color={checkedLetters.length ? 'white' : 'black'} size="xl" style={styles.cellText} weight="bold">
+        {value}
+      </Text>
+    </View>
+  );
+}
+
+export function GuessGrid({ attempts = [], grid, isValidating = false }: GuessGridProps) {
   return (
     <View style={styles.grid({ isValidating })}>
       {grid.map((row, rowIdx) => {
         const attempt = attempts[rowIdx];
         return (
           <View key={rowIdx} style={styles.row}>
-            {row.map((cell, cellIdx) => {
-              const checkedLetter = attempt?.checkedLetters.find(
-                (checkedLetter) => checkedLetter.index === cellIdx && checkedLetter.letter === cell
-              );
-              const isCorrect = cell ? checkedLetter?.status === checkedLetterStatus.Enum.correct : false;
-              const isMisplaced = cell ? checkedLetter?.status === checkedLetterStatus.Enum.misplaced : false;
-              const isInvalid = cell ? checkedLetter?.status === checkedLetterStatus.Enum.invalid : false;
-
-              return (
-                <View key={cellIdx} style={styles.cell({ isCorrect, isInvalid, isMisplaced })}>
-                  <Text color={attempt ? 'white' : 'black'} size="xl" style={styles.cellText} weight="bold">
-                    {cell}
-                  </Text>
-                </View>
-              );
-            })}
+            {row.map((cell, cellIdx) => (
+              <GuessGridCell key={cellIdx} checkedLetters={attempt?.checkedLetters} idx={cellIdx} value={cell} />
+            ))}
           </View>
         );
       })}
@@ -40,8 +40,10 @@ export function GuessGrid({ attempts = [], grid, isValidating = false }: Props) 
   );
 }
 
+GuessGrid.Cell = GuessGridCell;
+
 const styles = StyleSheet.create((theme, rt) => ({
-  grid: ({ isValidating }: Pick<Props, 'isValidating'>) => ({
+  grid: ({ isValidating }: Pick<GuessGridProps, 'isValidating'>) => ({
     flexDirection: 'column',
     gap: theme.spacing[4],
     opacity: isValidating ? 0.4 : 1,
@@ -50,7 +52,17 @@ const styles = StyleSheet.create((theme, rt) => ({
     flexDirection: 'row',
     gap: theme.spacing[4],
   },
-  cell({ isCorrect, isMisplaced, isInvalid }: { isCorrect: boolean; isMisplaced: boolean; isInvalid: boolean }) {
+  cell({
+    isCorrect,
+    isMisplaced,
+    isInvalid,
+    cellWidth,
+  }: {
+    isCorrect: boolean;
+    isMisplaced: boolean;
+    isInvalid: boolean;
+    cellWidth?: number;
+  }) {
     return {
       backgroundColor: isCorrect
         ? theme.colors.petka.green
@@ -68,7 +80,7 @@ const styles = StyleSheet.create((theme, rt) => ({
             : theme.colors.grey[20],
       borderWidth: 2,
       // screen width - 2*20 padding - 4*12 gap
-      width: (rt.screen.width - 40 - 4 * 12) / 5,
+      width: cellWidth ?? (rt.screen.width - 40 - 4 * 12) / 5,
       aspectRatio: '1/1',
       alignItems: 'center',
       justifyContent: 'center',

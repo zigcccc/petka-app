@@ -35,22 +35,23 @@
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
     "@sentry/react-native": "^6.14.0",
+    "@shopify/flash-list": "1.7.6",
     "burnt": "^0.13.0",
     "convex": "^1.24.8",
     "convex-helpers": "^0.1.94",
     "dayjs": "^1.11.13",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-unused-imports": "^4.1.4",
-    "expo": "~53.0.12",
+    "expo": "~53.0.13",
     "expo-asset": "~11.1.5",
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.6",
-    "expo-dev-client": "~5.2.1",
+    "expo-dev-client": "~5.2.2",
     "expo-font": "~13.3.1",
     "expo-haptics": "~14.1.4",
     "expo-image": "~2.3.0",
     "expo-linking": "~7.1.5",
-    "expo-router": "~5.1.0",
+    "expo-router": "~5.1.1",
     "expo-splash-screen": "~0.30.9",
     "expo-status-bar": "~2.2.3",
     "expo-symbols": "~0.4.5",
@@ -95,5 +96,5 @@
     "typescript": "~5.8.3"
   },
   "private": true,
-  "packageManager": "pnpm@10.12.2+sha512.a32540185b964ee30bb4e979e405adc6af59226b438ee4cc19f9e8773667a66d302f5bfee60a39d3cac69e35e4b96e708a71dd002b7e9359c4112a1722ac323f"
+  "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
 }

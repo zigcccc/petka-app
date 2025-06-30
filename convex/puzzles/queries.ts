@@ -5,6 +5,7 @@ import { pickRandomWord } from '@/utils/words';
 
 import { isAttemptCorrect } from '../puzzleGuessAttempts/helpers';
 import { checkedLetterStatus } from '../puzzleGuessAttempts/models';
+import { paginationOptsValidator } from '../shared/models';
 import { mutation, query } from '../shared/queries';
 
 import { puzzleType } from './models';
@@ -21,6 +22,51 @@ export const read = query({
     const puzzle = await ctx.db.get(puzzleId);
 
     return puzzle;
+  },
+});
+
+export const list = query({
+  args: { paginationOpts: paginationOptsValidator, type: puzzleType, userId: z.string(), timestamp: z.number() },
+  handler: async (ctx, { paginationOpts, type, userId, timestamp }) => {
+    const normalizedUserId = ctx.db.normalizeId('users', userId);
+
+    if (!normalizedUserId) {
+      throw new ConvexError({ message: 'Invalid userId provided', code: 400 });
+    }
+
+    const baseQuery = ctx.db.query('puzzles');
+    let indexedQuery =
+      type === puzzleType.Enum.daily
+        ? baseQuery.withIndex('by_type', (q) => q.eq('type', type))
+        : baseQuery.withIndex('by_type_creator', (q) => q.eq('creatorId', normalizedUserId).eq('type', type));
+
+    if (type === puzzleType.Enum.daily) {
+      const currentDate = new Date(timestamp);
+      indexedQuery = indexedQuery.filter((q) =>
+        q.and(
+          q.lte(q.field('year'), currentDate.getFullYear()),
+          q.lte(q.field('month'), currentDate.getMonth() + 1),
+          q.lte(q.field('day'), currentDate.getDate())
+        )
+      );
+    }
+
+    const puzzles = await indexedQuery.order('desc').paginate(paginationOpts);
+    const puzzleAttempts = await Promise.all(
+      puzzles.page.map((puzzle) =>
+        ctx.db
+          .query('puzzleGuessAttempts')
+          .withIndex('by_user_puzzle', (q) => q.eq('userId', normalizedUserId).eq('puzzleId', puzzle._id))
+          .collect()
+      )
+    );
+
+    const attemptsByPuzzleId = new Map(puzzleAttempts.map((attempt) => [attempt[0]?.puzzleId, attempt]));
+
+    return {
+      ...puzzles,
+      page: puzzles.page.map((puzzle) => ({ ...puzzle, attempts: attemptsByPuzzleId.get(puzzle._id) })),
+    };
   },
 });
 
@@ -81,12 +127,13 @@ export const readUserPuzzlesStatistics = query({
         ? ctx.db.query('puzzles').withIndex('by_type', (q) => q.eq('type', type))
         : ctx.db.query('puzzles').withIndex('by_type_creator', (q) => q.eq('creatorId', userId).eq('type', type));
 
-    const allPuzzles = await basePuzzlesQuery.collect();
+    const allPuzzles = await basePuzzlesQuery.order('desc').collect();
     const allPuzzlesAttempts = await Promise.all(
       allPuzzles.map((puzzle) =>
         ctx.db
           .query('puzzleGuessAttempts')
           .withIndex('by_user_puzzle', (q) => q.eq('userId', normalizedUserId).eq('puzzleId', puzzle._id))
+          .order('asc')
           .collect()
       )
     );
@@ -109,7 +156,7 @@ export const readUserPuzzlesStatistics = query({
     let currentStreak = 0;
     const streaks = [];
 
-    for (const attempts of startedPuzzleAttempts) {
+    for (const attempts of allPuzzlesAttempts) {
       const numOfAttempts = attempts.length;
       const lastAttempt = attempts.at(-1);
       const isLastAttemptCorrect = lastAttempt?.checkedLetters.every(
@@ -123,7 +170,9 @@ export const readUserPuzzlesStatistics = query({
         currentStreak = 0;
       }
 
-      attemptsDistribution[numOfAttempts] = (attemptsDistribution[numOfAttempts] ?? 0) + 1;
+      if (numOfAttempts > 0) {
+        attemptsDistribution[numOfAttempts] = (attemptsDistribution[numOfAttempts] ?? 0) + 1;
+      }
     }
 
     streaks.push(currentStreak);

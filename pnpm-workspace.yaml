@@ -7,4 +7,5 @@ ignoredBuiltDependencies:
 nodeLinker: hoisted
 
 onlyBuiltDependencies:
+  - '@sentry/cli'
   - react-native-nitro-modules

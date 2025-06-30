@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/react-native';
 import { ConvexProvider, ConvexReactClient } from 'convex/react';
+import dayjs from 'dayjs';
 import { Asset } from 'expo-asset';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -9,8 +10,11 @@ import { SafeAreaView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native-unistyles';
 
+import 'dayjs/locale/sl';
 import 'react-native-reanimated';
 import '@/styles/unistyles';
+
+dayjs.locale('sl');
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,

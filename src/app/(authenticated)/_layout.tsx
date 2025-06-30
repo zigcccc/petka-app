@@ -19,7 +19,16 @@ export default function AuthenticatedLayout() {
     <Stack initialRouteName="index" screenOptions={{ contentStyle: styles.content }}>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="app-info" />
-      <Stack.Screen name="history" />
+      <Stack.Screen
+        name="history"
+        options={{
+          title: 'Zgodovina',
+          headerTintColor: theme.colors.petka.black,
+          headerBackTitle: 'Nazaj',
+          headerBackTitleStyle: styles.back,
+          headerLargeTitle: true,
+        }}
+      />
       <Stack.Screen name="leaderboard" />
       <Stack.Screen name="settings" />
       <Stack.Screen name="update-nickname" options={{ presentation: 'modal', title: '', headerShadowVisible: false }} />
