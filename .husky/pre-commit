@@ -1,1 +1,1 @@
-pnpx convex codegen && pnpm lint-staged
+pnpm lint-staged
