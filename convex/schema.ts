@@ -13,8 +13,12 @@ export default defineSchema({
     .index('dictionary_frequency', ['frequency'])
     .index('dictionary_word_frequency', ['word', 'frequency'])
     .searchIndex('dictionaryEntry_word', { searchField: 'word' }),
-  leaderboards: leaderboardsTable.index('by_invite_code', ['inviteCode']).index('by_type', ['type']),
+  leaderboards: leaderboardsTable
+    .index('by_invite_code', ['inviteCode'])
+    .index('by_type', ['type'])
+    .index('by_creator_id', ['creatorId']),
   leaderboardEntries: leaderboardEntriesTable
+    .index('by_user', ['userId'])
     .index('by_leaderboard', ['leaderboardId'])
     .index('by_leaderboard_user', ['leaderboardId', 'userId']),
   puzzles: puzzlesTable

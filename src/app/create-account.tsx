@@ -56,7 +56,7 @@ export default function CreateAccountScreen() {
         <Text size="2xl" weight="bold">
           Hej 👋
         </Text>
-        <Text size="lg">Dobrodošel/la v Petki!</Text>
+        <Text size="lg">Dobrodošel/a v Petki!</Text>
         <View style={styles.content}>
           <Text color="grey70" size="sm">
             Želim ti obilico uspeha in zabave pri reševanju izzivov! Vnesi svoj vzdevek, da se boš s svojimi izjemnimi

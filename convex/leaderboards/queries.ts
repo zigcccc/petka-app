@@ -29,9 +29,14 @@ export const list = query({
       .withIndex('by_type', (q) => q.eq('type', type))
       .collect();
 
+    const userJoinedLeaderboards =
+      type === leaderboardType.Enum.private
+        ? leaderboards.filter((leaderboard) => leaderboard.users?.includes(userId))
+        : leaderboards;
+
     const leaderboardsWithScores: LeaderboardWithScores[] = [];
 
-    for (const leaderboard of leaderboards) {
+    for (const leaderboard of userJoinedLeaderboards) {
       let leaderboardEntriesBaseQuery = ctx.db
         .query('leaderboardEntries')
         .withIndex('by_leaderboard', (q) => q.eq('leaderboardId', leaderboard._id));

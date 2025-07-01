@@ -1,7 +1,10 @@
 import { ConvexError } from 'convex/values';
+import { zid } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
-import { mutation, query } from '../shared/queries';
+import { internal } from '../_generated/api';
+import { puzzleType } from '../puzzles/models';
+import { internalMutation, mutation, query } from '../shared/queries';
 
 import { createUserModel, patchUserModel } from './models';
 
@@ -68,8 +71,37 @@ export const patch = mutation({
   },
 });
 
+export const cleanupUserData = internalMutation({
+  args: { id: zid('users') },
+  async handler(ctx, { id }) {
+    const leaderboardEntriesQuery = ctx.db.query('leaderboardEntries').withIndex('by_user', (q) => q.eq('userId', id));
+    for await (const entry of leaderboardEntriesQuery) {
+      await ctx.db.delete(entry._id);
+    }
+
+    const leaderboardsQuery = ctx.db.query('leaderboards').withIndex('by_creator_id', (q) => q.eq('creatorId', id));
+    for await (const leaderboard of leaderboardsQuery) {
+      await ctx.db.delete(leaderboard._id);
+    }
+
+    const puzzleGuessAttemptsQuery = ctx.db
+      .query('puzzleGuessAttempts')
+      .withIndex('by_user', (q) => q.eq('userId', id));
+    for await (const guessAttempt of puzzleGuessAttemptsQuery) {
+      await ctx.db.delete(guessAttempt._id);
+    }
+
+    const puzzlesQuery = ctx.db
+      .query('puzzles')
+      .withIndex('by_type_creator', (q) => q.eq('creatorId', id).eq('type', puzzleType.Enum.training));
+    for await (const puzzle of puzzlesQuery) {
+      await ctx.db.delete(puzzle._id);
+    }
+  },
+});
+
 export const destroy = mutation({
-  args: { id: z.string() },
+  args: { id: zid('users') },
   async handler(ctx, { id }) {
     const userId = ctx.db.normalizeId('users', id);
 
@@ -77,6 +109,8 @@ export const destroy = mutation({
       throw new ConvexError({ code: 400, message: 'Invalid user id provided.' });
     }
 
-    return await ctx.db.delete(userId);
+    await ctx.db.delete(userId);
+
+    await ctx.scheduler.runAfter(0, internal.users.queries.cleanupUserData, { id });
   },
 });

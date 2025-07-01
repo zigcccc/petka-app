@@ -10,9 +10,9 @@ type Props = {
 
 export function Leaderboard({ scores = [] }: Readonly<Props>) {
   return (
-    <>
+    <View style={styles.container}>
       {scores.map((score) => (
-        <View key={score.position} style={styles.container}>
+        <View key={score.position} style={styles.entry}>
           <View style={styles.contentLeft}>
             <View style={styles.chip({ isForCurrentUser: score.isForCurrentUser })}>
               <Text
@@ -31,12 +31,15 @@ export function Leaderboard({ scores = [] }: Readonly<Props>) {
           </Text>
         </View>
       ))}
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
   container: {
+    gap: theme.spacing[3],
+  },
+  entry: {
     flexDirection: 'row',
     gap: 8,
     justifyContent: 'space-between',

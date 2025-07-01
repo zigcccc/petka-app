@@ -69,7 +69,8 @@ const styles = StyleSheet.create((theme) => ({
     paddingVertical: theme.spacing[8],
   },
   privateLeaderboardsContainer: {
-    paddingVertical: theme.spacing[5],
+    paddingVertical: theme.spacing[6],
+    gap: theme.spacing[6],
   },
   actions: {
     gap: theme.spacing[3],

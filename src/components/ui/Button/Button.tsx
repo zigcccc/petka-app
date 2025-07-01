@@ -106,6 +106,11 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: 'center',
     variants: {
       size: {
+        xxs: {
+          paddingVertical: theme.spacing[3],
+          paddingHorizontal: theme.spacing[4],
+          gap: theme.spacing[2],
+        },
         xs: {
           paddingVertical: theme.spacing[4],
           paddingHorizontal: theme.spacing[5],
@@ -230,6 +235,9 @@ const styles = StyleSheet.create((theme) => ({
     fontFamily: theme.fonts.sans.bold,
     variants: {
       size: {
+        xxs: {
+          fontSize: 10,
+        },
         xs: {
           fontSize: 12,
         },
