@@ -16,7 +16,7 @@ type Props = {
   cellWidth?: number;
 };
 
-export function HistoryGrid({ puzzle, userId, style, cellWidth }: Props) {
+export function HistoryGrid({ puzzle, userId, style, cellWidth }: Readonly<Props>) {
   const puzzleCreatedDate = dayjs()
     .year(puzzle.year)
     .month(puzzle.month - 1)

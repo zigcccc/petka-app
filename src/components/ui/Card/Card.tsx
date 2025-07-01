@@ -11,7 +11,7 @@ type Props = PropsWithChildren<{
   actionsIconName?: keyof typeof Octicons.glyphMap;
 }>;
 
-export function Card({ actionsIconName = 'pencil', children, title, onShowActions }: Props) {
+export function Card({ actionsIconName = 'pencil', children, title, onShowActions }: Readonly<Props>) {
   const { theme } = useUnistyles();
 
   return (
@@ -47,7 +47,11 @@ export function Card({ actionsIconName = 'pencil', children, title, onShowAction
   );
 }
 
-function ActionRow({ action = null, children, title }: PropsWithChildren<{ action?: ReactNode; title: string }>) {
+function ActionRow({
+  action = null,
+  children,
+  title,
+}: Readonly<PropsWithChildren<{ action?: ReactNode; title: string }>>) {
   return (
     <View style={styles.actionRow}>
       <View style={styles.actionRowText({ hasAction: !!action })}>

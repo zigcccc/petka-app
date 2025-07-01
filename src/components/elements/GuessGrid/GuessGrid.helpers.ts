@@ -11,12 +11,6 @@ export const findCellIndexToInsert = (grid: (string | null)[][], rowIdx: number)
   return nextCellIndex !== -1 ? nextCellIndex : 5;
 };
 
-export const mockExternalDictionaryService = {
-  checkWord: async (_word: string) => {
-    return Math.random() > 0.5 ? true : false;
-  },
-} as const;
-
 export const getUpdatedGrid = (
   grid: (string | null)[][],
   rowIdx: number,

@@ -26,8 +26,8 @@ export default function UpdateNicknameScreen() {
     resolver: zodResolver(createUserModel),
     async defaultValues() {
       const userId = await AsyncStorage.getItem('userId');
-      const user = !!userId ? await convex.query(api.users.queries.read, { id: userId }) : null;
-      return { nickname: !!user ? user.nickname : '' };
+      const user = userId ? await convex.query(api.users.queries.read, { id: userId }) : null;
+      return { nickname: user ? user.nickname : '' };
     },
   });
 

@@ -44,7 +44,7 @@ export function Button({
   size = 'md',
   style,
   variant = 'fill',
-}: Props) {
+}: Readonly<Props>) {
   styles.useVariants({ size, intent, fullwidth, variant, disabled });
 
   const spinnerColor = useMemo(() => {
@@ -59,8 +59,13 @@ export function Button({
     return typeof children === 'string' ? <Text style={styles.text}>{children}</Text> : children;
   }, [children]);
 
+  const contextValue = useMemo(
+    () => ({ size, variant, intent, fullwidth, disabled, loading }),
+    [disabled, fullwidth, intent, loading, size, variant]
+  );
+
   return (
-    <ButtonContext.Provider value={{ size, variant, intent, fullwidth, disabled, loading }}>
+    <ButtonContext.Provider value={contextValue}>
       <Pressable
         accessibilityRole="button"
         disabled={disabled || loading}
@@ -84,7 +89,7 @@ export function Button({
   );
 }
 
-function ButtonText({ children }: PropsWithChildren) {
+function ButtonText({ children }: Readonly<PropsWithChildren>) {
   const buttonStyles = useButtonContext();
   styles.useVariants(buttonStyles);
 

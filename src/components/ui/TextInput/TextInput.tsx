@@ -10,7 +10,7 @@ type Props = ComponentProps<typeof RNTextInput> & {
   label?: string;
 };
 
-export function TextInput({ error, ref, label, style, ...rest }: Props) {
+export function TextInput({ error, ref, label, style, ...rest }: Readonly<Props>) {
   const { theme } = useUnistyles();
   const hasError = !!error;
 
@@ -26,7 +26,7 @@ export function TextInput({ error, ref, label, style, ...rest }: Props) {
       <RNTextInput
         {...rest}
         ref={ref}
-        accessibilityLabel={label || rest.placeholder}
+        accessibilityLabel={label ?? rest.placeholder}
         cursorColor={theme.colors.petka.green}
         selectionColor={theme.colors.petka.green}
         style={[styles.input, style]}

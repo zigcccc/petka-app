@@ -9,7 +9,11 @@ type Props = {
   distribtions: Record<number, number>;
 };
 
-export function AttemptsDistributionGraph({ distribtions, numberOfAllPuzzles, numberOfCurrentAttempts = 0 }: Props) {
+export function AttemptsDistributionGraph({
+  distribtions,
+  numberOfAllPuzzles,
+  numberOfCurrentAttempts = 0,
+}: Readonly<Props>) {
   return (
     <View style={styles.distrubitionsContainer}>
       {Object.entries(distribtions).map(([k, v]) => {

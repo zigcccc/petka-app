@@ -26,47 +26,6 @@ export function pickRandomWord(words: WordEntry[], decayFactor = 1.75) {
   return words[words.length - 1].word;
 }
 
-// export function checkWordleAttempt(attempt: string, solution: string) {
-//   const correctCharacters: string[] = [];
-//   const misplacedCharacters: string[] = [];
-//   const invalidCharacters: string[] = [];
-
-//   const matchedSolutionFlags = Array(solution.length).fill(false);
-//   const matchedAttemptFlags = Array(attempt.length).fill(false);
-
-//   // Step 1: Find correct characters
-//   for (let i = 0; i < attempt.length; i++) {
-//     if (attempt[i] === solution[i]) {
-//       correctCharacters.push(attempt[i]);
-//       matchedSolutionFlags[i] = true;
-//       matchedAttemptFlags[i] = true;
-//     }
-//   }
-
-//   // Step 2: Find misplaced characters
-//   for (let i = 0; i < attempt.length; i++) {
-//     if (matchedAttemptFlags[i]) continue;
-
-//     for (let j = 0; j < solution.length; j++) {
-//       if (!matchedSolutionFlags[j] && attempt[i] === solution[j]) {
-//         misplacedCharacters.push(attempt[i]);
-//         matchedSolutionFlags[j] = true;
-//         matchedAttemptFlags[i] = true;
-//         break;
-//       }
-//     }
-//   }
-
-//   // Step 3: The rest are invalid
-//   for (let i = 0; i < attempt.length; i++) {
-//     if (!matchedAttemptFlags[i]) {
-//       invalidCharacters.push(attempt[i]);
-//     }
-//   }
-
-//   return { correctCharacters, misplacedCharacters, invalidCharacters };
-// }
-
 export function checkWordleAttempt(attempt: string, solution: string) {
   const result: CheckedLetter[] = [];
   const solutionLetters = solution.split('');

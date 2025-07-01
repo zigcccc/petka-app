@@ -8,7 +8,7 @@ type Props = {
   scores?: LeaderboardScoreWithUser[];
 };
 
-export function Leaderboard({ scores = [] }: Props) {
+export function Leaderboard({ scores = [] }: Readonly<Props>) {
   return (
     <>
       {scores.map((score) => (

@@ -8,7 +8,7 @@ type Props = PropsWithChildren<{
   backText?: string;
 }>;
 
-export function GenericStackScreen({ backText = 'Nazaj', children, title }: Props) {
+export function GenericStackScreen({ backText = 'Nazaj', children, title }: Readonly<Props>) {
   const { theme } = useUnistyles();
 
   return (

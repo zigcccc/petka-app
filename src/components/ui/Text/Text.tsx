@@ -8,7 +8,14 @@ type Props = PropsWithChildren<{
 }> &
   UnistylesVariants<typeof styles>;
 
-export function Text({ children, numberOfLines, size = 'base', style, weight = 'regular', color = 'black' }: Props) {
+export function Text({
+  children,
+  numberOfLines,
+  size = 'base',
+  style,
+  weight = 'regular',
+  color = 'black',
+}: Readonly<Props>) {
   styles.useVariants({ size, weight, color });
 
   return (

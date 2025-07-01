@@ -12,7 +12,7 @@ type Props = {
   isDisabled: boolean;
 };
 
-export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Props) {
+export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Readonly<Props>) {
   return (
     <View style={styles.keyboard}>
       {keys.map((keysRow, idx) => (
