@@ -31,27 +31,21 @@ export const list = query({
     const normalizedUserId = ctx.db.normalizeId('users', userId);
 
     if (!normalizedUserId) {
-      throw new ConvexError({ message: 'Invalid userId provided', code: 400 });
+      throw new ConvexError({ message: 'Invalid user id provided', code: 400 });
     }
+
+    const currentDate = new Date(timestamp);
+    currentDate.setHours(14, 0, 0, 0);
+    currentDate.setDate(currentDate.getDate() - 1);
 
     const baseQuery = ctx.db.query('puzzles');
-    let indexedQuery =
+    const indexedQuery =
       type === puzzleType.Enum.daily
-        ? baseQuery.withIndex('by_type', (q) => q.eq('type', type))
+        ? baseQuery.withIndex('by_type', (q) => q.eq('type', type).lte('_creationTime', currentDate.getTime()))
         : baseQuery.withIndex('by_type_creator', (q) => q.eq('creatorId', normalizedUserId).eq('type', type));
 
-    if (type === puzzleType.Enum.daily) {
-      const currentDate = new Date(timestamp);
-      indexedQuery = indexedQuery.filter((q) =>
-        q.and(
-          q.lte(q.field('year'), currentDate.getFullYear()),
-          q.lte(q.field('month'), currentDate.getMonth() + 1),
-          q.lte(q.field('day'), currentDate.getDate())
-        )
-      );
-    }
-
     const puzzles = await indexedQuery.order('desc').paginate(paginationOpts);
+
     const puzzleAttempts = await Promise.all(
       puzzles.page.map((puzzle) =>
         ctx.db

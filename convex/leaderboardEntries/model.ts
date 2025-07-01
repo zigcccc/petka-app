@@ -1,13 +1,13 @@
 import { defineTable } from 'convex/server';
-import { zodToConvex } from 'convex-helpers/server/zod';
+import { zid, zodToConvex } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
-import { baseDbModel } from '../shared/models';
+import { getBaseDbModel } from '../shared/models';
 
-export const leaderboardEntryModel = baseDbModel.extend({
-  leaderboardId: z.string(),
-  userId: z.string(),
-  puzzleId: z.string(),
+export const leaderboardEntryModel = getBaseDbModel('leaderboardEntries').extend({
+  leaderboardId: zid('leaderboards'),
+  userId: zid('users'),
+  puzzleId: zid('puzzles'),
   score: z.number(),
 });
 export type LeaderboardEntry = z.infer<typeof leaderboardEntryModel>;

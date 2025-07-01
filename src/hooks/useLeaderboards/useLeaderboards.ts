@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { Alert } from 'react-native';
 
 import { api } from '@/convex/_generated/api';
+import { type Id } from '@/convex/_generated/dataModel';
 import { type LeaderboardRange, type LeaderboardType } from '@/convex/leaderboards/models';
 
 import { useToaster } from '../useToaster';
@@ -12,15 +13,53 @@ import { useUser } from '../useUser';
 export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) {
   const { user } = useUser();
   const toaster = useToaster();
+  const [isUpdating, setIsUpdating] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const timestampRef = useRef(Date.now());
   const createPrivateLeaderboard = useMutation(api.leaderboards.queries.createPrivateLeaderboard);
   const joinPrivateLeaderboard = useMutation(api.leaderboards.queries.joinPrivateLeaderboard);
+  const updateLeaderboardName = useMutation(api.leaderboards.queries.updateLeaderboardName);
   const leaderboards = useQuery(
     api.leaderboards.queries.list,
     user?._id ? { userId: user._id, type, range, timestamp: timestampRef.current } : 'skip'
   );
+
+  const handleUpdateLeaderboardName = async (leaderboardId: Id<'leaderboards'>) => {
+    if (!user?._id) {
+      return;
+    }
+
+    setIsUpdating(true);
+
+    Alert.prompt('Ime lestvice:', '', [
+      {
+        text: 'Prekliči',
+        isPreferred: false,
+        style: 'cancel',
+        onPress() {
+          setIsUpdating(false);
+        },
+      },
+      {
+        text: 'Posodobi',
+        isPreferred: true,
+        async onPress(leaderboardName) {
+          if (!leaderboardName) {
+            setIsCreating(false);
+            return;
+          }
+          try {
+            await updateLeaderboardName({ leaderboardId, userId: user._id, data: { name: leaderboardName } });
+          } catch {
+            toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
+          } finally {
+            setIsCreating(false);
+          }
+        },
+      },
+    ]);
+  };
 
   const handleJoinPrivateLeaderboard = async () => {
     if (!user?._id) {
@@ -109,8 +148,10 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
     isJoining,
     isCreating,
     isLoading: typeof leaderboards === 'undefined',
+    isUpdating,
     leaderboards,
     onJoinPrivateLeaderboard: handleJoinPrivateLeaderboard,
     onCreatePrivateLeaderboard: handleCreatePrivateLeaderboard,
+    onUpdateLeaderboardName: handleUpdateLeaderboardName,
   };
 }

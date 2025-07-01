@@ -1,9 +1,11 @@
+import { zid } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
-export const baseDbModel = z.object({
-  _id: z.string(),
-  _creationTime: z.string(),
-});
+export const getBaseDbModel = <T extends string>(tablename: T) =>
+  z.object({
+    _id: zid(tablename),
+    _creationTime: z.number(),
+  });
 
 export const paginationOptsValidator = z.object({
   id: z.number().optional(),

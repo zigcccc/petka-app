@@ -2,7 +2,7 @@ import { defineTable } from 'convex/server';
 import { zodToConvex } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
-import { baseDbModel } from '../shared/models';
+import { getBaseDbModel } from '../shared/models';
 import { userModel } from '../users/models';
 
 export const leaderboardRange = z.enum(['weekly', 'alltime']);
@@ -11,7 +11,7 @@ export type LeaderboardRange = z.infer<typeof leaderboardRange>;
 export const leaderboardType = z.enum(['global', 'private']);
 export type LeaderboardType = z.infer<typeof leaderboardType>;
 
-export const leaderboardModel = baseDbModel.extend({
+export const leaderboardModel = getBaseDbModel('leaderboards').extend({
   type: leaderboardType,
   name: z.string().nullable(),
   inviteCode: z.string().nullable(),
@@ -22,6 +22,9 @@ export type Leaderboard = z.infer<typeof leaderboardModel>;
 
 export const createLeaderboardModel = leaderboardModel.pick({ name: true });
 export type CreateLeaderboard = z.infer<typeof createLeaderboardModel>;
+
+export const updateLeaderboardModel = leaderboardModel.partial();
+export type UpdateLeaderboard = z.infer<typeof updateLeaderboardModel>;
 
 export const leaderboardScoreWithUserModel = z.object({
   user: userModel,

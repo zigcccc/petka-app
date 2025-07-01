@@ -1,14 +1,22 @@
 import { ConvexError } from 'convex/values';
+import { zid } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
+import { type Id } from '../_generated/dataModel';
 import { generateRandomString, weekBounds, windowAround } from '../shared/helpers';
 import { mutation, query } from '../shared/queries';
 import { type User } from '../users/models';
 
-import { createLeaderboardModel, leaderboardRange, leaderboardType, type LeaderboardWithScores } from './models';
+import {
+  createLeaderboardModel,
+  leaderboardRange,
+  leaderboardType,
+  updateLeaderboardModel,
+  type LeaderboardWithScores,
+} from './models';
 
 export const list = query({
-  args: z.object({ userId: z.string(), type: leaderboardType, range: leaderboardRange, timestamp: z.number() }),
+  args: z.object({ userId: zid('users'), type: leaderboardType, range: leaderboardRange, timestamp: z.number() }),
   async handler(ctx, { userId, type, range, timestamp }) {
     const normalizedUserId = ctx.db.normalizeId('users', userId);
 
@@ -41,7 +49,7 @@ export const list = query({
 
       const leaderboardEntries = await leaderboardEntriesBaseQuery.collect();
 
-      const usersScoreMap: Record<string, number> = {};
+      const usersScoreMap: Record<Id<'users'>, number> = {};
 
       for (const entry of leaderboardEntries) {
         usersScoreMap[entry.userId] = (usersScoreMap[entry.userId] ?? 0) + entry.score;
@@ -59,19 +67,15 @@ export const list = query({
       const usersForScores = await Promise.all(
         scoresToReport.map((score) => ctx.db.get(ctx.db.normalizeId('users', score.userId)!))
       );
-      const usersMap = usersForScores.reduce(
-        (acc, user) => {
-          if (user) {
-            acc[user._id] = user;
-          }
+      const usersById = new Map(usersForScores.filter((user) => !!user).map((user) => [user._id, user]));
 
-          return acc;
-        },
-        {} as Record<string, User>
-      );
-
-      const scoresWithUsers = scoresToReport.map(({ userId, ...score }) => ({ ...score, user: usersMap[userId] }));
-      leaderboardsWithScores.push({ ...leaderboard, scores: scoresWithUsers });
+      leaderboardsWithScores.push({
+        ...leaderboard,
+        scores: scoresToReport.map(({ userId, ...score }) => ({
+          ...score,
+          user: usersById.get(userId as Id<'users'>)!,
+        })),
+      });
     }
 
     return leaderboardsWithScores;
@@ -155,7 +159,7 @@ export const readGlobalLeaderboard = query({
 });
 
 export const createPrivateLeaderboard = mutation({
-  args: { userId: z.string(), data: createLeaderboardModel },
+  args: { userId: zid('users'), data: createLeaderboardModel },
   async handler(ctx, { userId, data }) {
     const normalizedUserId = ctx.db.normalizeId('users', userId);
 
@@ -213,5 +217,33 @@ export const joinPrivateLeaderboard = mutation({
     return await ctx.db.patch(leaderboard._id, {
       users: leaderboard.users ? [...leaderboard.users, normalizedUserId] : [normalizedUserId],
     });
+  },
+});
+
+export const updateLeaderboardName = mutation({
+  args: { data: updateLeaderboardModel, leaderboardId: zid('leaderboards'), userId: zid('users') },
+  async handler(ctx, { data, userId, leaderboardId }) {
+    const normalizedLeaderboardId = ctx.db.normalizeId('leaderboards', leaderboardId);
+    const normalizedUserId = ctx.db.normalizeId('users', userId);
+
+    if (!normalizedUserId) {
+      throw new ConvexError({ message: 'Invalid user id provided.', code: 400 });
+    }
+
+    if (!normalizedLeaderboardId) {
+      throw new ConvexError({ message: 'Invalid leaderboard id provided.', code: 400 });
+    }
+
+    const leaderboard = await ctx.db.get(normalizedLeaderboardId);
+
+    if (!leaderboard) {
+      throw new ConvexError({ message: 'Leaderboard not found.', code: 404 });
+    }
+
+    if (leaderboard.creatorId !== normalizedUserId) {
+      throw new ConvexError({ message: 'Only the creator of the leaderboard can update it.', code: 403 });
+    }
+
+    await ctx.db.patch(normalizedLeaderboardId, { name: data.name });
   },
 });

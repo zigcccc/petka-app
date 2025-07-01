@@ -74,7 +74,7 @@ export default function DailyPuzzleSolvedScreen() {
         <Button onPress={() => router.back()} variant="outline">
           Nazaj
         </Button>
-        <Button onPress={() => router.navigate('/leaderboard')}>Lestvica</Button>
+        <Button onPress={() => router.navigate('/leaderboards/weekly-leaderboard')}>Lestvica</Button>
       </View>
     </View>
   );

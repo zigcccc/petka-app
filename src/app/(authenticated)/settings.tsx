@@ -35,7 +35,9 @@ export default function SettingsScreen() {
               {user?.nickname}
             </Text>
           </Card.ActionRow>
-          <Card.ActionRow title="Profil ustvarjen">{dayjs(user?._creationTime).format('DD. MMM YYYY')}</Card.ActionRow>
+          <Card.ActionRow title="Profil ustvarjen">
+            {user?._creationTime ? dayjs(user?._creationTime).format('DD. MMM YYYY') : null}
+          </Card.ActionRow>
           <Card.ActionRow title="ID profila">
             <Text color="grey70" size="xs">
               {user?._id}

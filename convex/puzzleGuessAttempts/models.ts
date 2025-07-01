@@ -2,7 +2,7 @@ import { defineTable } from 'convex/server';
 import { zodToConvex } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
-import { baseDbModel } from '../shared/models';
+import { getBaseDbModel } from '../shared/models';
 
 export const checkedLetterStatus = z.enum(['invalid', 'misplaced', 'correct']);
 export type CheckedLetterStatus = z.infer<typeof checkedLetterStatus>;
@@ -14,7 +14,7 @@ export const checkedLetterModel = z.object({
 });
 export type CheckedLetter = z.infer<typeof checkedLetterModel>;
 
-export const puzzleGuessAttemptModel = baseDbModel.extend({
+export const puzzleGuessAttemptModel = getBaseDbModel('puzzleGuessAttempts').extend({
   puzzleId: z.string(),
   userId: z.string(),
   attempt: z.string().min(5).max(5),

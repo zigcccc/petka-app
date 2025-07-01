@@ -1,14 +1,19 @@
+import { Octicons } from '@expo/vector-icons';
 import { type ReactNode, type PropsWithChildren } from 'react';
-import { View } from 'react-native';
-import { StyleSheet } from 'react-native-unistyles';
+import { Pressable, View } from 'react-native';
+import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { Text } from '../Text';
 
 type Props = PropsWithChildren<{
   title?: string;
+  onShowActions?: () => void;
+  actionsIconName?: keyof typeof Octicons.glyphMap;
 }>;
 
-export function Card({ children, title }: Props) {
+export function Card({ actionsIconName = 'pencil', children, title, onShowActions }: Props) {
+  const { theme } = useUnistyles();
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -16,6 +21,26 @@ export function Card({ children, title }: Props) {
           {title}
         </Text>
         <View style={{ flex: 1 }} />
+        {!!onShowActions && (
+          <Pressable
+            hitSlop={12}
+            onPress={onShowActions}
+            style={{
+              paddingHorizontal: 8,
+              backgroundColor: 'white',
+              transform: [{ translateX: 12 }],
+            }}
+          >
+            {({ pressed }) => (
+              <Octicons
+                color={theme.colors.grey[50]}
+                name={actionsIconName}
+                size={18}
+                style={{ opacity: pressed ? 0.4 : 1 }}
+              />
+            )}
+          </Pressable>
+        )}
       </View>
       <View style={styles.content}>{children}</View>
     </View>
@@ -49,6 +74,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   header: {
     flexDirection: 'row',
+    alignItems: 'center',
     transform: [{ translateY: '-50%' }, { translateX: theme.spacing[2] * -1 }],
   },
   title: {

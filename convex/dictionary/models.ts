@@ -2,9 +2,9 @@ import { defineTable } from 'convex/server';
 import { zodToConvex } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
-import { baseDbModel } from '../shared/models';
+import { getBaseDbModel } from '../shared/models';
 
-export const dictionaryEntryModel = baseDbModel.extend({
+export const dictionaryEntryModel = getBaseDbModel('dictionaryEntries').extend({
   frequency: z.number(),
   word: z.string(),
   numOfTimesUsed: z.number(),

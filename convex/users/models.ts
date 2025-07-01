@@ -2,9 +2,9 @@ import { defineTable } from 'convex/server';
 import { zodToConvex } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
-import { baseDbModel } from '../shared/models';
+import { getBaseDbModel } from '../shared/models';
 
-export const userModel = baseDbModel.extend({
+export const userModel = getBaseDbModel('users').extend({
   lowercaseNickname: z.string(),
   nickname: z.string(),
 });
