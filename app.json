@@ -48,7 +48,8 @@
           "project": "petka-mobile-app",
           "organization": "ziga-krasovec-team"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true

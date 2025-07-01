@@ -1,19 +1,16 @@
 import { useFocusEffect, useNavigation } from 'expo-router';
 import { useCallback } from 'react';
-import { ActionSheetIOS, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Leaderboard } from '@/components/elements';
 import { Button, Card, Text } from '@/components/ui';
-import { type Id } from '@/convex/_generated/dataModel';
 import { leaderboardRange, leaderboardType } from '@/convex/leaderboards/models';
 import { useGlobalLeaderboard } from '@/hooks/useGlobalLeaderboard';
 import { useLeaderboards } from '@/hooks/useLeaderboards';
-import { useUser } from '@/hooks/useUser';
 
 export default function WeeklyLeaderboardScreen() {
   const navigation = useNavigation();
-  const { user } = useUser();
   const { leaderboard: globalLeaderboard } = useGlobalLeaderboard(leaderboardRange.Enum.weekly);
   const {
     leaderboards: privateLeaderboards,
@@ -21,25 +18,8 @@ export default function WeeklyLeaderboardScreen() {
     isJoining,
     onCreatePrivateLeaderboard,
     onJoinPrivateLeaderboard,
-    onUpdateLeaderboardName,
+    onPresentLeaderboardActions,
   } = useLeaderboards(leaderboardType.Enum.private, leaderboardRange.Enum.weekly);
-
-  const handlePresentLeaderboardActions = (leaderboardId: Id<'leaderboards'>) => {
-    ActionSheetIOS.showActionSheetWithOptions(
-      {
-        options: ['Izbriši lestvico', 'Zapusti lestvico', 'Uredi ime lestvice', 'Prekliči'],
-        cancelButtonIndex: 3,
-        destructiveButtonIndex: 0,
-      },
-      (buttonIndex) => {
-        if (buttonIndex === 0) {
-        } else if (buttonIndex === 1) {
-        } else if (buttonIndex === 2) {
-          onUpdateLeaderboardName(leaderboardId);
-        }
-      }
-    );
-  };
 
   useFocusEffect(
     useCallback(() => {
@@ -60,9 +40,7 @@ export default function WeeklyLeaderboardScreen() {
           {privateLeaderboards?.map((leaderboard) => (
             <Card
               key={leaderboard._id}
-              onShowActions={
-                leaderboard.creatorId === user?._id ? () => handlePresentLeaderboardActions(leaderboard._id) : undefined
-              }
+              onShowActions={() => onPresentLeaderboardActions(leaderboard)}
               title={leaderboard.name ?? leaderboard._id}
             >
               <Leaderboard scores={leaderboard.scores} />

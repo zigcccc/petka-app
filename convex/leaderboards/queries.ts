@@ -247,3 +247,86 @@ export const updateLeaderboardName = mutation({
     await ctx.db.patch(normalizedLeaderboardId, { name: data.name });
   },
 });
+
+export const deletePrivateLeaderboard = mutation({
+  args: { leaderboardId: zid('leaderboards'), userId: zid('users') },
+  async handler(ctx, { leaderboardId, userId }) {
+    const normalizedUserId = ctx.db.normalizeId('users', userId);
+    const normalizedLeaderboardId = ctx.db.normalizeId('leaderboards', leaderboardId);
+
+    if (!normalizedUserId) {
+      throw new ConvexError({ message: 'Invalid user id provided.', code: 400 });
+    }
+
+    if (!normalizedLeaderboardId) {
+      throw new ConvexError({ message: 'Invalid leaderboard id provided.', code: 400 });
+    }
+
+    const leaderboard = await ctx.db.get(normalizedLeaderboardId);
+
+    if (!leaderboard) {
+      throw new ConvexError({ message: 'Leaderboard not found.', code: 404 });
+    }
+
+    if (leaderboard.type === leaderboardType.Enum.global) {
+      throw new ConvexError({ message: 'Cannot perform delete opration on a global leaderboard.', code: 403 });
+    }
+
+    if (leaderboard.creatorId !== normalizedUserId) {
+      throw new ConvexError({ message: 'Only the creator of the leaderboard can delete it.', code: 403 });
+    }
+
+    const leaderboardEntriesQuery = ctx.db
+      .query('leaderboardEntries')
+      .withIndex('by_leaderboard', (q) => q.eq('leaderboardId', normalizedLeaderboardId));
+
+    for await (const entry of leaderboardEntriesQuery) {
+      await ctx.db.delete(entry._id);
+    }
+
+    return await ctx.db.delete(normalizedLeaderboardId);
+  },
+});
+
+export const leavePrivateLeadeboard = mutation({
+  args: { leaderboardId: zid('leaderboards'), userId: zid('users') },
+  async handler(ctx, { leaderboardId, userId }) {
+    const normalizedUserId = ctx.db.normalizeId('users', userId);
+    const normalizedLeaderboardId = ctx.db.normalizeId('leaderboards', leaderboardId);
+
+    if (!normalizedUserId) {
+      throw new ConvexError({ message: 'Invalid user id provided.', code: 400 });
+    }
+
+    if (!normalizedLeaderboardId) {
+      throw new ConvexError({ message: 'Invalid leaderboard id provided.', code: 400 });
+    }
+
+    const leaderboard = await ctx.db.get(normalizedLeaderboardId);
+
+    if (!leaderboard) {
+      throw new ConvexError({ message: 'Leaderboard not found.', code: 404 });
+    }
+
+    if (leaderboard.creatorId === normalizedUserId) {
+      throw new ConvexError({
+        message: 'Creators are not allowed to leave their leaderboard. Delete it instead.',
+        code: 400,
+      });
+    }
+
+    const userLeaderboardEntriesQuery = ctx.db
+      .query('leaderboardEntries')
+      .withIndex('by_leaderboard_user', (q) =>
+        q.eq('leaderboardId', normalizedLeaderboardId).eq('userId', normalizedUserId)
+      );
+
+    for await (const entry of userLeaderboardEntriesQuery) {
+      await ctx.db.delete(entry._id);
+    }
+
+    return await ctx.db.patch(normalizedLeaderboardId, {
+      users: leaderboard.users ? leaderboard.users.filter((id) => id !== normalizedUserId) : leaderboard.users,
+    });
+  },
+});

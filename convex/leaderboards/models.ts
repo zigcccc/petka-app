@@ -1,5 +1,5 @@
 import { defineTable } from 'convex/server';
-import { zodToConvex } from 'convex-helpers/server/zod';
+import { zid, zodToConvex } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
 import { getBaseDbModel } from '../shared/models';
@@ -15,8 +15,8 @@ export const leaderboardModel = getBaseDbModel('leaderboards').extend({
   type: leaderboardType,
   name: z.string().nullable(),
   inviteCode: z.string().nullable(),
-  users: z.array(z.string()).nullable(),
-  creatorId: z.string().optional(),
+  users: z.array(zid('users')).nullable(),
+  creatorId: zid('users').optional(),
 });
 export type Leaderboard = z.infer<typeof leaderboardModel>;
 

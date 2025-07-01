@@ -16,6 +16,7 @@ export default function AllTimeLeaderboardScreen() {
     leaderboards: privateLeaderboards,
     isCreating,
     isJoining,
+    onPresentLeaderboardActions,
     onCreatePrivateLeaderboard,
     onJoinPrivateLeaderboard,
   } = useLeaderboards(leaderboardType.Enum.private, leaderboardRange.Enum.alltime);
@@ -37,7 +38,11 @@ export default function AllTimeLeaderboardScreen() {
         </Text>
         <View style={styles.privateLeaderboardsContainer}>
           {privateLeaderboards?.map((leaderboard) => (
-            <Card key={leaderboard._id} title={leaderboard.name ?? leaderboard._id}>
+            <Card
+              key={leaderboard._id}
+              onShowActions={() => onPresentLeaderboardActions(leaderboard)}
+              title={leaderboard.name ?? leaderboard._id}
+            >
               <Leaderboard scores={leaderboard.scores} />
             </Card>
           ))}
