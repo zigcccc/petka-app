@@ -1,8 +1,5 @@
 name: Code Quality
 on:
-  push:
-    branches:
-      - main
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -62,7 +59,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   expo-preview:
     needs: lint-test-analysis
-    if: github.event_name == 'pull_request' # ← only PRs
     runs-on: ubuntu-latest
 
     # Allow the default GITHUB_TOKEN to comment on the PR
