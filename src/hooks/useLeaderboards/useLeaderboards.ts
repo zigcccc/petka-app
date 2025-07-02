@@ -30,7 +30,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
     user?._id ? { userId: user._id, type, range, timestamp: timestampRef.current } : 'skip'
   );
 
-  const handleLeaveLeaderboard = async (leaderboardId: Id<'leaderboards'>) => {
+  const handleLeaveLeaderboard = (leaderboardId: Id<'leaderboards'>) => {
     if (!user?._id) {
       return;
     }
@@ -44,23 +44,21 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
           isPreferred: false,
           style: 'destructive',
           text: 'Zapusti',
-          async onPress() {
+          onPress() {
             setIsLeaving(true);
 
-            try {
-              await leavePrivateLeaderboard({ leaderboardId, userId: user._id });
-            } catch {
-              toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
-            } finally {
-              setIsLeaving(false);
-            }
+            leavePrivateLeaderboard({ leaderboardId, userId: user._id })
+              .catch(() => {
+                toaster.toast('Nekaj je šlo narobe', { intent: 'error' });
+              })
+              .finally(() => setIsLeaving(false));
           },
         },
       ]
     );
   };
 
-  const handleDeleteLeaderboard = async (leaderboardId: Id<'leaderboards'>) => {
+  const handleDeleteLeaderboard = (leaderboardId: Id<'leaderboards'>) => {
     if (!user?._id) {
       return;
     }
@@ -71,22 +69,22 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
         isPreferred: false,
         style: 'destructive',
         text: 'Izbriši',
-        async onPress() {
+        onPress() {
           setIsDeleting(true);
 
-          try {
-            await deletePrivateLeaderboard({ leaderboardId, userId: user._id });
-          } catch {
-            toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
-          } finally {
-            setIsDeleting(false);
-          }
+          deletePrivateLeaderboard({ leaderboardId, userId: user._id })
+            .catch(() => {
+              toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
+            })
+            .finally(() => {
+              setIsDeleting(false);
+            });
         },
       },
     ]);
   };
 
-  const handleUpdateLeaderboardName = async (leaderboardId: Id<'leaderboards'>) => {
+  const handleUpdateLeaderboardName = (leaderboardId: Id<'leaderboards'>) => {
     if (!user?._id) {
       return;
     }
@@ -105,24 +103,24 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
       {
         text: 'Posodobi',
         isPreferred: true,
-        async onPress(leaderboardName) {
+        onPress(leaderboardName) {
           if (!leaderboardName) {
-            setIsCreating(false);
+            setIsUpdating(false);
             return;
           }
-          try {
-            await updateLeaderboardName({ leaderboardId, userId: user._id, data: { name: leaderboardName } });
-          } catch {
-            toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
-          } finally {
-            setIsCreating(false);
-          }
+          updateLeaderboardName({ leaderboardId, userId: user._id, data: { name: leaderboardName } })
+            .catch(() => {
+              toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
+            })
+            .finally(() => {
+              setIsUpdating(false);
+            });
         },
       },
     ]);
   };
 
-  const handleJoinPrivateLeaderboard = async () => {
+  const handleJoinPrivateLeaderboard = () => {
     if (!user?._id) {
       return;
     }
@@ -141,35 +139,35 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
       {
         text: 'Pridruži se',
         isPreferred: true,
-        async onPress(inviteCode) {
+        onPress(inviteCode) {
           if (!inviteCode) {
             setIsJoining(false);
             return;
           }
 
-          try {
-            await joinPrivateLeaderboard({ inviteCode: inviteCode.toUpperCase(), userId: user._id });
-          } catch (err) {
-            if (err instanceof ConvexError) {
-              if (err.data.message === 'Invalid invite code.') {
-                toaster.toast('Neveljavna koda.', { intent: 'error' });
-              } else if (err.data.message === 'Already joined this leaderboard.') {
-                toaster.toast('Tej lestivici si že pridružen/a.', { intent: 'warning' });
+          joinPrivateLeaderboard({ inviteCode: inviteCode.toUpperCase(), userId: user._id })
+            .catch((err) => {
+              if (err instanceof ConvexError) {
+                if (err.data.message === 'Invalid invite code.') {
+                  toaster.toast('Neveljavna koda.', { intent: 'error' });
+                } else if (err.data.message === 'Already joined this leaderboard.') {
+                  toaster.toast('Tej lestivici si že pridružen/a.', { intent: 'warning' });
+                } else {
+                  toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
+                }
               } else {
                 toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
               }
-            } else {
-              toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
-            }
-          } finally {
-            setIsJoining(false);
-          }
+            })
+            .finally(() => {
+              setIsJoining(false);
+            });
         },
       },
     ]);
   };
 
-  const handleCreatePrivateLeaderboard = async () => {
+  const handleCreatePrivateLeaderboard = () => {
     if (!user?._id) {
       return;
     }
@@ -188,18 +186,19 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
       {
         text: 'Ustvari',
         isPreferred: true,
-        async onPress(leaderboardName) {
+        onPress(leaderboardName) {
           if (!leaderboardName) {
             setIsCreating(false);
             return;
           }
-          try {
-            await createPrivateLeaderboard({ userId: user._id, data: { name: leaderboardName } });
-          } catch {
-            toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
-          } finally {
-            setIsCreating(false);
-          }
+
+          createPrivateLeaderboard({ userId: user._id, data: { name: leaderboardName } })
+            .catch(() => {
+              toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
+            })
+            .finally(() => {
+              setIsCreating(false);
+            });
         },
       },
     ]);
@@ -216,9 +215,10 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
         isPreferred: true,
         style: 'default',
         text: 'Kopiraj',
-        async onPress() {
-          await Clipboard.setStringAsync(inviteCode);
-          toaster.toast('Koda kopirana', { intent: 'success' });
+        onPress() {
+          Clipboard.setStringAsync(inviteCode).then(() => {
+            toaster.toast('Koda kopirana', { intent: 'success' });
+          });
         },
       },
     ]);
