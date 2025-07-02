@@ -1,5 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react-native';
 import { useMutation, useQuery } from 'convex/react';
+import { ConvexError } from 'convex/values';
 import * as Clipboard from 'expo-clipboard';
 import { ActionSheetIOS, Alert } from 'react-native';
 
@@ -120,6 +121,308 @@ describe('useLeaderboards', () => {
     const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
     expect(result.current.isLoading).toBe(false);
+  });
+
+  describe('join private leaderboard', () => {
+    it('should trigger join private leaderboard mutation when invite code is received via prompt - success scenario', async () => {
+      mockJoinPrivateLeaderboard.mockResolvedValue(null);
+      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+
+      expect(result.current.isJoining).toBe(false);
+
+      result.current.onJoinPrivateLeaderboard();
+
+      await waitFor(() => {
+        expect(result.current.isJoining).toBe(true);
+      });
+
+      expect(promptSpy).toHaveBeenCalledWith('Koda:', '', [
+        { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+        { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
+      ]);
+
+      act(() => {
+        // @ts-expect-error
+        promptSpy.mock.lastCall[2][1].onPress('invite_me');
+      });
+
+      expect(mockJoinPrivateLeaderboard).toHaveBeenCalledWith({ inviteCode: 'INVITE_ME', userId: testUser._id });
+
+      await waitFor(() => {
+        expect(result.current.isJoining).toBe(false);
+      });
+
+      expect(mockToast).not.toHaveBeenCalled();
+    });
+
+    it.each([
+      { errorMessage: 'Invalid invite code.', expectedErrorText: 'Neveljavna koda.', expectedIntent: 'error' },
+      {
+        errorMessage: 'Already joined this leaderboard.',
+        expectedErrorText: 'Tej lestvici si že pridružen/a.',
+        expectedIntent: 'warning',
+      },
+      { errorMessage: 'Unknown error.', expectedErrorText: 'Nekaj je šlo narobe.', expectedIntent: 'error' },
+    ])(
+      'should trigger join private leaderboard mutation when invite code is received via prompt - error scenario - $errorMessage',
+      async ({ errorMessage, expectedErrorText, expectedIntent }) => {
+        mockJoinPrivateLeaderboard.mockRejectedValue(new ConvexError({ message: errorMessage }));
+        const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+
+        expect(result.current.isJoining).toBe(false);
+
+        result.current.onJoinPrivateLeaderboard();
+
+        await waitFor(() => {
+          expect(result.current.isJoining).toBe(true);
+        });
+
+        expect(promptSpy).toHaveBeenCalledWith('Koda:', '', [
+          { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+          { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
+        ]);
+
+        act(() => {
+          // @ts-expect-error
+          promptSpy.mock.lastCall[2][1].onPress('invite_me');
+        });
+
+        expect(mockJoinPrivateLeaderboard).toHaveBeenCalledWith({ inviteCode: 'INVITE_ME', userId: testUser._id });
+
+        await waitFor(() => {
+          expect(mockToast).toHaveBeenCalledWith(expectedErrorText, { intent: expectedIntent });
+        });
+
+        await waitFor(() => {
+          expect(result.current.isJoining).toBe(false);
+        });
+      }
+    );
+
+    it('should trigger join private leaderboard mutation when invite code is received via prompt - error scenario - unknown error', async () => {
+      mockJoinPrivateLeaderboard.mockRejectedValue(new Error('Ups'));
+      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+
+      expect(result.current.isJoining).toBe(false);
+
+      result.current.onJoinPrivateLeaderboard();
+
+      await waitFor(() => {
+        expect(result.current.isJoining).toBe(true);
+      });
+
+      expect(promptSpy).toHaveBeenCalledWith('Koda:', '', [
+        { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+        { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
+      ]);
+
+      act(() => {
+        // @ts-expect-error
+        promptSpy.mock.lastCall[2][1].onPress('invite_me');
+      });
+
+      expect(mockJoinPrivateLeaderboard).toHaveBeenCalledWith({ inviteCode: 'INVITE_ME', userId: testUser._id });
+
+      await waitFor(() => {
+        expect(mockToast).toHaveBeenCalledWith('Nekaj je šlo narobe.', { intent: 'error' });
+      });
+
+      await waitFor(() => {
+        expect(result.current.isJoining).toBe(false);
+      });
+    });
+
+    it.each([undefined, null, ''])(
+      'should not trigger join private leaderboard mutation when invite code is not received via prompt (is %p)',
+      async (inviteCode) => {
+        mockJoinPrivateLeaderboard.mockRejectedValue(new Error('Ups'));
+        const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+
+        expect(result.current.isJoining).toBe(false);
+
+        result.current.onJoinPrivateLeaderboard();
+
+        await waitFor(() => {
+          expect(result.current.isJoining).toBe(true);
+        });
+
+        expect(promptSpy).toHaveBeenCalledWith('Koda:', '', [
+          { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+          { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
+        ]);
+
+        act(() => {
+          // @ts-expect-error
+          promptSpy.mock.lastCall[2][1].onPress(inviteCode);
+        });
+
+        expect(mockJoinPrivateLeaderboard).not.toHaveBeenCalled();
+        expect(mockToast).not.toHaveBeenCalled();
+
+        await waitFor(() => {
+          expect(result.current.isJoining).toBe(false);
+        });
+      }
+    );
+
+    it('should not trigger join private leaderboard mutation when cancel action is triggered', async () => {
+      mockJoinPrivateLeaderboard.mockRejectedValue(new Error('Ups'));
+      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+
+      expect(result.current.isJoining).toBe(false);
+
+      result.current.onJoinPrivateLeaderboard();
+
+      await waitFor(() => {
+        expect(result.current.isJoining).toBe(true);
+      });
+
+      expect(promptSpy).toHaveBeenCalledWith('Koda:', '', [
+        { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+        { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
+      ]);
+
+      act(() => {
+        // @ts-expect-error
+        promptSpy.mock.lastCall[2][0].onPress();
+      });
+
+      expect(mockJoinPrivateLeaderboard).not.toHaveBeenCalled();
+      expect(mockToast).not.toHaveBeenCalled();
+
+      await waitFor(() => {
+        expect(result.current.isJoining).toBe(false);
+      });
+    });
+  });
+
+  describe('create private leaderboard', () => {
+    it('should trigger create private leaderboard mutation when leaderboard name is received via prompt - success scenario', async () => {
+      mockCreatePrivateLeaderboard.mockResolvedValue(null);
+      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+
+      expect(result.current.isCreating).toBe(false);
+
+      result.current.onCreatePrivateLeaderboard();
+
+      await waitFor(() => {
+        expect(result.current.isCreating).toBe(true);
+      });
+
+      expect(promptSpy).toHaveBeenCalledWith('Ime lestvice:', '', [
+        { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+        { text: 'Ustvari', isPreferred: true, onPress: expect.any(Function) },
+      ]);
+
+      act(() => {
+        // @ts-expect-error
+        promptSpy.mock.lastCall[2][1].onPress('New board');
+      });
+
+      expect(mockCreatePrivateLeaderboard).toHaveBeenCalledWith({ userId: testUser._id, data: { name: 'New board' } });
+
+      await waitFor(() => {
+        expect(result.current.isCreating).toBe(false);
+      });
+
+      expect(mockToast).not.toHaveBeenCalled();
+    });
+
+    it('should trigger join private leaderboard mutation when invite code is received via prompt - error scenario - unknown error', async () => {
+      mockCreatePrivateLeaderboard.mockRejectedValue(new Error('Ups'));
+      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+
+      expect(result.current.isCreating).toBe(false);
+
+      result.current.onCreatePrivateLeaderboard();
+
+      await waitFor(() => {
+        expect(result.current.isCreating).toBe(true);
+      });
+
+      expect(promptSpy).toHaveBeenCalledWith('Ime lestvice:', '', [
+        { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+        { text: 'Ustvari', isPreferred: true, onPress: expect.any(Function) },
+      ]);
+
+      act(() => {
+        // @ts-expect-error
+        promptSpy.mock.lastCall[2][1].onPress('New board');
+      });
+
+      expect(mockCreatePrivateLeaderboard).toHaveBeenCalledWith({ userId: testUser._id, data: { name: 'New board' } });
+
+      await waitFor(() => {
+        expect(mockToast).toHaveBeenCalledWith('Nekaj je šlo narobe.', { intent: 'error' });
+      });
+
+      await waitFor(() => {
+        expect(result.current.isCreating).toBe(false);
+      });
+    });
+
+    it.each([undefined, null, ''])(
+      'should not trigger creating private leaderboard mutation when leaderboard name is not received via prompt (is %p)',
+      async (name) => {
+        mockCreatePrivateLeaderboard.mockRejectedValue(new Error('Ups'));
+        const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+
+        expect(result.current.isCreating).toBe(false);
+
+        result.current.onCreatePrivateLeaderboard();
+
+        await waitFor(() => {
+          expect(result.current.isCreating).toBe(true);
+        });
+
+        expect(promptSpy).toHaveBeenCalledWith('Ime lestvice:', '', [
+          { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+          { text: 'Ustvari', isPreferred: true, onPress: expect.any(Function) },
+        ]);
+
+        act(() => {
+          // @ts-expect-error
+          promptSpy.mock.lastCall[2][1].onPress(name);
+        });
+
+        expect(mockCreatePrivateLeaderboard).not.toHaveBeenCalled();
+        expect(mockToast).not.toHaveBeenCalled();
+
+        await waitFor(() => {
+          expect(result.current.isCreating).toBe(false);
+        });
+      }
+    );
+
+    it('should not trigger creating private leaderboard mutation when cancel action is triggered', async () => {
+      mockCreatePrivateLeaderboard.mockRejectedValue(new Error('Ups'));
+      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+
+      expect(result.current.isCreating).toBe(false);
+
+      result.current.onCreatePrivateLeaderboard();
+
+      await waitFor(() => {
+        expect(result.current.isCreating).toBe(true);
+      });
+
+      expect(promptSpy).toHaveBeenCalledWith('Ime lestvice:', '', [
+        { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+        { text: 'Ustvari', isPreferred: true, onPress: expect.any(Function) },
+      ]);
+
+      act(() => {
+        // @ts-expect-error
+        promptSpy.mock.lastCall[2][0].onPress();
+      });
+
+      expect(mockCreatePrivateLeaderboard).not.toHaveBeenCalled();
+      expect(mockToast).not.toHaveBeenCalled();
+
+      await waitFor(() => {
+        expect(result.current.isCreating).toBe(false);
+      });
+    });
   });
 
   describe('leaderboard actions - current user is leaderboard creator', () => {

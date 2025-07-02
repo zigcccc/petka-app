@@ -151,7 +151,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
                 if (err.data.message === 'Invalid invite code.') {
                   toaster.toast('Neveljavna koda.', { intent: 'error' });
                 } else if (err.data.message === 'Already joined this leaderboard.') {
-                  toaster.toast('Tej lestivici si že pridružen/a.', { intent: 'warning' });
+                  toaster.toast('Tej lestvici si že pridružen/a.', { intent: 'warning' });
                 } else {
                   toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
                 }
