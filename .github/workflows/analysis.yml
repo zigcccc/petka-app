@@ -16,16 +16,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 2️⃣  Set up Node + cache PNPM store
+      # 2️⃣  Install PNPM (no auto‑install yet)
+      - uses: pnpm/action-setup@v4     #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
+        with:
+          run_install: false
+
+      # 3️⃣ Set up Node + cache PNPM store
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
-
-      # 3️⃣  Install PNPM (no auto‑install yet)
-      - uses: pnpm/action-setup@v4     #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
-        with:
-          run_install: false
 
       # 4️⃣  Install deps (cache hit makes this fast)
       - name: Install deps
