@@ -1,7 +1,7 @@
-name: Code Quality (lint, test, analyze)
+name: Expo Preview
 on:
   workflow_run:
-    workflows: ["Code Quality (lint, test, analyze)"]
+    workflows: ["Code Quality"]
     types: [completed]
 
 jobs:
