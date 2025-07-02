@@ -26,6 +26,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # The SHA of the head commit that triggered code‑analysis
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - uses: pnpm/action-setup@v4     #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
         with:
