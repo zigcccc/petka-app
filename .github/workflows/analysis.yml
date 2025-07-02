@@ -1,0 +1,57 @@
+name: Code Quality (lint, test, analyze)
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  lint-test-analysis:
+    name: Lint, test, analysis
+    runs-on: ubuntu-latest
+    steps:
+      # 1️⃣  Pull the source
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 2️⃣  Set up Node + cache PNPM store
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # 3️⃣  Install PNPM (no auto‑install yet)
+      - uses: pnpm/action-setup@v4     #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
+        with:
+          run_install: false
+
+      # 4️⃣  Install deps (cache hit makes this fast)
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      # 5️⃣  Lint
+      - name: Lint
+        run: pnpm run lint
+
+      # 6️⃣  Type‑check
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      # 7️⃣  Unit tests (creates coverage/lcov.info)
+      - name: Test
+        run: pnpm run test:coverage
+
+      # 8️⃣  Upload coverage artefact
+      - name: Upload coverage artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+
+      # 9️⃣  SonarCloud scan
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
