@@ -53,6 +53,7 @@ jobs:
           path: coverage
 
   sonar:
+    name: Sonar analysis
     needs: lint-test
     runs-on: ubuntu-latest
     permissions:
