@@ -60,6 +60,12 @@
         "projectId": "7471426e-9273-43e1-b6cc-490fac00af54"
       }
     },
-    "owner": "expo.app"
+    "owner": "expo.app",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/7471426e-9273-43e1-b6cc-490fac00af54"
+    }
   }
 }
