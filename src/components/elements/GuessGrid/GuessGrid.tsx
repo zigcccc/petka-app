@@ -29,9 +29,15 @@ export function GuessGrid({ attempts = [], grid, isValidating = false }: Readonl
       {grid.map((row, rowIdx) => {
         const attempt = attempts[rowIdx];
         return (
-          <View key={rowIdx} style={styles.row}>
+          <View key={rowIdx} style={styles.row} testID={`guess-grid--row-${rowIdx}`}>
             {row.map((cell, cellIdx) => (
-              <GuessGridCell key={cellIdx} checkedLetters={attempt?.checkedLetters} idx={cellIdx} value={cell} />
+              <GuessGridCell
+                key={cellIdx}
+                checkedLetters={attempt?.checkedLetters}
+                idx={cellIdx}
+                testID={`guess-grid--row-${rowIdx}--cell-${cellIdx}`}
+                value={cell}
+              />
             ))}
           </View>
         );
