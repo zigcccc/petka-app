@@ -79,7 +79,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   expo-preview:
-    needs: lint-test
+    # needs: lint-test
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
