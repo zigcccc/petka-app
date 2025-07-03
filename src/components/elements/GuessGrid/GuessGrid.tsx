@@ -6,7 +6,7 @@ import { checkedLetterStatus } from '@/convex/puzzleGuessAttempts/models';
 
 import { type GuessGridCellProps, type GuessGridProps } from './GuessGrid.types';
 
-function GuessGridCell({ value, idx, checkedLetters = [], cellWidth }: Readonly<GuessGridCellProps>) {
+function GuessGridCell({ testID, value, idx, checkedLetters = [], cellWidth }: Readonly<GuessGridCellProps>) {
   const checkedLetter = checkedLetters.find(
     (checkedLetter) => checkedLetter.index === idx && checkedLetter.letter === value
   );
@@ -15,7 +15,7 @@ function GuessGridCell({ value, idx, checkedLetters = [], cellWidth }: Readonly<
   const isInvalid = value ? checkedLetter?.status === checkedLetterStatus.Enum.invalid : false;
 
   return (
-    <View style={styles.cell({ isCorrect, isInvalid, isMisplaced, cellWidth })}>
+    <View style={styles.cell({ isCorrect, isInvalid, isMisplaced, cellWidth })} testID={testID}>
       <Text color={checkedLetters.length ? 'white' : 'black'} size="xl" style={styles.cellText} weight="bold">
         {value}
       </Text>

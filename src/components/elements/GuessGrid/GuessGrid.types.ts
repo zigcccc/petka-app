@@ -7,6 +7,7 @@ export type GuessGridProps = {
 };
 
 export type GuessGridCellProps = {
+  testID?: string;
   value: string | null;
   idx: number;
   checkedLetters?: CheckedLetter[];
