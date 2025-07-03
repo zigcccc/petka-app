@@ -5,6 +5,7 @@ import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
 type Props = PropsWithChildren<{
   style?: StyleProp<TextStyle>;
   numberOfLines?: number;
+  onPress?: () => void;
 }> &
   UnistylesVariants<typeof styles>;
 
@@ -15,11 +16,12 @@ export function Text({
   style,
   weight = 'regular',
   color = 'black',
+  onPress,
 }: Readonly<Props>) {
-  styles.useVariants({ size, weight, color });
+  styles.useVariants({ size, weight, color, isLink: !!onPress });
 
   return (
-    <RNText numberOfLines={numberOfLines} style={[styles.text, style]}>
+    <RNText numberOfLines={numberOfLines} onPress={onPress} style={[styles.text, style]}>
       {children}
     </RNText>
   );
@@ -87,6 +89,12 @@ const styles = StyleSheet.create((theme) => ({
         bold: {
           fontFamily: theme.fonts.sans.bold,
         },
+      },
+      isLink: {
+        true: {
+          textDecorationLine: 'underline',
+        },
+        false: {},
       },
     },
   },
