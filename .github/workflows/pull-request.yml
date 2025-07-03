@@ -128,7 +128,7 @@ jobs:
       - name: Deploy Convex to Dev Cloud 🚀
         run: pnpx convex dev --once
         env:
-          CONVEX_DEPLOYMENT: ${{secrets.CONVEX_DEPLOYMENT_DEV}}
+          CONVEX_DEPLOY_KEY: ${{secrets.CONVEX_DEPLOYMENT_PROD}}
 
       - name: Create preview
         uses: expo/expo-github-action/preview@v8
