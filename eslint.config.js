@@ -8,6 +8,7 @@ export default defineConfig([
   eslintPluginPrettierRecommended,
   {
     files: ['**/*.ts', '**/*.tsx'],
+    ignores: ['convex/_generated/**'],
     plugins: {
       'unused-imports': eslintPluginUnusedImports,
     },
