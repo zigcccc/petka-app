@@ -11,8 +11,13 @@
       }
     },
     "preview": {
+      "channel": "testing",
+      "developmentClient": true,
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "channel": "production",
+      "autoIncrement": true
+    }
   }
 }

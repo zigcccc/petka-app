@@ -8,5 +8,8 @@
   },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always"
+  },
+  "[dotenv]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
   }
 }
