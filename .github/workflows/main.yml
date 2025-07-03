@@ -175,7 +175,15 @@ jobs:
           # Update version files
           jq ".version = \"$NEW_VERSION\"" package.json > tmp && mv tmp package.json
           jq ".expo.version = \"$NEW_VERSION\"" app.json > tmp && mv tmp app.json
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
       - name: Push EAS Update to Production
-        run: eas update --auto --channel production && pnpx sentry-expo-upload-sourcemaps dist ${{github.run_number}}
+        run: eas update --channel production --message "v${{steps.version.outputs.version}}"
+
+      - name: Upload source maps to Sentry
+        run: pnpx sentry-expo-upload-sourcemaps dist
+        env:
+          SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
+
 
       
