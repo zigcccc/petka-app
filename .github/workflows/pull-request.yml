@@ -81,6 +81,7 @@ jobs:
   expo-preview:
     needs: lint-test
     runs-on: ubuntu-latest
+    name: Publish Expo Preview
     permissions:
       pull-requests: write
       contents: read

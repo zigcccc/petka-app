@@ -159,20 +159,15 @@ jobs:
       - name: Compute build-scoped version
         id: version
         run: |
-          # Read whatever holds your canonical version
-          # Here we pull it from package.json; swap this out if you keep it elsewhere
           RAW_VERSION=$(jq -r '.version' package.json)   # e.g. 1.4.7
           echo "Raw version is $RAW_VERSION"
 
-          # Strip off the last dot-segment (everything after the final '.')
           BASE_VERSION=${RAW_VERSION%.*}                 # becomes 1.4
 
-          # Replace Z with the GitHub run number
           BUILD=${GITHUB_RUN_NUMBER}                     # e.g. 128
           NEW_VERSION="${BASE_VERSION}.${BUILD}"         # 1.4.128
           echo "NEW_VERSION=$NEW_VERSION"
 
-          # Update version files
           jq ".version = \"$NEW_VERSION\"" package.json > tmp && mv tmp package.json
           jq ".expo.version = \"$NEW_VERSION\"" app.json > tmp && mv tmp app.json
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
