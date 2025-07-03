@@ -125,16 +125,10 @@ jobs:
           echo "CONVEX_DEPLOYMENT=${{ secrets.CONVEX_DEPLOYMENT_DEV }}" >> .env
           echo "EXPO_PUBLIC_CONVEX_URL=${{ vars.CONVEX_URL_DEV }}" >> .env
           echo "SENTRY_AUTH_TOKEN=${{secrets.SENTRY_AUTH_TOKEN}}" >> .env
-
-      - name: Deploy Convex to Dev Cloud 🚀
-        run: pnpx convex dev --once
-        env:
-          CONVEX_DEPLOY_KEY: ${{secrets.CONVEX_DEPLOYMENT_PROD}}
-
       - name: Create preview
         uses: expo/expo-github-action/preview@v8
         with:
-          command: eas update --branch ${{ github.event.pull_request.head.ref }} --message ${{github.event.pull_request.head.label}}
+          command: eas update --branch ${{ github.event.pull_request.head.ref }} --message $(git log -1 --pretty=%B | head -n 1)
 
       - name: Upload source maps to Sentry
         run: pnpx sentry-expo-upload-sourcemaps dist
