@@ -79,7 +79,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   expo-preview:
-    # needs: lint-test
+    needs: lint-test
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -133,4 +133,9 @@ jobs:
       - name: Create preview
         uses: expo/expo-github-action/preview@v8
         with:
-          command: eas update --auto --branch ${{ github.event.pull_request.head.ref }} && pnpx sentry-expo-upload-sourcemaps dist
+          command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
+
+      - name: Upload source maps to Sentry
+        run: pnpx sentry-expo-upload-sourcemaps dist
+        env:
+          SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
