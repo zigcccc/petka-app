@@ -1,4 +1,5 @@
 import { ConvexError } from 'convex/values';
+import { zid } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
 import { checkWordleAttempt } from '@/utils/words';
@@ -6,6 +7,19 @@ import { checkWordleAttempt } from '@/utils/words';
 import { mutation, query } from '../shared/queries';
 
 import { createPuzzleGuessAttemptModel } from './models';
+
+export const read = query({
+  args: { id: zid('puzzleGuessAttempts') },
+  async handler(ctx, { id }) {
+    const normalizedPuzzleGuessAttemptId = ctx.db.normalizeId('puzzleGuessAttempts', id);
+
+    if (!normalizedPuzzleGuessAttemptId) {
+      throw new ConvexError({ message: 'Invalid id provided.', code: 400 });
+    }
+
+    return await ctx.db.get(normalizedPuzzleGuessAttemptId);
+  },
+});
 
 export const create = mutation({
   args: { data: createPuzzleGuessAttemptModel },
