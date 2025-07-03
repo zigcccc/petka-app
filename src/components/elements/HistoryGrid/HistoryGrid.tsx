@@ -67,6 +67,7 @@ export function HistoryGrid({ puzzle, userId, style, cellWidth }: Readonly<Props
                 cellWidth={cellWidth}
                 checkedLetters={attempt.checkedLetters}
                 idx={idx}
+                testID={`cell-${attempt._id}-${idx}`}
                 value={letter.letter}
               />
             ))}

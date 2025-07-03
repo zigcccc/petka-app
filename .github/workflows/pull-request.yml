@@ -4,8 +4,8 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  lint-test-analysis:
-    name: Lint, test, analysis
+  lint-test:
+    name: Lint, test
     runs-on: ubuntu-latest
     # Let the job post results back to the PR (Sonar, test checks, …)
     permissions:
@@ -52,17 +52,35 @@ jobs:
           name: coverage
           path: coverage
 
-      # 9️⃣  SonarCloud scan
+  sonar:
+    name: Sonar analysis
+    needs: lint-test
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage
+          path: ./coverage
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  expo-preview:
-    needs: lint-test-analysis
-    runs-on: ubuntu-latest
 
-    # Allow the default GITHUB_TOKEN to comment on the PR
+  expo-preview:
+    needs: lint-test
+    runs-on: ubuntu-latest
     permissions:
       pull-requests: write
       contents: read

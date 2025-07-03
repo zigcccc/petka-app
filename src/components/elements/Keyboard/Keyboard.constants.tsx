@@ -9,6 +9,6 @@ export const keys = [
 export type KeyboardKey = (typeof keys)[number][number];
 
 export const keysToIconMap = new Map([
-  ['{Backspace}', <Ionicons key="backspace" name="backspace-outline" size={22} />],
-  ['{Enter}', <MaterialIcons key="enter" name="subdirectory-arrow-right" size={22} />],
+  ['{Backspace}', <Ionicons key="backspace" name="backspace-outline" size={22} testID="keyboard-icon--backspace" />],
+  ['{Enter}', <MaterialIcons key="enter" name="subdirectory-arrow-right" size={22} testID="keyboard-icon--enter" />],
 ]);

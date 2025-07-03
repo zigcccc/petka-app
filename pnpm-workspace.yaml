@@ -8,4 +8,5 @@ nodeLinker: hoisted
 
 onlyBuiltDependencies:
   - '@sentry/cli'
+  - esbuild
   - react-native-nitro-modules
