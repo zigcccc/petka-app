@@ -24,4 +24,14 @@ export const puzzleWithAttemptsModel = puzzleModel.extend({
 });
 export type PuzzleWithAttempts = z.infer<typeof puzzleWithAttemptsModel>;
 
+export const puzzleStatisticsModel = z.object({
+  attemptsDistribution: z.record(z.string(), z.number()),
+  numberOfAllPuzzles: z.number(),
+  numberOfSolvedPuzzles: z.number(),
+  solvedPercentage: z.number(),
+  streak: z.number(),
+  maxStreak: z.number(),
+});
+export type PuzzleStatistics = z.infer<typeof puzzleStatisticsModel>;
+
 export const puzzlesTable = defineTable(zodToConvex(puzzleModel));

@@ -11,7 +11,7 @@ import { useLeaderboards } from '@/hooks/useLeaderboards';
 
 export default function WeeklyLeaderboardScreen() {
   const navigation = useNavigation();
-  const { leaderboard: globalLeaderboard } = useGlobalLeaderboard(leaderboardRange.Enum.weekly);
+  const { data: globalLeaderboard } = useGlobalLeaderboard(leaderboardRange.Enum.weekly);
   const {
     leaderboards: privateLeaderboards,
     isCreating,

@@ -1,23 +1,15 @@
-import { useQuery } from 'convex/react';
-
-import { api } from '@/convex/_generated/api';
 import { type PuzzleType } from '@/convex/puzzles/models';
 
+import { usePuzzlesStatisticsQuery } from '../queries';
 import { useUser } from '../useUser';
 
-export function usePuzzlesStatistics(type: PuzzleType) {
+export function usePuzzleStatistics(type: PuzzleType) {
   const { user } = useUser();
-  const stats = useQuery(api.puzzles.queries.readUserPuzzlesStatistics, user ? { userId: user._id, type } : 'skip');
+  const { data, isLoading, isNotFound } = usePuzzlesStatisticsQuery(user ? { userId: user._id, type } : 'skip');
 
-  if (!stats) {
-    return {
-      isLoading: true,
-      data: null,
-    } as const;
+  if (isLoading || isNotFound) {
+    return { isLoading: true, data: null } as const;
   }
 
-  return {
-    isLoading: false,
-    data: stats,
-  } as const;
+  return { isLoading: false, data } as const;
 }

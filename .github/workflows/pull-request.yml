@@ -125,6 +125,7 @@ jobs:
           echo "CONVEX_DEPLOYMENT=${{ secrets.CONVEX_DEPLOYMENT_DEV }}" >> .env
           echo "EXPO_PUBLIC_CONVEX_URL=${{ vars.CONVEX_URL_DEV }}" >> .env
           echo "SENTRY_AUTH_TOKEN=${{secrets.SENTRY_AUTH_TOKEN}}" >> .env
+          echo "EXPO_PUBLIC_POSTHOG_API_KEY=${{secrets.POSTHOG_API_KEY}}" >> .env
 
       - name: Create preview
         uses: expo/expo-github-action/preview@v8

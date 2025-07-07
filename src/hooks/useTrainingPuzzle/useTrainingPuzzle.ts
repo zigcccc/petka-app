@@ -1,36 +1,36 @@
-import { useMutation, useQuery } from 'convex/react';
-import { useState, useCallback, useEffect } from 'react';
+import { usePostHog } from 'posthog-react-native';
+import { useCallback, useEffect } from 'react';
 
-import { api } from '@/convex/_generated/api';
 import { isAttemptCorrect } from '@/convex/puzzleGuessAttempts/helpers';
+import { puzzleType } from '@/convex/puzzles/models';
 
+import {
+  useCreatePuzzleGuessAttemptMutation,
+  useCreateTrainingPuzzleMutation,
+  useMarkPuzzleAsSolvedMutation,
+} from '../mutations';
+import { useActiveTrainingPuzzleQuery, usePuzzleAttemptsQuery } from '../queries';
 import { useToaster } from '../useToaster';
 import { useUser } from '../useUser';
 
 export function useTrainingPuzzle() {
+  const posthog = usePostHog();
   const { user } = useUser();
   const toaster = useToaster();
-  const [isCreatingPuzzle, setIsCreatingPuzzle] = useState(false);
-  const createTrainingPuzzle = useMutation(api.puzzles.queries.createTrainingPuzzle);
-  const markPuzzleAsSolved = useMutation(api.puzzles.queries.markAsSolved);
-  const createPuzzleGuessAttempt = useMutation(api.puzzleGuessAttempts.queries.create);
-  const puzzle = useQuery(api.puzzles.queries.readUserActiveTrainingPuzzle, user?._id ? { userId: user._id } : 'skip');
-  const attempts = useQuery(
-    api.puzzleGuessAttempts.queries.listPuzzleAttempts,
-    user?._id && puzzle?._id ? { userId: user._id, puzzleId: puzzle._id } : 'skip'
+  const { mutate: createTrainingPuzzle, isLoading: isCreatingPuzzle } = useCreateTrainingPuzzleMutation();
+  const { mutate: markPuzzleAsSolved, isLoading: isMarkingAsSolved } = useMarkPuzzleAsSolvedMutation();
+  const { mutate: createPuzzleGuessAttempt } = useCreatePuzzleGuessAttemptMutation();
+  const { data: puzzle, isLoading } = useActiveTrainingPuzzleQuery(user?._id ? { userId: user._id } : 'skip');
+  const { data: attempts } = usePuzzleAttemptsQuery(
+    user?._id && puzzle?._id ? { userId: user?._id, puzzleId: puzzle?._id } : 'skip'
   );
+
   const isSolved = isAttemptCorrect(attempts?.at(-1));
   const isFailed = attempts?.length === 6 && !isSolved;
 
   const handleCreatePuzzleGuessAttempt = async (attempt: string) => {
     try {
-      await createPuzzleGuessAttempt({
-        data: {
-          userId: user?._id!,
-          puzzleId: puzzle?._id!,
-          attempt,
-        },
-      });
+      await createPuzzleGuessAttempt({ data: { userId: user?._id!, puzzleId: puzzle?._id!, attempt } });
     } catch {
       toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
     }
@@ -38,21 +38,20 @@ export function useTrainingPuzzle() {
 
   const handleCreateTrainingPuzzle = useCallback(async () => {
     try {
-      setIsCreatingPuzzle(true);
-      await createTrainingPuzzle({ userId: user?._id! });
+      const puzzleId = await createTrainingPuzzle({ userId: user?._id! });
+      posthog.capture('puzzle:created', { puzzleId, userId: user?._id!, type: puzzleType.Enum.training });
     } catch {
       toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
-    } finally {
-      setIsCreatingPuzzle(false);
     }
-  }, [createTrainingPuzzle, toaster, user?._id]);
+  }, [createTrainingPuzzle, posthog, toaster, user?._id]);
 
   const handleMarkPuzzleAsSolved = async () => {
-    return markPuzzleAsSolved({ puzzleId: puzzle?._id!, userId: user?._id! });
+    await markPuzzleAsSolved({ puzzleId: puzzle?._id!, userId: user?._id! });
+    posthog.capture('puzzle:solved', { puzzleId: puzzle?._id!, userId: user?._id!, type: puzzleType.Enum.training });
   };
 
   useEffect(() => {
-    // Puzzle query has finished but not puzzles were found - we need to create a new one!
+    // Puzzle query has finished but no puzzle was found - we need to create a new one!
     if (puzzle === null && !isCreatingPuzzle) {
       handleCreateTrainingPuzzle();
     }
@@ -61,10 +60,11 @@ export function useTrainingPuzzle() {
   return {
     attempts,
     puzzle,
-    isLoading: typeof puzzle === 'undefined',
+    isLoading,
     isCreating: isCreatingPuzzle,
     isSolved,
     isFailed,
+    isMarkingAsSolved,
     onSubmitAttempt: handleCreatePuzzleGuessAttempt,
     onMarkAsSolved: handleMarkPuzzleAsSolved,
   };

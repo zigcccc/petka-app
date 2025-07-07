@@ -37,7 +37,11 @@ export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Readon
                 }
                 testID={`keyboard-key--${key}`}
               >
-                <Text style={styles.keyText({ isInvalid, isMisplaced, isCorrect })} weight="bold">
+                <Text
+                  allowFontScaling={false}
+                  style={styles.keyText({ isInvalid, isMisplaced, isCorrect })}
+                  weight="bold"
+                >
                   {keysToIconMap.get(key) ?? key}
                 </Text>
               </Pressable>

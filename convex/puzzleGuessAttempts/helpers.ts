@@ -1,6 +1,6 @@
 import { checkedLetterStatus, type PuzzleGuessAttempt } from './models';
 
-export function isAttemptCorrect(attempt?: PuzzleGuessAttempt) {
+export function isAttemptCorrect(attempt?: Pick<PuzzleGuessAttempt, 'checkedLetters'>) {
   if (!attempt) {
     return false;
   }

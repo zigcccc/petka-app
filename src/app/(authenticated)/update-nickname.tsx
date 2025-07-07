@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useConvex } from 'convex/react';
 import { ConvexError } from 'convex/values';
 import { router } from 'expo-router';
+import { usePostHog } from 'posthog-react-native';
 import { useForm, type SubmitHandler, type SubmitErrorHandler, Controller } from 'react-hook-form';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
@@ -16,7 +17,8 @@ import { useUser } from '@/hooks/useUser';
 export default function UpdateNicknameScreen() {
   const toaster = useToaster();
   const convex = useConvex();
-  const { userId, updateUser } = useUser();
+  const posthog = usePostHog();
+  const { updateUser } = useUser();
   const {
     control,
     handleSubmit,
@@ -33,7 +35,7 @@ export default function UpdateNicknameScreen() {
 
   const onSubmit: SubmitHandler<CreateUser> = async (data) => {
     try {
-      await updateUser({ id: userId as string, data });
+      await updateUser(data);
       router.back();
     } catch (err) {
       const isConflictError = err instanceof ConvexError && err.data.code === 409;
@@ -43,6 +45,8 @@ export default function UpdateNicknameScreen() {
 
       if (isConflictError) {
         setError('nickname', { message: `Vzdevek "${data.nickname}" je zaseden.`, type: 'value' });
+      } else {
+        posthog.captureException(err, { mutation: 'patchUser', data });
       }
     }
   };

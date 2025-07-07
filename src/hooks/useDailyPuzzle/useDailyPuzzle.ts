@@ -1,22 +1,21 @@
-import { useConvex, useMutation, useQuery } from 'convex/react';
-import { useRef } from 'react';
+import { usePostHog } from 'posthog-react-native';
 
-import { api } from '@/convex/_generated/api';
 import { isAttemptCorrect } from '@/convex/puzzleGuessAttempts/helpers';
+import { puzzleType } from '@/convex/puzzles/models';
 
+import { useCreatePuzzleGuessAttemptMutation, useMarkPuzzleAsSolvedMutation } from '../mutations';
+import { useActiveDailyPuzzleQuery, usePuzzleAttemptsQuery } from '../queries';
 import { useToaster } from '../useToaster';
 import { useUser } from '../useUser';
 
 export function useDailyPuzzle() {
   const { user } = useUser();
-  const convex = useConvex();
+  const posthog = usePostHog();
   const toaster = useToaster();
-  const markPuzzleAsSolved = useMutation(api.puzzles.queries.markAsSolved);
-  const createPuzzleGuessAttempt = useMutation(api.puzzleGuessAttempts.queries.create);
-  const timestampRef = useRef(Date.now());
-  const puzzle = useQuery(api.puzzles.queries.readActiveDailyPuzzle, { timestamp: timestampRef.current });
-  const attempts = useQuery(
-    api.puzzleGuessAttempts.queries.listPuzzleAttempts,
+  const { mutate: markPuzzleAsSolved } = useMarkPuzzleAsSolvedMutation();
+  const { mutate: createPuzzleGuessAttempt } = useCreatePuzzleGuessAttemptMutation();
+  const { data: puzzle, isLoading } = useActiveDailyPuzzleQuery({});
+  const { data: attempts } = usePuzzleAttemptsQuery(
     user?._id && puzzle?._id ? { userId: user._id, puzzleId: puzzle._id } : 'skip'
   );
   const isSolved = isAttemptCorrect(attempts?.at(-1));
@@ -24,16 +23,17 @@ export function useDailyPuzzle() {
 
   const handleCreatePuzzleGuessAttempt = async (attempt: string) => {
     try {
-      const attemptId = await createPuzzleGuessAttempt({
+      const { isCorrect } = await createPuzzleGuessAttempt({
         data: {
           userId: user?._id!,
           puzzleId: puzzle?._id!,
           attempt,
         },
       });
-      const createdAttempt = await convex.query(api.puzzleGuessAttempts.queries.read, { id: attemptId });
-      if (createdAttempt && isAttemptCorrect(createdAttempt)) {
-        await markPuzzleAsSolved({ puzzleId: puzzle?._id!, userId: user?._id! });
+
+      if (isCorrect) {
+        markPuzzleAsSolved({ puzzleId: puzzle?._id!, userId: user?._id! });
+        posthog.capture('puzzle:solved', { puzzleId: puzzle?._id!, userId: user?._id!, type: puzzleType.Enum.daily });
       }
     } catch {
       toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
@@ -43,7 +43,7 @@ export function useDailyPuzzle() {
   return {
     attempts,
     puzzle,
-    isLoading: typeof puzzle === 'undefined',
+    isLoading,
     isSolved,
     isFailed,
     onSubmitAttempt: handleCreatePuzzleGuessAttempt,

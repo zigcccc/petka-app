@@ -38,18 +38,6 @@ export default function AppInfoScreen() {
           <View style={styles.cardActions}>
             <Button
               intent="terciary"
-              onPress={() =>
-                Linking.openURL('mailto:zkrasovec@gmail.com').catch(() =>
-                  toaster.toast('Nekaj je šlo narobe.', { intent: 'error' })
-                )
-              }
-              size="sm"
-              variant="outline"
-            >
-              Pošlji mi e-pošto
-            </Button>
-            <Button
-              intent="terciary"
               onPress={() => Linking.openURL('https://github.com/zigcccc/')}
               size="sm"
               variant="outline"

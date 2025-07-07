@@ -1,32 +1,27 @@
 import { Octicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { AttemptsDistributionGraph } from '@/components/elements';
 import { Button, Card, Text } from '@/components/ui';
 import { puzzleType } from '@/convex/puzzles/models';
-import { usePuzzlesStatistics } from '@/hooks/usePuzzlesStatistics';
+import { usePuzzleStatistics } from '@/hooks/usePuzzlesStatistics';
 import { useToaster } from '@/hooks/useToaster';
 import { useTrainingPuzzle } from '@/hooks/useTrainingPuzzle';
 
 export default function TrainingPuzzleSolvedScreen() {
   const router = useRouter();
   const toaster = useToaster();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { attempts, onMarkAsSolved } = useTrainingPuzzle();
-  const { isLoading, data } = usePuzzlesStatistics(puzzleType.Enum.training);
+  const { attempts, onMarkAsSolved, isMarkingAsSolved } = useTrainingPuzzle();
+  const { isLoading, data } = usePuzzleStatistics(puzzleType.Enum.training);
 
   const handleCreateNewChallenge = async () => {
     try {
-      setIsSubmitting(true);
       onMarkAsSolved();
       router.back();
     } catch {
       toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -90,7 +85,7 @@ export default function TrainingPuzzleSolvedScreen() {
         <Button onPress={() => router.back()} variant="outline">
           Nazaj
         </Button>
-        <Button loading={isSubmitting} onPress={handleCreateNewChallenge}>
+        <Button loading={isMarkingAsSolved} onPress={handleCreateNewChallenge}>
           Začni nov izziv
         </Button>
       </View>

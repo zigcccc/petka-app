@@ -3,8 +3,9 @@ import { ConvexProvider, ConvexReactClient } from 'convex/react';
 import dayjs from 'dayjs';
 import { Asset } from 'expo-asset';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useGlobalSearchParams, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { PostHogProvider, usePostHog } from 'posthog-react-native';
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -39,6 +40,9 @@ Sentry.init({
 });
 
 function RootLayout() {
+  const posthog = usePostHog();
+  const pathname = usePathname();
+  const params = useGlobalSearchParams();
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [fontsLoaded] = useFonts({
     SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
@@ -65,6 +69,10 @@ function RootLayout() {
     }
   }, [imagesLoaded, setImagesLoaded]);
 
+  useEffect(() => {
+    posthog.screen(pathname, params);
+  }, [pathname, params, posthog]);
+
   if (!isReady) {
     return null;
   }
@@ -88,9 +96,15 @@ function RootLayout() {
 
 function RootLayoutWithProviders() {
   return (
-    <ConvexProvider client={convex}>
-      <RootLayout />
-    </ConvexProvider>
+    <PostHogProvider
+      apiKey={process.env.EXPO_PUBLIC_POSTHOG_API_KEY}
+      autocapture={false}
+      options={{ host: 'https://eu.i.posthog.com', disabled: __DEV__ }}
+    >
+      <ConvexProvider client={convex}>
+        <RootLayout />
+      </ConvexProvider>
+    </PostHogProvider>
   );
 }
 
