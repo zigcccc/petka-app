@@ -16,7 +16,13 @@ function GuessGridCell({ testID, value, idx, checkedLetters = [], cellWidth }: R
 
   return (
     <View style={styles.cell({ isCorrect, isInvalid, isMisplaced, cellWidth })} testID={testID}>
-      <Text color={checkedLetters.length ? 'white' : 'black'} size="xl" style={styles.cellText} weight="bold">
+      <Text
+        allowFontScaling={false}
+        color={checkedLetters.length ? 'white' : 'black'}
+        size="xl"
+        style={styles.cellText}
+        weight="bold"
+      >
         {value}
       </Text>
     </View>

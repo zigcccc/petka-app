@@ -54,7 +54,7 @@ export const patch = mutation({
       // Check that the username is not already taken
       const existingUser = await ctx.db
         .query('users')
-        .filter((q) => q.eq(q.field('lowercaseNickname'), nickname.toLowerCase()))
+        .filter((q) => q.and(q.eq(q.field('lowercaseNickname'), nickname.toLowerCase()), q.neq(q.field('_id'), userId)))
         .first();
 
       // Reject the request if it is

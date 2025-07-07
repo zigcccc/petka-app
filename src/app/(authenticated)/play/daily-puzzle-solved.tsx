@@ -1,6 +1,6 @@
 import { Octicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, ActionSheetIOS } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { AttemptsDistributionGraph } from '@/components/elements';
@@ -63,7 +63,17 @@ export default function DailyPuzzleSolvedScreen() {
                 numberOfCurrentAttempts={attempts?.length}
               />
             </Card>
-            <Button onPress={() => null} size="sm" variant="outline">
+            <Button
+              onPress={() =>
+                ActionSheetIOS.showShareActionSheetWithOptions(
+                  { message: `Petka ${attempts?.length ?? 'X'} / 6` },
+                  () => {},
+                  () => {}
+                )
+              }
+              size="sm"
+              variant="outline"
+            >
               <Button.Text>Deli</Button.Text>
               <Octicons color="green" name="share" size={16} />
             </Button>

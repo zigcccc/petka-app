@@ -3,6 +3,7 @@ import { Text as RNText, type StyleProp, type TextStyle } from 'react-native';
 import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
 
 type Props = PropsWithChildren<{
+  allowFontScaling?: boolean;
   style?: StyleProp<TextStyle>;
   numberOfLines?: number;
   onPress?: () => void;
@@ -10,6 +11,7 @@ type Props = PropsWithChildren<{
   UnistylesVariants<typeof styles>;
 
 export function Text({
+  allowFontScaling,
   children,
   numberOfLines,
   size = 'base',
@@ -21,7 +23,12 @@ export function Text({
   styles.useVariants({ size, weight, color, isLink: !!onPress });
 
   return (
-    <RNText numberOfLines={numberOfLines} onPress={onPress} style={[styles.text, style]}>
+    <RNText
+      allowFontScaling={allowFontScaling}
+      numberOfLines={numberOfLines}
+      onPress={onPress}
+      style={[styles.text, style]}
+    >
       {children}
     </RNText>
   );

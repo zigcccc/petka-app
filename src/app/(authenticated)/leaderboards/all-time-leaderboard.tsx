@@ -11,7 +11,7 @@ import { useLeaderboards } from '@/hooks/useLeaderboards';
 
 export default function AllTimeLeaderboardScreen() {
   const navigation = useNavigation();
-  const { leaderboard: globalLeaderboard } = useGlobalLeaderboard(leaderboardRange.Enum.alltime);
+  const { data: globalLeaderboard } = useGlobalLeaderboard(leaderboardRange.Enum.alltime);
   const {
     leaderboards: privateLeaderboards,
     isCreating,

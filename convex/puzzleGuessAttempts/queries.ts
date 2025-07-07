@@ -6,6 +6,7 @@ import { checkWordleAttempt } from '@/utils/words';
 
 import { mutation, query } from '../shared/queries';
 
+import { isAttemptCorrect } from './helpers';
 import { createPuzzleGuessAttemptModel } from './models';
 
 export const read = query({
@@ -55,7 +56,9 @@ export const create = mutation({
       checkedLetters,
     });
 
-    return puzzleGuessAttemptId;
+    const isCorrect = isAttemptCorrect({ checkedLetters });
+
+    return { id: puzzleGuessAttemptId, isCorrect };
   },
 });
 

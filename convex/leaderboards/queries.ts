@@ -219,9 +219,11 @@ export const joinPrivateLeaderboard = mutation({
       throw new ConvexError({ message: 'Already joined this leaderboard.', code: 400 });
     }
 
-    return await ctx.db.patch(leaderboard._id, {
+    await ctx.db.patch(leaderboard._id, {
       users: leaderboard.users ? [...leaderboard.users, normalizedUserId] : [normalizedUserId],
     });
+
+    return leaderboard;
   },
 });
 

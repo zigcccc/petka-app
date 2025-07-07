@@ -1,12 +1,18 @@
 import { useMutation, useQuery } from 'convex/react';
 import { ConvexError } from 'convex/values';
 import * as Clipboard from 'expo-clipboard';
+import { usePostHog } from 'posthog-react-native';
 import { useRef, useState } from 'react';
 import { ActionSheetIOS, Alert } from 'react-native';
 
 import { api } from '@/convex/_generated/api';
 import { type Id } from '@/convex/_generated/dataModel';
-import { type LeaderboardWithScores, type LeaderboardRange, type LeaderboardType } from '@/convex/leaderboards/models';
+import {
+  type LeaderboardWithScores,
+  type LeaderboardRange,
+  type LeaderboardType,
+  leaderboardType,
+} from '@/convex/leaderboards/models';
 
 import { useToaster } from '../useToaster';
 import { useUser } from '../useUser';
@@ -14,6 +20,7 @@ import { useUser } from '../useUser';
 export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) {
   const { user } = useUser();
   const toaster = useToaster();
+  const posthog = usePostHog();
   const [isUpdating, setIsUpdating] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -48,10 +55,24 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
             setIsLeaving(true);
 
             leavePrivateLeaderboard({ leaderboardId, userId: user._id })
-              .catch(() => {
+              .then(() => {
+                posthog.capture('leaderboards:leave', {
+                  leaderboardId,
+                  userId: user._id,
+                  leaderboardType: leaderboardType.Enum.private,
+                });
+              })
+              .catch((err) => {
+                posthog.captureException(err, {
+                  leaderboardId,
+                  userId: user._id,
+                  leaderboardType: leaderboardType.Enum.private,
+                });
                 toaster.toast('Nekaj je šlo narobe', { intent: 'error' });
               })
-              .finally(() => setIsLeaving(false));
+              .finally(() => {
+                setIsLeaving(false);
+              });
           },
         },
       ]
@@ -73,7 +94,19 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
           setIsDeleting(true);
 
           deletePrivateLeaderboard({ leaderboardId, userId: user._id })
-            .catch(() => {
+            .then(() => {
+              posthog.capture('leaderboards:delete', {
+                leaderboardId,
+                userId: user._id,
+                leaderboardType: leaderboardType.Enum.private,
+              });
+            })
+            .catch((err) => {
+              posthog.captureException(err, {
+                leaderboardId,
+                userId: user._id,
+                leaderboardType: leaderboardType.Enum.private,
+              });
               toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
             })
             .finally(() => {
@@ -109,7 +142,19 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
             return;
           }
           updateLeaderboardName({ leaderboardId, userId: user._id, data: { name: leaderboardName } })
-            .catch(() => {
+            .then(() => {
+              posthog.capture('leaderboards:update_name', {
+                leaderboardId,
+                userId: user._id,
+                leaderboardType: leaderboardType.Enum.private,
+              });
+            })
+            .catch((err) => {
+              posthog.captureException(err, {
+                leaderboardId,
+                userId: user._id,
+                leaderboardType: leaderboardType.Enum.private,
+              });
               toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
             })
             .finally(() => {
@@ -146,7 +191,15 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
           }
 
           joinPrivateLeaderboard({ inviteCode: inviteCode.toUpperCase(), userId: user._id })
+            .then((leaderboard) => {
+              posthog.capture('leaderboards:join', {
+                leaderboardId: leaderboard._id,
+                userId: user._id,
+                leaderboardType: leaderboardType.Enum.private,
+              });
+            })
             .catch((err) => {
+              posthog.captureException(err, { userId: user._id, leaderboardType: leaderboardType.Enum.private });
               if (err instanceof ConvexError) {
                 if (err.data.message === 'Invalid invite code.') {
                   toaster.toast('Neveljavna koda.', { intent: 'error' });
@@ -193,7 +246,15 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
           }
 
           createPrivateLeaderboard({ userId: user._id, data: { name: leaderboardName } })
-            .catch(() => {
+            .then((leaderboardId) => {
+              posthog.capture('leaderboards:create', {
+                leaderboardId,
+                userId: user._id,
+                leaderboardType: leaderboardType.Enum.private,
+              });
+            })
+            .catch((err) => {
+              posthog.captureException(err, { userId: user._id, leaderboardType: leaderboardType.Enum.private });
               toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
             })
             .finally(() => {
@@ -217,6 +278,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
         text: 'Kopiraj',
         onPress() {
           Clipboard.setStringAsync(inviteCode).then(() => {
+            posthog.capture('leaderboards:invite_code:copy', { leaderboardType: leaderboardType.Enum.private });
             toaster.toast('Koda kopirana', { intent: 'success' });
           });
         },
@@ -228,6 +290,11 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
     leaderboard: Pick<LeaderboardWithScores, '_id' | 'creatorId' | 'inviteCode' | 'name'>
   ) => {
     const isCurrentUserCreator = !!leaderboard.creatorId && leaderboard.creatorId === user?._id;
+    posthog.capture('leaderboards:actions_open', {
+      leaderboardId: leaderboard._id,
+      userId: user?._id!,
+      leaderboardType: leaderboardType.Enum.private,
+    });
 
     ActionSheetIOS.showActionSheetWithOptions(
       {

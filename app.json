@@ -49,7 +49,8 @@
           "organization": "ziga-krasovec-team"
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true

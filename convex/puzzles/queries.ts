@@ -1,4 +1,5 @@
 import { ConvexError } from 'convex/values';
+import { zid } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
 import { pickRandomWord } from '@/utils/words';
@@ -65,7 +66,7 @@ export const list = query({
 });
 
 export const readUserActiveTrainingPuzzle = query({
-  args: { userId: z.string() },
+  args: { userId: zid('users') },
   async handler(ctx, { userId }) {
     const normalizedUserId = ctx.db.normalizeId('users', userId);
 
