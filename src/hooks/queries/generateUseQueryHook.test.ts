@@ -44,6 +44,24 @@ describe('generateUseQueryHook', () => {
     });
   });
 
+  it('returns empty array state when data is null for array return type', () => {
+    type ListQuery = FunctionReference<'query'> & {
+      _args: { filter?: string };
+      _returnType: { name: string }[] | null;
+    };
+    const listQueryFn = {} as ListQuery;
+    const useListQuery = generateUseQueryHook(listQueryFn);
+
+    mockUseQuery.mockReturnValueOnce([]);
+
+    const { result } = renderHook(() => useListQuery({ filter: 'test' }));
+    expect(result.current).toEqual({
+      isLoading: false,
+      isNotFound: false,
+      data: [],
+    });
+  });
+
   it('returns data when query succeeds', () => {
     const response = { name: 'Alice' };
     mockUseQuery.mockReturnValueOnce(response);
