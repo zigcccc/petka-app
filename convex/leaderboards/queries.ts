@@ -161,9 +161,10 @@ export const readGlobalLeaderboard = query({
       {} as Record<string, User>
     );
 
-    const scoresWithUsers = scoresToReport.map(({ userId, ...score }) => ({ ...score, user: usersMap[userId] }));
-
-    return { ...globalLeaderboard, scoresWithUsers };
+    return {
+      ...globalLeaderboard,
+      scores: scoresToReport.map(({ userId, ...score }) => ({ ...score, user: usersMap[userId] })),
+    };
   },
 });
 

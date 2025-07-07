@@ -39,9 +39,4 @@ export const leaderboardWithScoresModel = leaderboardModel.extend({
 });
 export type LeaderboardWithScores = z.infer<typeof leaderboardWithScoresModel>;
 
-export const leaderboardWithUserScoresModel = leaderboardModel.extend({
-  scoresWithUsers: z.array(leaderboardScoreWithUserModel),
-});
-export type LeaderboardWithUserScores = z.infer<typeof leaderboardWithUserScoresModel>;
-
 export const leaderboardsTable = defineTable(zodToConvex(leaderboardModel));

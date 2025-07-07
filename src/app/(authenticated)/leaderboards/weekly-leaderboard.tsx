@@ -30,7 +30,7 @@ export default function WeeklyLeaderboardScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container} contentInsetAdjustmentBehavior="automatic">
       <Card title="Globalna lestvica">
-        <Leaderboard scores={globalLeaderboard?.scoresWithUsers} />
+        <Leaderboard scores={globalLeaderboard?.scores} />
       </Card>
       <View style={styles.contentContainer}>
         <Text size="lg" weight="medium">
