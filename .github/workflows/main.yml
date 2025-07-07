@@ -159,6 +159,7 @@ jobs:
           touch .env
           echo "EXPO_PUBLIC_CONVEX_URL=${{ vars.CONVEX_URL_PROD }}" >> .env
           echo "SENTRY_AUTH_TOKEN=${{secrets.SENTRY_AUTH_TOKEN}}" >> .env
+          echo "EXPO_PUBLIC_POSTHOG_API_KEY=${{secrets.POSTHOG_API_KEY}}" >> .env
 
       - name: Compute build-scoped version
         id: version
