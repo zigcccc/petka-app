@@ -5,7 +5,7 @@ import WeeklyLeaderboardScreen from '@/app/(authenticated)/leaderboards/weekly-l
 import { leaderboardRange, leaderboardType } from '@/convex/leaderboards/models';
 import { useGlobalLeaderboard } from '@/hooks/useGlobalLeaderboard';
 import { useLeaderboards } from '@/hooks/useLeaderboards';
-import { testGlobalLeaderboard1, testPriverLeaderboard1 } from '@/tests/fixtures/leaderboards';
+import { testGlobalLeaderboard1, testPrivateLeaderboard1 } from '@/tests/fixtures/leaderboards';
 
 jest.mock('expo-router', () => ({
   ...jest.requireActual('expo-router'),
@@ -37,7 +37,7 @@ describe('<WeeklyLeaderboardScreen />', () => {
     useNavigationSpy.mockReturnValue({ getParent: jest.fn().mockReturnValue({ setOptions: mockSetOptions }) });
     useGlobalLeaderboardSpy.mockReturnValue({ data: testGlobalLeaderboard1 });
     useLeaderboardsSpy.mockReturnValue({
-      leaderboards: [testPriverLeaderboard1],
+      leaderboards: [testPrivateLeaderboard1],
       isCreating: false,
       isJoining: false,
       onCreatePrivateLeaderboard: mockCreatePrivateLeaderboard,
@@ -68,7 +68,7 @@ describe('<WeeklyLeaderboardScreen />', () => {
 
     expect(screen.queryByText('Globalna lestvica')).toBeOnTheScreen();
     expect(screen.queryByText('Tvoje lestvice')).toBeOnTheScreen();
-    expect(screen.queryByText(testPriverLeaderboard1.name!)).toBeOnTheScreen();
+    expect(screen.queryByText(testPrivateLeaderboard1.name!)).toBeOnTheScreen();
   });
 
   it('should render private leaderboards actions (join, create)', () => {
@@ -89,7 +89,7 @@ describe('<WeeklyLeaderboardScreen />', () => {
 
     fireEvent.press(screen.getByTestId('card--actions-trigger'));
 
-    expect(mockPresentLeaderboardActions).toHaveBeenCalledWith(testPriverLeaderboard1);
+    expect(mockPresentLeaderboardActions).toHaveBeenCalledWith(testPrivateLeaderboard1);
   });
 
   it.each([null, []])(

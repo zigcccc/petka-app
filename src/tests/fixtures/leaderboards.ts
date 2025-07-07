@@ -14,7 +14,7 @@ export const testGlobalLeaderboard1: LeaderboardWithUserScores = {
   scoresWithUsers: [{ isForCurrentUser: true, position: 1, score: 7, user: testUser1 }],
 };
 
-export const testPriverLeaderboard1: LeaderboardWithUserScores = {
+export const testPrivateLeaderboard1: LeaderboardWithUserScores = {
   _id: 'testPrivateLeaderboard1' as Id<'leaderboards'>,
   _creationTime: 1751879215893,
   inviteCode: null,
