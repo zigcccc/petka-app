@@ -16,7 +16,7 @@ export function generateUseMutationHook<MutationFn extends FunctionReference<'mu
           const returnValue = await mutation(args);
           return returnValue;
         } catch (err) {
-          posthog.captureException(err, { mutation: mutationFn._componentPath!, args });
+          posthog.captureException(err, { mutation: mutationFn._componentPath || 'unknown', args });
           throw err;
         } finally {
           setIsLoading(false);
