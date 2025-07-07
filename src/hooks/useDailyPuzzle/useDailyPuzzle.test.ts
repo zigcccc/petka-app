@@ -41,7 +41,7 @@ jest.mock('../useUser', () => ({
   useUser: jest.fn().mockReturnValue({}),
 }));
 
-describe('useDaiplyPuzzle', () => {
+describe('useDailyPuzzle', () => {
   const mockCaptureEvent = jest.fn();
   const mockToast = jest.fn();
   const mockMarkPuzzleAsSolved = jest.fn();
