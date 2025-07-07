@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native-unistyles';
 import { AttemptsDistributionGraph } from '@/components/elements';
 import { Button, Card, Text } from '@/components/ui';
 import { puzzleType } from '@/convex/puzzles/models';
-import { usePuzzlesStatistics } from '@/hooks/usePuzzlesStatistics';
+import { usePuzzleStatistics } from '@/hooks/usePuzzlesStatistics';
 import { useToaster } from '@/hooks/useToaster';
 import { useTrainingPuzzle } from '@/hooks/useTrainingPuzzle';
 
@@ -14,7 +14,7 @@ export default function TrainingPuzzleSolvedScreen() {
   const router = useRouter();
   const toaster = useToaster();
   const { attempts, onMarkAsSolved, isMarkingAsSolved } = useTrainingPuzzle();
-  const { isLoading, data } = usePuzzlesStatistics(puzzleType.Enum.training);
+  const { isLoading, data } = usePuzzleStatistics(puzzleType.Enum.training);
 
   const handleCreateNewChallenge = async () => {
     try {

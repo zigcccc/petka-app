@@ -7,12 +7,12 @@ import { AttemptsDistributionGraph } from '@/components/elements';
 import { Card, Button, Text } from '@/components/ui';
 import { puzzleType } from '@/convex/puzzles/models';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
-import { usePuzzlesStatistics } from '@/hooks/usePuzzlesStatistics';
+import { usePuzzleStatistics } from '@/hooks/usePuzzlesStatistics';
 
 export default function DailyPuzzleSolvedScreen() {
   const router = useRouter();
   const { attempts } = useDailyPuzzle();
-  const { isLoading, data } = usePuzzlesStatistics(puzzleType.Enum.daily);
+  const { isLoading, data } = usePuzzleStatistics(puzzleType.Enum.daily);
 
   return (
     <View style={styles.container}>

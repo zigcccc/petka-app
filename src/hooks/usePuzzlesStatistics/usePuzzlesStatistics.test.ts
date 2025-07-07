@@ -7,7 +7,7 @@ import { testUser1 } from '@/tests/fixtures/users';
 import { usePuzzlesStatisticsQuery } from '../queries';
 import { useUser } from '../useUser';
 
-import { usePuzzlesStatistics } from './usePuzzlesStatistics';
+import { usePuzzleStatistics } from './usePuzzlesStatistics';
 
 jest.mock('../queries', () => ({
   ...jest.requireActual('../queries'),
@@ -30,7 +30,7 @@ describe('usePuzzleStatistics', () => {
   it('should trigger puzzle statistics query with "skip" param if user data is not available', () => {
     useUserSpy.mockReturnValue({ user: null });
 
-    renderHook(() => usePuzzlesStatistics(puzzleType.Enum.daily));
+    renderHook(() => usePuzzleStatistics(puzzleType.Enum.daily));
 
     expect(usePuzzlesStatisticsQuerySpy).toHaveBeenCalledWith('skip');
   });
@@ -38,7 +38,7 @@ describe('usePuzzleStatistics', () => {
   it('should trigger puzzle statistics query with userId and puzzle type params when user data is available', () => {
     useUserSpy.mockReturnValue({ user: testUser1 });
 
-    renderHook(() => usePuzzlesStatistics(puzzleType.Enum.daily));
+    renderHook(() => usePuzzleStatistics(puzzleType.Enum.daily));
 
     expect(usePuzzlesStatisticsQuerySpy).toHaveBeenCalledWith({ userId: testUser1._id, type: puzzleType.Enum.daily });
   });
@@ -52,7 +52,7 @@ describe('usePuzzleStatistics', () => {
     ({ isLoading, isNotFound }) => {
       usePuzzlesStatisticsQuerySpy.mockReturnValue({ data: testPuzzleStatistics1, isLoading, isNotFound });
 
-      const { result } = renderHook(() => usePuzzlesStatistics(puzzleType.Enum.daily));
+      const { result } = renderHook(() => usePuzzleStatistics(puzzleType.Enum.daily));
 
       expect(result.current.isLoading).toBe(true);
       expect(result.current.data).toBe(null);
@@ -62,7 +62,7 @@ describe('usePuzzleStatistics', () => {
   it('should set isLoading=false and data to query data when query.isLoading=false and query.isNotFound=false', () => {
     usePuzzlesStatisticsQuerySpy.mockReturnValue({ data: testPuzzleStatistics1, isLoading: false, isNotFound: false });
 
-    const { result } = renderHook(() => usePuzzlesStatistics(puzzleType.Enum.daily));
+    const { result } = renderHook(() => usePuzzleStatistics(puzzleType.Enum.daily));
 
     expect(result.current.isLoading).toBe(false);
     expect(result.current.data).toEqual(testPuzzleStatistics1);
