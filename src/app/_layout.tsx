@@ -61,6 +61,7 @@ function RootLayout() {
         require('@/assets/images/petka-app-icon.png'),
         require('@/assets/images/petka-app-wordmark.png'),
         require('@/assets/images/no-leaderboards.png'),
+        require('@/assets/images/error.png'),
       ]);
       setImagesLoaded(true);
     }
