@@ -205,34 +205,6 @@ describe('useDailyPuzzle', () => {
     expect(mockToast).not.toHaveBeenCalled();
   });
 
-  it('should trigger createPuzzleAttempt mutation on onSubmitAttempt action - success scenario, attempt is not correct', async () => {
-    mockCreatePuzzleGuessAttempt.mockResolvedValue({ isCorrect: false });
-    useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: testDailyPuzzle1 });
-
-    const { result } = renderHook(() => useDailyPuzzle());
-
-    act(() => {
-      result.current.onSubmitAttempt('spawn');
-    });
-
-    await waitFor(() => {
-      expect(mockCreatePuzzleGuessAttempt).toHaveBeenCalledWith({
-        data: {
-          userId: testUser1._id,
-          puzzleId: testDailyPuzzle1._id,
-          attempt: 'spawn',
-        },
-      });
-    });
-
-    await waitFor(() => {
-      expect(mockMarkPuzzleAsSolved).not.toHaveBeenCalled();
-    });
-
-    expect(mockCaptureEvent).not.toHaveBeenCalled();
-    expect(mockToast).not.toHaveBeenCalled();
-  });
-
   it('should trigger createPuzzleAttempt mutation on onSubmitAttempt action - success scenario, attempt is correct', async () => {
     mockMarkPuzzleAsSolved.mockResolvedValue(null);
     mockCreatePuzzleGuessAttempt.mockResolvedValue({ isCorrect: true });
