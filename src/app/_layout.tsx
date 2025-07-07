@@ -60,6 +60,7 @@ function RootLayout() {
       await Asset.loadAsync([
         require('@/assets/images/petka-app-icon.png'),
         require('@/assets/images/petka-app-wordmark.png'),
+        require('@/assets/images/no-leaderboards.png'),
       ]);
       setImagesLoaded(true);
     }

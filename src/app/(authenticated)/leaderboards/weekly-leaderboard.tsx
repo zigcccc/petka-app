@@ -1,6 +1,6 @@
 import { useFocusEffect, useNavigation } from 'expo-router';
 import { useCallback } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, Image } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Leaderboard } from '@/components/elements';
@@ -36,17 +36,26 @@ export default function WeeklyLeaderboardScreen() {
         <Text size="lg" weight="medium">
           Tvoje lestvice
         </Text>
-        <View style={styles.privateLeaderboardsContainer}>
-          {privateLeaderboards?.map((leaderboard) => (
-            <Card
-              key={leaderboard._id}
-              onShowActions={() => onPresentLeaderboardActions(leaderboard)}
-              title={leaderboard.name ?? leaderboard._id}
-            >
-              <Leaderboard scores={leaderboard.scores} />
-            </Card>
-          ))}
-        </View>
+        {privateLeaderboards?.length ? (
+          <View style={styles.privateLeaderboardsContainer}>
+            {privateLeaderboards.map((leaderboard) => (
+              <Card
+                key={leaderboard._id}
+                onShowActions={() => onPresentLeaderboardActions(leaderboard)}
+                title={leaderboard.name ?? leaderboard._id}
+              >
+                <Leaderboard scores={leaderboard.scores} />
+              </Card>
+            ))}
+          </View>
+        ) : (
+          <View style={styles.noLeaderboardsContainer}>
+            <Image source={require('@/assets/images/no-leaderboards.png')} style={styles.image} />
+            <Text color="grey70" size="sm">
+              Pridružen/a nisi še nobeni zasebni lestvici...
+            </Text>
+          </View>
+        )}
         <View style={styles.actions}>
           <Button intent="terciary" loading={isJoining} onPress={onJoinPrivateLeaderboard} variant="fill">
             Pridruži se lestvici
@@ -68,9 +77,20 @@ const styles = StyleSheet.create((theme) => ({
   contentContainer: {
     paddingVertical: theme.spacing[8],
   },
+  noLeaderboardsContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: theme.spacing[8],
+  },
+  image: {
+    aspectRatio: '1/1',
+    resizeMode: 'contain',
+    width: '50%',
+    height: 'auto',
+  },
   privateLeaderboardsContainer: {
     paddingVertical: theme.spacing[6],
-    gap: theme.spacing[6],
+    gap: theme.spacing[8],
   },
   actions: {
     gap: theme.spacing[3],

@@ -7,3 +7,10 @@ export const testUser1: User = {
   lowercaseNickname: 'og_wordler',
   nickname: 'OG_Wordler',
 };
+
+export const testUser2: User = {
+  _id: 'user2' as Id<'users'>,
+  _creationTime: 1751879338378,
+  lowercaseNickname: 'the joiner',
+  nickname: 'The Joiner',
+};
