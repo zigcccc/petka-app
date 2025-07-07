@@ -32,7 +32,7 @@ export function generateUseQueryHookWithTimestampArg<QueryFn extends FunctionRef
     const data = useQuery(queryFn, args === 'skip' ? args : { ...args, timestamp: timestampRef.current });
 
     if (typeof data === 'undefined') {
-      return { isLoading: true, isNotFound: false, data: null } as const;
+      return { isLoading: true, isNotFound: false, data: undefined } as const;
     }
 
     if (data === null) {
