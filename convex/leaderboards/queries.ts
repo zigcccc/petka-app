@@ -54,7 +54,9 @@ export const list = query({
 
       const leaderboardEntries = await leaderboardEntriesBaseQuery.collect();
 
-      const usersScoreMap: Record<Id<'users'>, number> = {};
+      const usersScoreMap: Record<Id<'users'>, number> = {
+        [normalizedUserId]: 0,
+      };
 
       for (const entry of leaderboardEntries) {
         usersScoreMap[entry.userId] = (usersScoreMap[entry.userId] ?? 0) + entry.score;
@@ -122,7 +124,9 @@ export const readGlobalLeaderboard = query({
 
     const leaderboardEntries = await leaderboardEntriesBaseQuery.collect();
 
-    const usersScoreMap: Record<string, number> = {};
+    const usersScoreMap: Record<string, number> = {
+      [normalizedUserId]: 0,
+    };
 
     for (const entry of leaderboardEntries) {
       usersScoreMap[entry.userId] = (usersScoreMap[entry.userId] ?? 0) + entry.score;
@@ -157,9 +161,10 @@ export const readGlobalLeaderboard = query({
       {} as Record<string, User>
     );
 
-    const scoresWithUsers = scoresToReport.map(({ userId, ...score }) => ({ ...score, user: usersMap[userId] }));
-
-    return { ...globalLeaderboard, scoresWithUsers };
+    return {
+      ...globalLeaderboard,
+      scores: scoresToReport.map(({ userId, ...score }) => ({ ...score, user: usersMap[userId] })),
+    };
   },
 });
 

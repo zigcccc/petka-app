@@ -30,6 +30,7 @@ export function Card({ actionsIconName = 'pencil', children, title, onShowAction
               backgroundColor: 'white',
               transform: [{ translateX: 12 }],
             }}
+            testID="card--actions-trigger"
           >
             {({ pressed }) => (
               <Octicons
