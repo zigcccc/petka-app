@@ -1,6 +1,9 @@
+import { ConvexError } from 'convex/values';
+
 import { pickRandomWord } from '@/utils/words';
 
 import { internalMutation } from '../_generated/server';
+import { pushNotifications } from '../notifications/services';
 
 import { puzzleType } from './models';
 
@@ -33,5 +36,47 @@ export const createDailyPuzzle = internalMutation({
     if (usedDictionaryEntry) {
       await ctx.db.patch(usedDictionaryEntry._id, { numOfTimesUsed: usedDictionaryEntry.numOfTimesUsed + 1 });
     }
+  },
+});
+
+export const sendReminderForDailyChallange = internalMutation({
+  args: {},
+  async handler(ctx) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const puzzle = await ctx.db
+      .query('puzzles')
+      .withIndex('by_year_month_day', (q) =>
+        q
+          .eq('year', today.getFullYear())
+          .eq('month', today.getMonth() + 1)
+          .eq('day', today.getDate())
+      )
+      .filter((q) => q.eq(q.field('type'), puzzleType.Enum.daily))
+      .unique();
+
+    if (!puzzle) {
+      throw new ConvexError({ message: 'Daily puzzle not found', code: 404 });
+    }
+
+    const users = await ctx.db.query('users').collect();
+    const userIds = users.map((user) => user._id);
+
+    const idsToNotify = new Set(userIds).difference(new Set(puzzle.solvedBy));
+
+    idsToNotify.values().forEach(async (userId) => {
+      const { hasToken } = await pushNotifications.getStatusForUser(ctx, { userId });
+      if (hasToken) {
+        await pushNotifications.sendPushNotification(ctx, {
+          userId,
+          notification: {
+            title: 'Tik-tak, tik-tak... ⏰',
+            body: 'Ne pozabi rešiti današnjega dnevnega iziva!',
+            data: { url: '/(authenticated)/play/daily-puzzle' },
+          },
+        });
+      }
+    });
   },
 });

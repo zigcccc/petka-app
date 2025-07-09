@@ -25,7 +25,8 @@ export default defineSchema({
     .index('by_puzzles_solution', ['solution'])
     .index('by_creator_id', ['creatorId'])
     .index('by_type', ['type'])
-    .index('by_type_creator', ['creatorId', 'type']),
+    .index('by_type_creator', ['creatorId', 'type'])
+    .index('by_year_month_day', ['year', 'month', 'day']),
   puzzleGuessAttempts: puzzleGuessAttemptsTable
     .index('by_user', ['userId'])
     .index('by_puzzle', ['puzzleId'])
