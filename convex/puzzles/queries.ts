@@ -43,7 +43,7 @@ export const list = query({
     const indexedQuery =
       type === puzzleType.Enum.daily
         ? baseQuery.withIndex('by_type', (q) => q.eq('type', type).lte('_creationTime', currentDate.getTime()))
-        : baseQuery.withIndex('by_type_creator', (q) => q.eq('creatorId', normalizedUserId).eq('type', type));
+        : baseQuery.withIndex('by_type_creator', (q) => q.eq('type', type).eq('creatorId', normalizedUserId));
 
     const puzzles = await indexedQuery.order('desc').paginate(paginationOpts);
 
@@ -76,7 +76,7 @@ export const readUserActiveTrainingPuzzle = query({
 
     const userTrainingPuzzlesQuery = ctx.db
       .query('puzzles')
-      .withIndex('by_type_creator', (q) => q.eq('creatorId', normalizedUserId).eq('type', puzzleType.Enum.training));
+      .withIndex('by_type_creator', (q) => q.eq('type', puzzleType.Enum.training).eq('creatorId', normalizedUserId));
 
     for await (const puzzle of userTrainingPuzzlesQuery) {
       if (!puzzle.solvedBy.includes(userId)) {
@@ -120,7 +120,7 @@ export const readUserPuzzlesStatistics = query({
     const basePuzzlesQuery =
       type === puzzleType.Enum.daily
         ? ctx.db.query('puzzles').withIndex('by_type', (q) => q.eq('type', type))
-        : ctx.db.query('puzzles').withIndex('by_type_creator', (q) => q.eq('creatorId', userId).eq('type', type));
+        : ctx.db.query('puzzles').withIndex('by_type_creator', (q) => q.eq('type', type).eq('creatorId', userId));
 
     const allPuzzles = await basePuzzlesQuery.order('desc').collect();
     const allPuzzlesAttempts = await Promise.all(

@@ -93,7 +93,7 @@ export const cleanupUserData = internalMutation({
 
     const puzzlesQuery = ctx.db
       .query('puzzles')
-      .withIndex('by_type_creator', (q) => q.eq('creatorId', id).eq('type', puzzleType.Enum.training));
+      .withIndex('by_type_creator', (q) => q.eq('type', puzzleType.Enum.training).eq('creatorId', id));
     for await (const puzzle of puzzlesQuery) {
       await ctx.db.delete(puzzle._id);
     }
