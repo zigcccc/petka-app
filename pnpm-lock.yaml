@@ -12,8 +12,8 @@ importers:
         specifier: ^0.1.9
         version: 0.1.9(convex@1.24.8(react@19.0.0))
       '@convex-dev/expo-push-notifications':
-        specifier: link:/Users/zigakrasovec/Work/OSS/expo-push-notifications
-        version: link:../../../OSS/expo-push-notifications
+        specifier: 0.2.4
+        version: 0.2.4(convex@1.24.8(react@19.0.0))(react@19.0.0)(typescript@5.8.3)(zod@3.25.67)
       '@convex-dev/migrations':
         specifier: ^0.2.9
         version: 0.2.9(convex@1.24.8(react@19.0.0))
@@ -761,6 +761,11 @@ packages:
     resolution: {integrity: sha512-TV7hFli9iDekLQt95HgL1YfwdjG7TnVR2E+6meWo0VztdXqYN14aqwvEOcaadtDhFfedGx32xHZBFzvfgQZkYQ==}
     peerDependencies:
       convex: ~1.16.5 || >=1.17.0 <1.35.0
+
+  '@convex-dev/expo-push-notifications@0.2.4':
+    resolution: {integrity: sha512-1AhHc6tcNXqBV4xLFD5cbQAI5IE0/SM3sNTAc+Ms26ASwGF4M/1yN0nrLdKbHSv/HsM60ovZiMIS+BQ7DHC+lg==}
+    peerDependencies:
+      convex: '>=1.23.0 <1.35.0'
 
   '@convex-dev/migrations@0.2.9':
     resolution: {integrity: sha512-HfIv6/F8VbtJ1NVT2bQRTumJGdaqROl/+s5IOnubHm7vvgie0RjcfO6YiB7JoLFWwS19vjDQDKl63ihoA08zOA==}
@@ -6565,6 +6570,17 @@ snapshots:
     dependencies:
       convex: 1.24.8(react@19.0.0)
       cron-parser: 4.9.0
+
+  '@convex-dev/expo-push-notifications@0.2.4(convex@1.24.8(react@19.0.0))(react@19.0.0)(typescript@5.8.3)(zod@3.25.67)':
+    dependencies:
+      convex: 1.24.8(react@19.0.0)
+      convex-helpers: 0.1.94(convex@1.24.8(react@19.0.0))(react@19.0.0)(typescript@5.8.3)(zod@3.25.67)
+    transitivePeerDependencies:
+      - '@standard-schema/spec'
+      - hono
+      - react
+      - typescript
+      - zod
 
   '@convex-dev/migrations@0.2.9(convex@1.24.8(react@19.0.0))':
     dependencies:
