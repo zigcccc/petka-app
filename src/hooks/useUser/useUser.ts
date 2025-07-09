@@ -71,18 +71,10 @@ export function useUser() {
   };
 
   useEffect(() => {
-    async function getUserIdFromStorage() {
-      const savedUserId = await AsyncStorage.getItem('userId').catch(() => null);
-      setUserId(savedUserId);
-    }
-    getUserIdFromStorage();
+    AsyncStorage.getItem('userId')
+      .then((savedUserId) => setUserId(savedUserId))
+      .catch(() => null);
   }, []);
-
-  useEffect(() => {
-    if (user) {
-      posthog.identify(user._id, user);
-    }
-  }, [user, posthog]);
 
   return {
     deleteUser: handleDeleteUserAccount,
