@@ -100,6 +100,18 @@ describe('registerForPushNotificationsAsync', () => {
     }
   );
 
+  it.each([Notifications.PermissionStatus.DENIED, Notifications.PermissionStatus.UNDETERMINED])(
+    'should throw an error if final status is not "granted" (final status is %s)',
+    async (finalStatus) => {
+      mockGetPermissionsAsync.mockResolvedValue({ status: finalStatus });
+      mockRequestPermissionsAsync.mockResolvedValue({ status: finalStatus });
+
+      await expect(registerForPushNotificationsAsync()).rejects.toThrow(
+        'Permission not granted to get push token for push notification!'
+      );
+    }
+  );
+
   it('should throw an error if project id is not defined in neither expoConfig or easConfig', async () => {
     mockExpoConfig = null;
     mockProjectId = null;
