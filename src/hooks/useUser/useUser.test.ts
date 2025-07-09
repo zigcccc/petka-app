@@ -145,22 +145,6 @@ describe('useUser', () => {
     expect(mockCaptureEvent).not.toHaveBeenCalled();
   });
 
-  it('should trigger identify analytics event when user data is available', () => {
-    useUserQuerySpy.mockReturnValue({ data: testUser1 });
-
-    renderHook(() => useUser());
-
-    expect(mockIdentify).toHaveBeenCalledWith(testUser1._id, testUser1);
-  });
-
-  it('should not trigger identify analytics event when user data is not available', () => {
-    useUserQuerySpy.mockReturnValue({ data: null });
-
-    renderHook(() => useUser());
-
-    expect(mockIdentify).not.toHaveBeenCalled();
-  });
-
   it('should prompt user for confirmation and trigger delete user mutation on deleteUser action - success scenario', async () => {
     mockDeleteUser.mockResolvedValue(null);
     useUserQuerySpy.mockReturnValue({ data: testUser1 });

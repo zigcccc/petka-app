@@ -73,7 +73,7 @@ export function useUser() {
   useEffect(() => {
     AsyncStorage.getItem('userId')
       .then((savedUserId) => setUserId(savedUserId))
-      .catch(() => null);
+      .catch(() => setUserId(null));
   }, []);
 
   return {
