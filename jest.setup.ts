@@ -8,3 +8,8 @@ jest.mock('burnt', () => ({
   toast: jest.fn(),
   alert: jest.fn(),
 }));
+
+jest.mock('expo', () => ({
+  ...jest.requireActual('expo'),
+  isRunningInExpoGo: jest.fn().mockReturnValue(false),
+}));

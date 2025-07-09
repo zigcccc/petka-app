@@ -3,4 +3,5 @@ export * from './useActiveTrainingPuzzleQuery';
 export * from './useGlobalLeaderboardQuery';
 export * from './usePuzzleAttemptsQuery';
 export * from './usePuzzleStatisticsQuery';
+export * from './useUserNotificationsStatusQuery';
 export * from './useUserQuery';

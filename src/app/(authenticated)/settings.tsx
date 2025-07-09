@@ -1,11 +1,13 @@
 import dayjs from 'dayjs';
 import * as Clipboard from 'expo-clipboard';
+import * as Device from 'expo-device';
 import { useRouter } from 'expo-router';
 import { Switch, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { GenericStackScreen } from '@/components/navigation';
 import { Button, Card, Text } from '@/components/ui';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useToaster } from '@/hooks/useToaster';
 import { useUser } from '@/hooks/useUser';
 
@@ -13,6 +15,7 @@ export default function SettingsScreen() {
   const router = useRouter();
   const toaster = useToaster();
   const { user, deleteUser, isDeleting } = useUser();
+  const { status, toggle } = usePushNotifications(user?._id);
 
   const handleCopyUserId = async () => {
     await Clipboard.setStringAsync(user?._id ?? '');
@@ -24,13 +27,21 @@ export default function SettingsScreen() {
       <View style={styles.container}>
         <Card title="Obvestila">
           <Card.ActionRow
-            action={<Switch onValueChange={console.log} value={true} />}
+            action={
+              <Switch
+                accessibilityState={{ disabled: !Device.isDevice }}
+                accessibilityValue={{ text: status?.hasToken ? 'On' : 'Off' }}
+                disabled={!Device.isDevice}
+                onValueChange={toggle}
+                value={status?.hasToken}
+              />
+            }
             title="Dovoli pošiljanje potisnih obvestil"
           >
             Potisno obvestilo boste prejeli 1x dnevno kot opomnik za dnevni izziv.
           </Card.ActionRow>
         </Card>
-        <Card title="Uporabiški profil">
+        <Card title="Uporabniški profil">
           <Card.ActionRow
             action={
               <Button intent="terciary" onPress={() => router.navigate('/update-nickname')} size="xs" variant="outline">
