@@ -39,7 +39,7 @@ export const createDailyPuzzle = internalMutation({
   },
 });
 
-export const sendReminderForDailyChallange = internalMutation({
+export const sendReminderForDailyChallenge = internalMutation({
   args: {},
   async handler(ctx) {
     const today = new Date();
