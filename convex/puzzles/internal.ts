@@ -65,7 +65,7 @@ export const sendReminderForDailyChallenge = internalMutation({
 
     const idsToNotify = new Set(userIds).difference(new Set(puzzle.solvedBy));
 
-    idsToNotify.values().forEach(async (userId) => {
+    for (const userId of idsToNotify.values()) {
       const { hasToken } = await pushNotifications.getStatusForUser(ctx, { userId });
       if (hasToken) {
         await pushNotifications.sendPushNotification(ctx, {
@@ -77,6 +77,6 @@ export const sendReminderForDailyChallenge = internalMutation({
           },
         });
       }
-    });
+    }
   },
 });
