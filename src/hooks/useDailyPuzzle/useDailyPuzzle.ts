@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import { usePostHog } from 'posthog-react-native';
 
 import { isAttemptCorrect } from '@/convex/puzzleGuessAttempts/helpers';
@@ -24,16 +25,15 @@ export function useDailyPuzzle() {
   const handleCreatePuzzleGuessAttempt = async (attempt: string) => {
     try {
       const { isCorrect } = await createPuzzleGuessAttempt({
-        data: {
-          userId: user?._id!,
-          puzzleId: puzzle?._id!,
-          attempt,
-        },
+        data: { userId: user?._id!, puzzleId: puzzle?._id!, attempt },
       });
 
       if (isCorrect) {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         markPuzzleAsSolved({ puzzleId: puzzle?._id!, userId: user?._id! });
         posthog.capture('puzzle:solved', { puzzleId: puzzle?._id!, userId: user?._id!, type: puzzleType.Enum.daily });
+      } else {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       }
     } catch {
       toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });

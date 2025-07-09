@@ -1,4 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react-native';
+import * as Haptics from 'expo-haptics';
 import { usePostHog } from 'posthog-react-native';
 
 import { type Id } from '@/convex/_generated/dataModel';
@@ -63,6 +64,8 @@ describe('useTrainingPuzzle', () => {
   const useCreatePuzzleGuessAttemptMutationSpy = useCreatePuzzleGuessAttemptMutation as jest.Mock;
   const useCreateTrainingPuzzleMutationSpy = useCreateTrainingPuzzleMutation as jest.Mock;
   const useMarkPuzzleAsSolvedMutationSpy = useMarkPuzzleAsSolvedMutation as jest.Mock;
+  const hapticsNotificationAsyncSpy = jest.spyOn(Haptics, 'notificationAsync');
+  const hapticsImpactAsyncSpy = jest.spyOn(Haptics, 'impactAsync');
 
   beforeEach(() => {
     useCreateTrainingPuzzleMutationSpy.mockReturnValue({ mutate: mockCreateTrainingPuzzle });
@@ -241,9 +244,9 @@ describe('useTrainingPuzzle', () => {
     });
   });
 
-  it('should trigger createPuzzleGuessAttempt mutation on onSubmitAttempt action - success scenario', async () => {
+  it('should trigger createPuzzleGuessAttempt mutation on onSubmitAttempt action - success scenario, attempt is not correct', async () => {
     useActiveTrainingPuzzleQuerySpy.mockReturnValue({ data: testTrainingPuzzle1 });
-    mockCreatePuzzleGuessAttempt.mockResolvedValue(null);
+    mockCreatePuzzleGuessAttempt.mockResolvedValue({ isCorrect: false });
 
     const { result } = renderHook(() => useTrainingPuzzle());
 
@@ -262,8 +265,45 @@ describe('useTrainingPuzzle', () => {
     });
 
     await waitFor(() => {
+      expect(hapticsImpactAsyncSpy).toHaveBeenCalledWith(Haptics.ImpactFeedbackStyle.Medium);
+    });
+
+    await waitFor(() => {
       expect(mockToast).not.toHaveBeenCalled();
     });
+
+    expect(hapticsNotificationAsyncSpy).not.toHaveBeenCalled();
+  });
+
+  it('should trigger createPuzzleGuessAttempt mutation on onSubmitAttempt action - success scenario, attempt is correct', async () => {
+    useActiveTrainingPuzzleQuerySpy.mockReturnValue({ data: testTrainingPuzzle1 });
+    mockCreatePuzzleGuessAttempt.mockResolvedValue({ isCorrect: true });
+
+    const { result } = renderHook(() => useTrainingPuzzle());
+
+    act(() => {
+      result.current.onSubmitAttempt('shake');
+    });
+
+    await waitFor(() => {
+      expect(mockCreatePuzzleGuessAttempt).toHaveBeenCalledWith({
+        data: {
+          userId: testUser1._id,
+          puzzleId: testTrainingPuzzle1._id,
+          attempt: 'shake',
+        },
+      });
+    });
+
+    await waitFor(() => {
+      expect(hapticsNotificationAsyncSpy).toHaveBeenCalledWith(Haptics.NotificationFeedbackType.Success);
+    });
+
+    await waitFor(() => {
+      expect(mockToast).not.toHaveBeenCalled();
+    });
+
+    expect(hapticsImpactAsyncSpy).not.toHaveBeenCalled();
   });
 
   it('should trigger createPuzzleGuessAttempt mutation on onSubmitAttempt action - error scenario', async () => {
