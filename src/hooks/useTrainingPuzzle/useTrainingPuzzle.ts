@@ -1,3 +1,4 @@
+import * as Haptics from 'expo-haptics';
 import { usePostHog } from 'posthog-react-native';
 import { useCallback, useEffect } from 'react';
 
@@ -30,7 +31,15 @@ export function useTrainingPuzzle() {
 
   const handleCreatePuzzleGuessAttempt = async (attempt: string) => {
     try {
-      await createPuzzleGuessAttempt({ data: { userId: user?._id!, puzzleId: puzzle?._id!, attempt } });
+      const { isCorrect } = await createPuzzleGuessAttempt({
+        data: { userId: user?._id!, puzzleId: puzzle?._id!, attempt },
+      });
+
+      if (isCorrect) {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      } else {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      }
     } catch {
       toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
     }

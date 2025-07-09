@@ -18,7 +18,7 @@ export const registerUserForNotifications = mutation({
   handler: async (ctx, { userId, pushToken }) => {
     await pushNotifications.recordToken(ctx, { userId, pushToken });
     // TODO: Add this back once fixed
-    await pushNotifications.unpauseNotificationsForUser(ctx, { userId });
+    // await pushNotifications.unpauseNotificationsForUser(ctx, { userId });
   },
 });
 

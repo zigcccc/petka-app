@@ -1,4 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react-native';
+import * as Haptics from 'expo-haptics';
 import { usePostHog } from 'posthog-react-native';
 
 import { type Id } from '@/convex/_generated/dataModel';
@@ -54,6 +55,8 @@ describe('useDailyPuzzle', () => {
   const usePostHogSpy = usePostHog as jest.Mock;
   const useUserSpy = useUser as jest.Mock;
   const useToasterSpy = useToaster as jest.Mock;
+  const hapticsNotificationAsyncSpy = jest.spyOn(Haptics, 'notificationAsync');
+  const hapticsImpactAsyncSpy = jest.spyOn(Haptics, 'impactAsync');
 
   beforeEach(() => {
     useMarkPuzzleAsSolvedMutationSpy.mockReturnValue({ mutate: mockMarkPuzzleAsSolved });
@@ -164,9 +167,11 @@ describe('useDailyPuzzle', () => {
     });
 
     await waitFor(() => {
-      expect(mockMarkPuzzleAsSolved).not.toHaveBeenCalled();
+      expect(hapticsImpactAsyncSpy).toHaveBeenCalledWith(Haptics.ImpactFeedbackStyle.Medium);
     });
 
+    expect(mockMarkPuzzleAsSolved).not.toHaveBeenCalled();
+    expect(hapticsNotificationAsyncSpy).not.toHaveBeenCalled();
     expect(mockCaptureEvent).not.toHaveBeenCalled();
     expect(mockToast).not.toHaveBeenCalled();
   });
@@ -193,6 +198,10 @@ describe('useDailyPuzzle', () => {
     });
 
     await waitFor(() => {
+      expect(hapticsNotificationAsyncSpy).toHaveBeenCalledWith(Haptics.NotificationFeedbackType.Success);
+    });
+
+    await waitFor(() => {
       expect(mockMarkPuzzleAsSolved).toHaveBeenCalledWith({ puzzleId: testDailyPuzzle1._id, userId: testUser1._id });
     });
 
@@ -202,6 +211,7 @@ describe('useDailyPuzzle', () => {
       type: puzzleType.Enum.daily,
     });
 
+    expect(hapticsImpactAsyncSpy).not.toHaveBeenCalled();
     expect(mockToast).not.toHaveBeenCalled();
   });
 
