@@ -3,13 +3,17 @@ import { ConvexProvider, ConvexReactClient } from 'convex/react';
 import dayjs from 'dayjs';
 import { Asset } from 'expo-asset';
 import { useFonts } from 'expo-font';
-import { Stack, useGlobalSearchParams, usePathname } from 'expo-router';
+import * as Notifications from 'expo-notifications';
+import { type Href, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { PostHogProvider, usePostHog } from 'posthog-react-native';
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native-unistyles';
+
+import { usePushNotifications } from '@/hooks/usePushNotifications';
+import { useUser } from '@/hooks/useUser';
 
 import 'dayjs/locale/sl';
 import 'react-native-reanimated';
@@ -39,10 +43,22 @@ Sentry.init({
   ],
 });
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
+
 function RootLayout() {
   const posthog = usePostHog();
   const pathname = usePathname();
   const params = useGlobalSearchParams();
+  const router = useRouter();
+  const { user } = useUser();
+  const notifications = usePushNotifications(user?._id);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [fontsLoaded] = useFonts({
     SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
@@ -74,6 +90,26 @@ function RootLayout() {
   useEffect(() => {
     posthog.screen(pathname, params);
   }, [pathname, params, posthog]);
+
+  useEffect(() => {
+    if (user) {
+      posthog.identify(user._id, user);
+      notifications.register(user._id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+      const url = response.notification.request.content.data?.url;
+
+      if (typeof url === 'string') {
+        router.push(url as Href);
+      }
+    });
+
+    return () => subscription.remove();
+  }, [router]);
 
   if (!isReady) {
     return null;

@@ -3,7 +3,7 @@ import { type User } from '@/convex/users/models';
 
 export const testUser1: User = {
   _id: 'user1' as Id<'users'>,
-  _creationTime: Date.now(),
+  _creationTime: 1751328000000, // 2025-07-01
   lowercaseNickname: 'og_wordler',
   nickname: 'OG_Wordler',
 };
