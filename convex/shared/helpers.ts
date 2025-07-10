@@ -21,7 +21,10 @@ export function windowAround<T>(arr: T[], matcher: T | ((item: T) => boolean), b
     typeof matcher === 'function' ? (matcher as (item: T) => boolean) : (item: T) => Object.is(item, matcher);
 
   const idx = arr.findIndex(isMatch);
-  if (idx === -1) return [];
+
+  if (idx === -1) {
+    return arr.slice(0, 4);
+  }
 
   const start = Math.max(0, idx - before);
   const end = Math.min(arr.length, idx + after + 1);

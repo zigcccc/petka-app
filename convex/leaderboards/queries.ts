@@ -54,15 +54,15 @@ export const list = query({
 
       const leaderboardEntries = await leaderboardEntriesBaseQuery.collect();
 
-      const usersScoreMap: Record<Id<'users'>, number> = {
-        [normalizedUserId]: 0,
-      };
+      const usersScoreMap = leaderboard.users
+        ? new Map(leaderboard.users.map((userId) => [userId, 0]))
+        : new Map([[normalizedUserId, 0]]);
 
       for (const entry of leaderboardEntries) {
-        usersScoreMap[entry.userId] = (usersScoreMap[entry.userId] ?? 0) + entry.score;
+        usersScoreMap.set(entry.userId, (usersScoreMap.get(entry.userId) ?? 0) + entry.score);
       }
 
-      const scoresToReport = Object.entries(usersScoreMap)
+      const scoresToReport = Array.from(usersScoreMap.entries())
         .sort((a, b) => b[1] - a[1])
         .map(([userId, score], idx) => ({
           userId,
