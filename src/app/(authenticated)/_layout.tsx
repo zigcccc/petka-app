@@ -1,5 +1,5 @@
-import { Stack, useRouter } from 'expo-router';
-import { useEffect } from 'react';
+import { Stack, useFocusEffect, useRouter } from 'expo-router';
+import { useCallback } from 'react';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { useUser } from '@/hooks/useUser';
@@ -7,13 +7,15 @@ import { useUser } from '@/hooks/useUser';
 export default function AuthenticatedLayout() {
   const { theme } = useUnistyles();
   const router = useRouter();
-  const { shouldCreateAccount, userId } = useUser();
+  const { shouldCreateAccount } = useUser();
 
-  useEffect(() => {
-    if (shouldCreateAccount) {
-      router.navigate('/create-account');
-    }
-  }, [router, shouldCreateAccount, userId]);
+  useFocusEffect(
+    useCallback(() => {
+      if (shouldCreateAccount) {
+        router.navigate('/create-account');
+      }
+    }, [router, shouldCreateAccount])
+  );
 
   return (
     <Stack initialRouteName="index" screenOptions={{ contentStyle: styles.content }}>

@@ -6,6 +6,7 @@ import { StyleSheet } from 'react-native-unistyles';
 import { Text } from '@/components/ui';
 import { type PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
 import { puzzleType, type PuzzleWithAttempts } from '@/convex/puzzles/models';
+import { getDateObjectFromPuzzle } from '@/utils/puzzles';
 
 import { GuessGrid } from '../GuessGrid';
 
@@ -17,10 +18,7 @@ type Props = {
 };
 
 export function HistoryGrid({ puzzle, userId, style, cellWidth }: Readonly<Props>) {
-  const puzzleCreatedDate = dayjs()
-    .year(puzzle.year)
-    .month(puzzle.month - 1)
-    .date(puzzle.day);
+  const puzzleCreatedDate = getDateObjectFromPuzzle(puzzle);
 
   const isInPast = puzzleCreatedDate.isBefore(dayjs(), 'day');
   const isSolvedByUser = userId && puzzle.solvedBy.includes(userId);
@@ -47,7 +45,7 @@ export function HistoryGrid({ puzzle, userId, style, cellWidth }: Readonly<Props
     <View style={[styles.container, style]}>
       <View style={styles.header}>
         <Text style={{ textTransform: 'capitalize' }} weight="medium">
-          {puzzleCreatedDate.format('dddd, DD. MMMM YYYY')}
+          {puzzleCreatedDate.format('dddd, DD. MMM YYYY')}
         </Text>
         {shouldShowSolution && (
           <Text weight="medium">

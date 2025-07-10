@@ -51,7 +51,7 @@ export default function CreateAccountScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ gestureEnabled: !shouldCreateAccount }} />
+      <Stack.Screen options={{ gestureEnabled: !shouldCreateAccount, headerBackVisible: false }} />
       <View style={styles.container}>
         <Text size="2xl" weight="bold">
           Hej 👋

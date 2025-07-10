@@ -1,6 +1,6 @@
 import { useNavigation, useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Platform, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { GuessGrid, Keyboard, useGuessGrid } from '@/components/elements';
@@ -11,11 +11,11 @@ export default function TrainingPuzzleScreen() {
   const { theme } = useUnistyles();
   const router = useRouter();
   const navigation = useNavigation();
-  const { attempts, puzzle, isCreating, isSolved, onSubmitAttempt } = useTrainingPuzzle();
+  const { attempts, puzzle, isCreating, isDone, onSubmitAttempt } = useTrainingPuzzle();
   const { grid, onInput, isValidating, allCheckedLetters } = useGuessGrid({ attempts, onSubmitAttempt });
 
   useEffect(() => {
-    if (isSolved) {
+    if (isDone) {
       router.navigate('/play/training-puzzle-solved');
       navigation.setOptions({
         headerRight: () => (
@@ -27,7 +27,7 @@ export default function TrainingPuzzleScreen() {
     } else {
       navigation.setOptions({ headerRight: null });
     }
-  }, [isSolved, router, navigation]);
+  }, [isDone, router, navigation]);
 
   if (!puzzle) {
     return (
@@ -46,12 +46,12 @@ export default function TrainingPuzzleScreen() {
         <GuessGrid attempts={attempts} grid={grid} isValidating={isValidating} />
       </View>
       <View style={styles.spacer} />
-      <Keyboard checkedLetters={allCheckedLetters} isDisabled={isSolved} onKeyPress={onInput} />
+      <Keyboard checkedLetters={allCheckedLetters} isDisabled={isDone} onKeyPress={onInput} />
     </View>
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
   spacer: {
     flex: 1,
   },
@@ -65,6 +65,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   container: {
     flex: 1,
+    paddingBottom: Platform.select({ android: rt.insets.bottom + theme.spacing[3], ios: 0 }),
   },
   content: {
     paddingTop: theme.spacing[6],

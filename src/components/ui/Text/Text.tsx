@@ -11,6 +11,7 @@ type Props = PropsWithChildren<{
   UnistylesVariants<typeof styles>;
 
 export function Text({
+  align = 'auto',
   allowFontScaling,
   children,
   numberOfLines,
@@ -20,7 +21,7 @@ export function Text({
   color = 'black',
   onPress,
 }: Readonly<Props>) {
-  styles.useVariants({ size, weight, color, isLink: !!onPress });
+  styles.useVariants({ align, size, weight, color, isLink: !!onPress });
 
   return (
     <RNText
@@ -37,6 +38,23 @@ export function Text({
 const styles = StyleSheet.create((theme) => ({
   text: {
     variants: {
+      align: {
+        left: {
+          textAlign: 'left',
+        },
+        center: {
+          textAlign: 'center',
+        },
+        right: {
+          textAlign: 'right',
+        },
+        auto: {
+          textAlign: 'auto',
+        },
+        justify: {
+          textAlign: 'justify',
+        },
+      },
       color: {
         black: {
           color: theme.colors.black,

@@ -51,7 +51,7 @@ export default function AllTimeLeaderboardScreen() {
         ) : (
           <View style={styles.noLeaderboardsContainer}>
             <Image source={require('@/assets/images/no-leaderboards.png')} style={styles.image} />
-            <Text color="grey70" size="sm">
+            <Text align="center" color="grey70" size="sm">
               Pridružen/a nisi še nobeni zasebni lestvici...
             </Text>
           </View>

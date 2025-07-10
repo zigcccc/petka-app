@@ -14,6 +14,7 @@ export default function WeeklyLeaderboardScreen() {
   const { data: globalLeaderboard } = useGlobalLeaderboard(leaderboardRange.Enum.weekly);
   const {
     leaderboards: privateLeaderboards,
+    isLoading,
     isCreating,
     isJoining,
     onCreatePrivateLeaderboard,
@@ -49,12 +50,16 @@ export default function WeeklyLeaderboardScreen() {
             ))}
           </View>
         ) : (
-          <View style={styles.noLeaderboardsContainer}>
-            <Image source={require('@/assets/images/no-leaderboards.png')} style={styles.image} />
-            <Text color="grey70" size="sm">
-              Pridružen/a nisi še nobeni zasebni lestvici...
-            </Text>
-          </View>
+          <>
+            {isLoading ? null : (
+              <View style={styles.noLeaderboardsContainer}>
+                <Image source={require('@/assets/images/no-leaderboards.png')} style={styles.image} />
+                <Text align="center" color="grey70" size="sm">
+                  Pridružen/a nisi še nobeni zasebni lestvici...
+                </Text>
+              </View>
+            )}
+          </>
         )}
         <View style={styles.actions}>
           <Button intent="terciary" loading={isJoining} onPress={onJoinPrivateLeaderboard} variant="fill">

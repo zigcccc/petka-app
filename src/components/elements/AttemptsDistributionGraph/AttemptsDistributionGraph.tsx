@@ -7,17 +7,19 @@ type Props = {
   numberOfAllPuzzles: number;
   numberOfCurrentAttempts?: number;
   distribtions: Record<number, number>;
+  isPuzzleFailed: boolean;
 };
 
 export function AttemptsDistributionGraph({
   distribtions,
+  isPuzzleFailed,
   numberOfAllPuzzles,
   numberOfCurrentAttempts = 0,
 }: Readonly<Props>) {
   return (
     <View style={styles.distrubitionsContainer}>
       {Object.entries(distribtions).map(([k, v]) => {
-        const isCurrent = numberOfCurrentAttempts === parseInt(k);
+        const isCurrent = numberOfCurrentAttempts === parseInt(k) && !isPuzzleFailed;
 
         return (
           <View key={k} style={styles.distrubitionsEntry}>
