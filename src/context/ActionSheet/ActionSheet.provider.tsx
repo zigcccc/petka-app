@@ -45,6 +45,8 @@ export function ActionSheetProvider({ children }: Readonly<PropsWithChildren>) {
 
       <BottomSheetModal
         ref={ref}
+        accessibilityLabel="Action sheet with options"
+        accessibilityRole="menu"
         backdropComponent={(props) => <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />}
         backgroundStyle={styles.background}
         handleComponent={null}

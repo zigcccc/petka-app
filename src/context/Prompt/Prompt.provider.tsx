@@ -51,6 +51,8 @@ export function PromptProvider({ children }: Readonly<PropsWithChildren>) {
       {children}
       <BottomSheetModal
         ref={ref}
+        accessibilityLabel="Prompt alert"
+        accessibilityRole="alert"
         backdropComponent={(props) => <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />}
         bottomInset={height / 2 - promptHeight}
         detached={true}
