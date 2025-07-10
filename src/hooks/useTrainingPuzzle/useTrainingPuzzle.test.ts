@@ -1,6 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react-native';
 import * as Haptics from 'expo-haptics';
 import { usePostHog } from 'posthog-react-native';
+import { Share } from 'react-native';
 
 import { type Id } from '@/convex/_generated/dataModel';
 import { puzzleType } from '@/convex/puzzles/models';
@@ -66,6 +67,7 @@ describe('useTrainingPuzzle', () => {
   const useMarkPuzzleAsSolvedMutationSpy = useMarkPuzzleAsSolvedMutation as jest.Mock;
   const hapticsNotificationAsyncSpy = jest.spyOn(Haptics, 'notificationAsync');
   const hapticsImpactAsyncSpy = jest.spyOn(Haptics, 'impactAsync');
+  const shareSpy = jest.spyOn(Share, 'share').mockImplementation(() => Promise.resolve({ action: 'sharedAction' }));
 
   beforeEach(() => {
     useCreateTrainingPuzzleMutationSpy.mockReturnValue({ mutate: mockCreateTrainingPuzzle });
@@ -221,6 +223,37 @@ describe('useTrainingPuzzle', () => {
     expect(result.current.isFailed).toBe(false);
   });
 
+  it.each([
+    {
+      desc: 'last puzzle attempt is correct (isSolved)',
+      attempts: [testIncorrectPuzzleGuessAttempt1, testCorrectPuzzleGuessAttempt1],
+    },
+    {
+      desc: 'length of attempts is 6 and last attempts is not correct (isFailed)',
+      attempts: new Array(6).fill(null).map((_, idx) => ({
+        ...testIncorrectPuzzleGuessAttempt1,
+        _id: `incorrectAttempt${idx}` as Id<'puzzleGuessAttempts'>,
+      })),
+    },
+  ])('should set isDone=true when $desc', ({ attempts }) => {
+    usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
+
+    const { result } = renderHook(() => useTrainingPuzzle());
+
+    expect(result.current.isDone).toBe(true);
+  });
+
+  it.each([
+    { desc: 'attempts data is not available', attempts: undefined },
+    { desc: 'attempts length is not 6', attempts: [testIncorrectPuzzleGuessAttempt1] },
+  ])('should set isDone=false when $desc', ({ attempts }) => {
+    usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
+
+    const { result } = renderHook(() => useTrainingPuzzle());
+
+    expect(result.current.isDone).toBe(false);
+  });
+
   it('should trigger markPuzzleAsSolved mutation on onMarkAsSolved action', async () => {
     useActiveTrainingPuzzleQuerySpy.mockReturnValue({ data: testTrainingPuzzle1 });
     mockMarkPuzzleAsSolved.mockResolvedValue(null);
@@ -329,5 +362,51 @@ describe('useTrainingPuzzle', () => {
     await waitFor(() => {
       expect(mockToast).toHaveBeenCalledWith('Nekaj je šlo narobe.', { intent: 'error' });
     });
+  });
+
+  it('should display share context menu on onShareMessage trigger when attempts data is available - isFailed=false', () => {
+    usePuzzleAttemptsQuerySpy.mockReturnValue({
+      data: [testIncorrectPuzzleGuessAttempt1, testCorrectPuzzleGuessAttempt1],
+    });
+
+    const { result } = renderHook(() => useTrainingPuzzle());
+
+    act(() => {
+      result.current.onShareResults();
+    });
+
+    expect(shareSpy).toHaveBeenCalledWith({
+      message: `Petka (trening) - 2/6\n\n🟩⬛️🟨⬛️⬛️\n🟩🟩🟩🟩🟩`,
+    });
+  });
+
+  it('should display share context menu on onShareMessage trigger when attempts data is available - isFailed=true', () => {
+    const attempts = new Array(6).fill(null).map((_, idx) => ({
+      ...testIncorrectPuzzleGuessAttempt1,
+      _id: `incorrectAttempt${idx}` as Id<'puzzleGuessAttempts'>,
+    }));
+    usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
+
+    const { result } = renderHook(() => useTrainingPuzzle());
+
+    act(() => {
+      result.current.onShareResults();
+    });
+
+    expect(shareSpy).toHaveBeenCalledWith({
+      message: `Petka (trening) - X/6\n\n🟩⬛️🟨⬛️⬛️\n🟩⬛️🟨⬛️⬛️\n🟩⬛️🟨⬛️⬛️\n🟩⬛️🟨⬛️⬛️\n🟩⬛️🟨⬛️⬛️\n🟩⬛️🟨⬛️⬛️`,
+    });
+  });
+
+  it('should not display share context menu on onShareMessage trigger when attempts data is not available', () => {
+    usePuzzleAttemptsQuerySpy.mockReturnValue({ data: null });
+
+    const { result } = renderHook(() => useTrainingPuzzle());
+
+    act(() => {
+      result.current.onShareResults();
+    });
+
+    expect(shareSpy).not.toHaveBeenCalled();
   });
 });
