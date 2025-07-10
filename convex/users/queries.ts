@@ -3,6 +3,7 @@ import { zid } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
 import { internal } from '../_generated/api';
+import { leaderboardType } from '../leaderboards/models';
 import { puzzleType } from '../puzzles/models';
 import { internalMutation, mutation, query } from '../shared/queries';
 
@@ -84,6 +85,13 @@ export const cleanupUserData = internalMutation({
       await ctx.db.delete(leaderboard._id);
     }
 
+    const joinedLeaderboardsQuery = ctx.db
+      .query('leaderboards')
+      .withIndex('by_type', (q) => q.eq('type', leaderboardType.Enum.private));
+    for await (const joinedLeaderboard of joinedLeaderboardsQuery) {
+      await ctx.db.patch(joinedLeaderboard._id, { users: joinedLeaderboard.users?.filter((userId) => userId !== id) });
+    }
+
     const puzzleGuessAttemptsQuery = ctx.db
       .query('puzzleGuessAttempts')
       .withIndex('by_user', (q) => q.eq('userId', id));
@@ -109,8 +117,7 @@ export const destroy = mutation({
       throw new ConvexError({ code: 400, message: 'Invalid user id provided.' });
     }
 
+    await ctx.runMutation(internal.users.queries.cleanupUserData, { id });
     await ctx.db.delete(userId);
-
-    await ctx.scheduler.runAfter(0, internal.users.queries.cleanupUserData, { id });
   },
 });
