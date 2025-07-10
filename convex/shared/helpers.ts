@@ -23,7 +23,7 @@ export function windowAround<T>(arr: T[], matcher: T | ((item: T) => boolean), b
   const idx = arr.findIndex(isMatch);
 
   if (idx === -1) {
-    return arr.slice(0, 4);
+    return arr.slice(0, before + after + 1);
   }
 
   const start = Math.max(0, idx - before);

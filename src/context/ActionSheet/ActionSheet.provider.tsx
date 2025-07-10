@@ -8,7 +8,7 @@ import { Button, Text } from '@/components/ui';
 import { ActionSheetContext } from './ActionSheet.context';
 import { type ActionSheetPressCallback } from './ActionSheet.types';
 
-export function ActionSheetProvider({ children }: PropsWithChildren) {
+export function ActionSheetProvider({ children }: Readonly<PropsWithChildren>) {
   const ref = useRef<ComponentRef<typeof BottomSheetModal>>(null);
   const [config, setConfig] = useState<ActionSheetIOSOptions | null>(null);
   const actionCallbackRef = useRef<ActionSheetPressCallback | null>(null);
@@ -91,7 +91,7 @@ export function ActionSheetProvider({ children }: PropsWithChildren) {
                   );
                 })}
               </View>
-              {config.cancelButtonIndex && config.options[config.cancelButtonIndex] && (
+              {config.cancelButtonIndex !== undefined && config.options[config.cancelButtonIndex] && (
                 <View style={styles.cancelButtonContainer}>
                   <Button intent="shaded" onPress={() => ref.current?.dismiss()} size="lg" variant="transparent">
                     {config.options[config.cancelButtonIndex]}

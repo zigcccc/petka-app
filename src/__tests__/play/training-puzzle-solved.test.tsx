@@ -31,7 +31,7 @@ describe('Training puzzle solved screen', () => {
   const mockNavigate = jest.fn();
   const mockBack = jest.fn();
 
-  const defaultDailyPuzzleOptions = {
+  const defaultTrainingPuzzleOptions = {
     attempts: [],
     puzzle: testTrainingPuzzle1,
     isLoading: false,
@@ -44,7 +44,7 @@ describe('Training puzzle solved screen', () => {
 
   beforeEach(() => {
     useRouterSpy.mockReturnValue({ navigate: mockNavigate, back: mockBack });
-    useTrainingPuzzleSpy.mockReturnValue(defaultDailyPuzzleOptions);
+    useTrainingPuzzleSpy.mockReturnValue(defaultTrainingPuzzleOptions);
     usePuzzleStatisticsSpy.mockReturnValue({ isLoading: false, data: testPuzzleStatistics1 });
   });
 
@@ -58,7 +58,7 @@ describe('Training puzzle solved screen', () => {
   });
 
   it('should render correct title and subtile when isFailed=false', () => {
-    useTrainingPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, isFailed: false });
+    useTrainingPuzzleSpy.mockReturnValue({ ...defaultTrainingPuzzleOptions, isFailed: false });
     render(<TrainingPuzzleSolvedScreen />);
 
     expect(screen.queryByText('Čestitke 🥳')).toBeOnTheScreen();
@@ -69,7 +69,7 @@ describe('Training puzzle solved screen', () => {
   });
 
   it('should render correct title and subtile when isFailed=true', () => {
-    useTrainingPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, isFailed: true });
+    useTrainingPuzzleSpy.mockReturnValue({ ...defaultTrainingPuzzleOptions, isFailed: true });
     render(<TrainingPuzzleSolvedScreen />);
 
     expect(screen.queryByText('Čestitke 🥳')).not.toBeOnTheScreen();
@@ -105,7 +105,7 @@ describe('Training puzzle solved screen', () => {
 
     fireEvent.press(screen.getByRole('button', { name: /Deli/ }));
 
-    expect(defaultDailyPuzzleOptions.onShareResults).toHaveBeenCalled();
+    expect(defaultTrainingPuzzleOptions.onShareResults).toHaveBeenCalled();
   });
 
   it('should trigger router back action on "Nazaj" button press', () => {
@@ -122,6 +122,6 @@ describe('Training puzzle solved screen', () => {
     fireEvent.press(screen.getByRole('button', { name: /Začni nov izziv/ }));
 
     expect(mockBack).toHaveBeenCalled();
-    expect(defaultDailyPuzzleOptions.onMarkAsSolved).toHaveBeenCalled();
+    expect(defaultTrainingPuzzleOptions.onMarkAsSolved).toHaveBeenCalled();
   });
 });

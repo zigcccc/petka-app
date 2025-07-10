@@ -300,7 +300,7 @@ export const deletePrivateLeaderboard = mutation({
   },
 });
 
-export const leavePrivateLeadeboard = mutation({
+export const leavePrivateLeaderboard = mutation({
   args: { leaderboardId: zid('leaderboards'), userId: zid('users') },
   async handler(ctx, { leaderboardId, userId }) {
     const normalizedUserId = ctx.db.normalizeId('users', userId);

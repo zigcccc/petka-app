@@ -19,11 +19,11 @@ describe('<PromptProvider />', () => {
     title = 'Prompt title',
     message,
     buttons,
-  }: {
+  }: Readonly<{
     title?: string;
     message?: string;
     buttons?: AlertButton[];
-  }) {
+  }>) {
     const prompt = usePrompt();
 
     return (

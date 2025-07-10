@@ -8,7 +8,7 @@ import { Button, Text, TextInput } from '@/components/ui';
 
 import { PromptContext } from './Prompt.context';
 
-export function PromptProvider({ children }: PropsWithChildren) {
+export function PromptProvider({ children }: Readonly<PropsWithChildren>) {
   const { height } = useWindowDimensions();
   const [promptHeight, setPromptHeight] = useState(0);
   const [promptTitle, setPromptTitle] = useState('');

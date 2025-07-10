@@ -19,10 +19,10 @@ describe('<ActionSheetProvider />', () => {
   function TestComponent({
     options,
     onActionPress,
-  }: {
+  }: Readonly<{
     options: ActionSheetIOSOptions;
     onActionPress: ActionSheetPressCallback;
-  }) {
+  }>) {
     const actionSheet = useActionSheet();
 
     return (
