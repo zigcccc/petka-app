@@ -1,14 +1,22 @@
 import { act, renderHook, waitFor } from '@testing-library/react-native';
-import { useMutation, useQuery } from 'convex/react';
 import { ConvexError } from 'convex/values';
 import * as Clipboard from 'expo-clipboard';
 import { usePostHog } from 'posthog-react-native';
-import { ActionSheetIOS, Alert } from 'react-native';
+import { Alert } from 'react-native';
 
-import { api } from '@/convex/_generated/api';
+import { useActionSheet } from '@/context/ActionSheet';
+import { usePrompt } from '@/context/Prompt';
 import { type Id } from '@/convex/_generated/dataModel';
 import { leaderboardRange, leaderboardType } from '@/convex/leaderboards/models';
 
+import {
+  useCreatePrivateLeaderboardMutation,
+  useDeletePrivateLeaderboardMutation,
+  useJoinPrivateLeaderboardMutation,
+  useLeavePrivateLeaderboardMutation,
+  useUpdateLeaderboardNameMutation,
+} from '../mutations';
+import { useLeaderboardsQuery } from '../queries';
 import { useToaster } from '../useToaster';
 import { useUser } from '../useUser';
 
@@ -19,10 +27,14 @@ jest.mock('posthog-react-native', () => ({
   usePostHog: jest.fn(),
 }));
 
-jest.mock('convex/react', () => ({
-  ...jest.requireActual('convex/react'),
-  useMutation: jest.fn(),
-  useQuery: jest.fn(),
+jest.mock('@/context/ActionSheet', () => ({
+  ...jest.requireActual('@/context/ActionSheet'),
+  useActionSheet: jest.fn(),
+}));
+
+jest.mock('@/context/Prompt', () => ({
+  ...jest.requireActual('@/context/Prompt'),
+  usePrompt: jest.fn(),
 }));
 
 jest.mock('../useUser', () => ({
@@ -31,6 +43,20 @@ jest.mock('../useUser', () => ({
 
 jest.mock('../useToaster', () => ({
   useToaster: jest.fn(),
+}));
+
+jest.mock('../mutations', () => ({
+  ...jest.requireActual('../mutations'),
+  useCreatePrivateLeaderboardMutation: jest.fn(),
+  useDeletePrivateLeaderboardMutation: jest.fn(),
+  useJoinPrivateLeaderboardMutation: jest.fn(),
+  useLeavePrivateLeaderboardMutation: jest.fn(),
+  useUpdateLeaderboardNameMutation: jest.fn(),
+}));
+
+jest.mock('../queries', () => ({
+  ...jest.requireActual('../queries'),
+  useLeaderboardsQuery: jest.fn(),
 }));
 
 jest.mock('expo-clipboard', () => ({
@@ -46,14 +72,19 @@ describe('useLeaderboards', () => {
   const mockUpdateLeaderboardName = jest.fn();
   const mockToast = jest.fn();
   const mockCaptureEvent = jest.fn();
-  const mockCaptureException = jest.fn();
-  const showActionSheetWithOptionsSpy = jest.spyOn(ActionSheetIOS, 'showActionSheetWithOptions');
+  const showActionSheetWithOptionsSpy = jest.fn();
   const alertSpy = jest.spyOn(Alert, 'alert');
-  const promptSpy = jest.spyOn(Alert, 'prompt');
+  const promptSpy = jest.fn();
 
+  const useActionSheetSpy = useActionSheet as jest.Mock;
+  const usePromptSpy = usePrompt as jest.Mock;
+  const useCreatePrivateLeaderboardMutationSpy = useCreatePrivateLeaderboardMutation as jest.Mock;
+  const useDeletePrivateLeaderboardMutationSpy = useDeletePrivateLeaderboardMutation as jest.Mock;
+  const useJoinPrivateLeaderboardMutationSpy = useJoinPrivateLeaderboardMutation as jest.Mock;
+  const useLeavePrivateLeaderboardMutationSpy = useLeavePrivateLeaderboardMutation as jest.Mock;
+  const useUpdateLeaderboardNameMutationSpy = useUpdateLeaderboardNameMutation as jest.Mock;
+  const useLeaderboardsQuerySpy = useLeaderboardsQuery as jest.Mock;
   const useToasterSpy = useToaster as jest.Mock;
-  const useMutationSpy = useMutation as jest.Mock;
-  const useQuerySpy = useQuery as jest.Mock;
   const useUserSpy = useUser as jest.Mock;
   const usePostHogSpy = usePostHog as jest.Mock;
   const clipboardSetStringAsyncSpy = Clipboard.setStringAsync as jest.Mock;
@@ -76,14 +107,15 @@ describe('useLeaderboards', () => {
   beforeEach(() => {
     useToasterSpy.mockReturnValue({ toast: mockToast });
     useUserSpy.mockReturnValue({ user: testUser });
-    useMutationSpy
-      .mockReturnValueOnce(mockCreatePrivateLeaderboard)
-      .mockReturnValueOnce(mockJoinPrivateLeaderboard)
-      .mockReturnValueOnce(mockDeletePrivateLeaderboard)
-      .mockReturnValueOnce(mockLeavePrivateLeaderboard)
-      .mockReturnValueOnce(mockUpdateLeaderboardName);
-    useQuerySpy.mockReturnValue(testLeaderboards);
-    usePostHogSpy.mockReturnValue({ capture: mockCaptureEvent, captureException: mockCaptureException });
+    useCreatePrivateLeaderboardMutationSpy.mockReturnValue({ mutate: mockCreatePrivateLeaderboard });
+    useDeletePrivateLeaderboardMutationSpy.mockReturnValue({ mutate: mockDeletePrivateLeaderboard });
+    useJoinPrivateLeaderboardMutationSpy.mockReturnValue({ mutate: mockJoinPrivateLeaderboard });
+    useLeavePrivateLeaderboardMutationSpy.mockReturnValue({ mutate: mockLeavePrivateLeaderboard });
+    useUpdateLeaderboardNameMutationSpy.mockReturnValue({ mutate: mockUpdateLeaderboardName });
+    useLeaderboardsQuerySpy.mockReturnValue({ data: testLeaderboards, isLoading: false });
+    usePostHogSpy.mockReturnValue({ capture: mockCaptureEvent });
+    useActionSheetSpy.mockReturnValue({ present: showActionSheetWithOptionsSpy });
+    usePromptSpy.mockReturnValue(promptSpy);
   });
 
   afterEach(() => {
@@ -91,42 +123,36 @@ describe('useLeaderboards', () => {
     jest.clearAllMocks();
   });
 
-  it('should call useQuery hook with "skip" as an argument when user object is not available', () => {
+  it('should trigger leaderboards query hook with "skip" as an argument when user object is not available', () => {
     useUserSpy.mockReturnValue({ user: null });
 
     renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
-    expect(useQuerySpy).toHaveBeenCalledWith(api.leaderboards.queries.list, 'skip');
+    expect(useLeaderboardsQuerySpy).toHaveBeenCalledWith('skip');
   });
 
-  it('should call useQuery hook with query args when user object is available', () => {
-    const testTimestamp = 1751444599;
-    jest.useFakeTimers().setSystemTime(testTimestamp);
-
+  it('should trigger leaderboards query hook with query args when user object is available', () => {
     useUserSpy.mockReturnValue({ user: testUser });
 
     renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
-    expect(useQuerySpy).toHaveBeenCalledWith(api.leaderboards.queries.list, {
+    expect(useLeaderboardsQuerySpy).toHaveBeenCalledWith({
       userId: testUser._id,
       type: initialProps.type,
       range: initialProps.range,
-      timestamp: testTimestamp,
     });
-
-    jest.useRealTimers();
   });
 
-  it('should set isLoading to true when leaderboards are not defined', () => {
-    useQuerySpy.mockReturnValue(undefined);
+  it('should set isLoading to true when leaderboards query is loading', () => {
+    useLeaderboardsQuerySpy.mockReturnValue({ data: undefined, isLoading: true });
 
     const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
     expect(result.current.isLoading).toBe(true);
   });
 
-  it.each([null, testLeaderboards])('should set isLoading to false when leaderboards=%s', (leaderboards) => {
-    useQuerySpy.mockReturnValue(leaderboards);
+  it('should set isLoading to false when leaderboards query is not loading', () => {
+    useLeaderboardsQuerySpy.mockReturnValue({ data: testLeaderboards, isLoading: false });
 
     const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
@@ -138,37 +164,26 @@ describe('useLeaderboards', () => {
       mockJoinPrivateLeaderboard.mockResolvedValue({ _id: 'leaderboard1' });
       const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
-      expect(result.current.isJoining).toBe(false);
-
       result.current.onJoinPrivateLeaderboard();
 
-      await waitFor(() => {
-        expect(result.current.isJoining).toBe(true);
-      });
-
       expect(promptSpy).toHaveBeenCalledWith('Koda:', '', [
-        { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+        { text: 'Prekliči', isPreferred: false, style: 'cancel' },
         { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
       ]);
 
       act(() => {
-        // @ts-expect-error
         promptSpy.mock.lastCall[2][1].onPress('invite_me');
       });
 
       expect(mockJoinPrivateLeaderboard).toHaveBeenCalledWith({ inviteCode: 'INVITE_ME', userId: testUser._id });
 
       await waitFor(() => {
-        expect(result.current.isJoining).toBe(false);
+        expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:join', {
+          leaderboardId: 'leaderboard1',
+          userId: testUser._id,
+          leaderboardType: leaderboardType.Enum.private,
+        });
       });
-
-      expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:join', {
-        leaderboardId: 'leaderboard1',
-        userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
-      });
-
-      expect(mockCaptureException).not.toHaveBeenCalled();
       expect(mockToast).not.toHaveBeenCalled();
     });
 
@@ -183,25 +198,17 @@ describe('useLeaderboards', () => {
     ])(
       'should trigger join private leaderboard mutation when invite code is received via prompt - error scenario - $errorMessage',
       async ({ errorMessage, expectedErrorText, expectedIntent }) => {
-        const error = new ConvexError({ message: errorMessage });
         mockJoinPrivateLeaderboard.mockRejectedValue(new ConvexError({ message: errorMessage }));
         const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
-        expect(result.current.isJoining).toBe(false);
-
         result.current.onJoinPrivateLeaderboard();
 
-        await waitFor(() => {
-          expect(result.current.isJoining).toBe(true);
-        });
-
         expect(promptSpy).toHaveBeenCalledWith('Koda:', '', [
-          { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+          { text: 'Prekliči', isPreferred: false, style: 'cancel' },
           { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
         ]);
 
         act(() => {
-          // @ts-expect-error
           promptSpy.mock.lastCall[2][1].onPress('invite_me');
         });
 
@@ -212,37 +219,21 @@ describe('useLeaderboards', () => {
         });
 
         expect(mockCaptureEvent).not.toHaveBeenCalled();
-        expect(mockCaptureException).toHaveBeenCalledWith(error, {
-          userId: testUser._id,
-          leaderboardType: leaderboardType.Enum.private,
-        });
-
-        await waitFor(() => {
-          expect(result.current.isJoining).toBe(false);
-        });
       }
     );
 
     it('should trigger join private leaderboard mutation when invite code is received via prompt - error scenario - unknown error', async () => {
-      const error = new Error('Ups');
       mockJoinPrivateLeaderboard.mockRejectedValue(new Error('Ups'));
       const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
-      expect(result.current.isJoining).toBe(false);
-
       result.current.onJoinPrivateLeaderboard();
 
-      await waitFor(() => {
-        expect(result.current.isJoining).toBe(true);
-      });
-
       expect(promptSpy).toHaveBeenCalledWith('Koda:', '', [
-        { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+        { text: 'Prekliči', isPreferred: false, style: 'cancel' },
         { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
       ]);
 
       act(() => {
-        // @ts-expect-error
         promptSpy.mock.lastCall[2][1].onPress('invite_me');
       });
 
@@ -252,15 +243,7 @@ describe('useLeaderboards', () => {
         expect(mockToast).toHaveBeenCalledWith('Nekaj je šlo narobe.', { intent: 'error' });
       });
 
-      await waitFor(() => {
-        expect(result.current.isJoining).toBe(false);
-      });
-
       expect(mockCaptureEvent).not.toHaveBeenCalled();
-      expect(mockCaptureException).toHaveBeenCalledWith(error, {
-        userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
-      });
     });
 
     it.each([undefined, null, ''])(
@@ -269,32 +252,20 @@ describe('useLeaderboards', () => {
         mockJoinPrivateLeaderboard.mockRejectedValue(new Error('Ups'));
         const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
-        expect(result.current.isJoining).toBe(false);
-
         result.current.onJoinPrivateLeaderboard();
 
-        await waitFor(() => {
-          expect(result.current.isJoining).toBe(true);
-        });
-
         expect(promptSpy).toHaveBeenCalledWith('Koda:', '', [
-          { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+          { text: 'Prekliči', isPreferred: false, style: 'cancel' },
           { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
         ]);
 
         act(() => {
-          // @ts-expect-error
           promptSpy.mock.lastCall[2][1].onPress(inviteCode);
         });
 
         expect(mockJoinPrivateLeaderboard).not.toHaveBeenCalled();
         expect(mockToast).not.toHaveBeenCalled();
         expect(mockCaptureEvent).not.toHaveBeenCalled();
-        expect(mockCaptureException).not.toHaveBeenCalled();
-
-        await waitFor(() => {
-          expect(result.current.isJoining).toBe(false);
-        });
       }
     );
 
@@ -302,32 +273,16 @@ describe('useLeaderboards', () => {
       mockJoinPrivateLeaderboard.mockRejectedValue(new Error('Ups'));
       const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
-      expect(result.current.isJoining).toBe(false);
-
       result.current.onJoinPrivateLeaderboard();
 
-      await waitFor(() => {
-        expect(result.current.isJoining).toBe(true);
-      });
-
       expect(promptSpy).toHaveBeenCalledWith('Koda:', '', [
-        { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+        { text: 'Prekliči', isPreferred: false, style: 'cancel' },
         { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
       ]);
-
-      act(() => {
-        // @ts-expect-error
-        promptSpy.mock.lastCall[2][0].onPress();
-      });
 
       expect(mockJoinPrivateLeaderboard).not.toHaveBeenCalled();
       expect(mockToast).not.toHaveBeenCalled();
       expect(mockCaptureEvent).not.toHaveBeenCalled();
-      expect(mockCaptureException).not.toHaveBeenCalled();
-
-      await waitFor(() => {
-        expect(result.current.isJoining).toBe(false);
-      });
     });
   });
 
@@ -336,59 +291,42 @@ describe('useLeaderboards', () => {
       mockCreatePrivateLeaderboard.mockResolvedValue('leaderboardId');
       const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
-      expect(result.current.isCreating).toBe(false);
-
       result.current.onCreatePrivateLeaderboard();
 
-      await waitFor(() => {
-        expect(result.current.isCreating).toBe(true);
-      });
-
       expect(promptSpy).toHaveBeenCalledWith('Ime lestvice:', '', [
-        { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+        { text: 'Prekliči', isPreferred: false, style: 'cancel' },
         { text: 'Ustvari', isPreferred: true, onPress: expect.any(Function) },
       ]);
 
       act(() => {
-        // @ts-expect-error
         promptSpy.mock.lastCall[2][1].onPress('New board');
       });
 
       expect(mockCreatePrivateLeaderboard).toHaveBeenCalledWith({ userId: testUser._id, data: { name: 'New board' } });
 
       await waitFor(() => {
-        expect(result.current.isCreating).toBe(false);
-      });
-
-      expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:create', {
-        leaderboardId: 'leaderboardId',
-        userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:create', {
+          leaderboardId: 'leaderboardId',
+          userId: testUser._id,
+          leaderboardType: leaderboardType.Enum.private,
+        });
       });
 
       expect(mockToast).not.toHaveBeenCalled();
     });
 
     it('should trigger join private leaderboard mutation when invite code is received via prompt - error scenario - unknown error', async () => {
-      const error = new Error('Ups');
       mockCreatePrivateLeaderboard.mockRejectedValue(new Error('Ups'));
       const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
-      expect(result.current.isCreating).toBe(false);
-
       result.current.onCreatePrivateLeaderboard();
 
-      await waitFor(() => {
-        expect(result.current.isCreating).toBe(true);
-      });
-
       expect(promptSpy).toHaveBeenCalledWith('Ime lestvice:', '', [
-        { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+        { text: 'Prekliči', isPreferred: false, style: 'cancel' },
         { text: 'Ustvari', isPreferred: true, onPress: expect.any(Function) },
       ]);
 
       act(() => {
-        // @ts-expect-error
         promptSpy.mock.lastCall[2][1].onPress('New board');
       });
 
@@ -398,15 +336,7 @@ describe('useLeaderboards', () => {
         expect(mockToast).toHaveBeenCalledWith('Nekaj je šlo narobe.', { intent: 'error' });
       });
 
-      await waitFor(() => {
-        expect(result.current.isCreating).toBe(false);
-      });
-
       expect(mockCaptureEvent).not.toHaveBeenCalled();
-      expect(mockCaptureException).toHaveBeenCalledWith(error, {
-        userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
-      });
     });
 
     it.each([undefined, null, ''])(
@@ -415,32 +345,20 @@ describe('useLeaderboards', () => {
         mockCreatePrivateLeaderboard.mockRejectedValue(new Error('Ups'));
         const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
-        expect(result.current.isCreating).toBe(false);
-
         result.current.onCreatePrivateLeaderboard();
 
-        await waitFor(() => {
-          expect(result.current.isCreating).toBe(true);
-        });
-
         expect(promptSpy).toHaveBeenCalledWith('Ime lestvice:', '', [
-          { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+          { text: 'Prekliči', isPreferred: false, style: 'cancel' },
           { text: 'Ustvari', isPreferred: true, onPress: expect.any(Function) },
         ]);
 
         act(() => {
-          // @ts-expect-error
           promptSpy.mock.lastCall[2][1].onPress(name);
         });
 
         expect(mockCreatePrivateLeaderboard).not.toHaveBeenCalled();
         expect(mockToast).not.toHaveBeenCalled();
         expect(mockCaptureEvent).not.toHaveBeenCalled();
-        expect(mockCaptureException).not.toHaveBeenCalled();
-
-        await waitFor(() => {
-          expect(result.current.isCreating).toBe(false);
-        });
       }
     );
 
@@ -448,32 +366,16 @@ describe('useLeaderboards', () => {
       mockCreatePrivateLeaderboard.mockRejectedValue(new Error('Ups'));
       const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
-      expect(result.current.isCreating).toBe(false);
-
       result.current.onCreatePrivateLeaderboard();
 
-      await waitFor(() => {
-        expect(result.current.isCreating).toBe(true);
-      });
-
       expect(promptSpy).toHaveBeenCalledWith('Ime lestvice:', '', [
-        { text: 'Prekliči', isPreferred: false, style: 'cancel', onPress: expect.any(Function) },
+        { text: 'Prekliči', isPreferred: false, style: 'cancel' },
         { text: 'Ustvari', isPreferred: true, onPress: expect.any(Function) },
       ]);
-
-      act(() => {
-        // @ts-expect-error
-        promptSpy.mock.lastCall[2][0].onPress();
-      });
 
       expect(mockCreatePrivateLeaderboard).not.toHaveBeenCalled();
       expect(mockToast).not.toHaveBeenCalled();
       expect(mockCaptureEvent).not.toHaveBeenCalled();
-      expect(mockCaptureException).not.toHaveBeenCalled();
-
-      await waitFor(() => {
-        expect(result.current.isCreating).toBe(false);
-      });
     });
   });
 
@@ -497,7 +399,6 @@ describe('useLeaderboards', () => {
       result.current.onPresentLeaderboardActions(testLeaderboardWithCurrentUserAsCreator);
 
       expect(showActionSheetWithOptionsSpy).toHaveBeenCalledWith(expectedActionSheetOptions, expect.any(Function));
-      expect(result.current.isDeleting).toBe(false);
       expect(alertSpy).toHaveBeenCalledWith(
         'Si prepričan/a?',
         'Ko je lestvica enkrat izbrisana je ni mogoče pridobiti nazaj.',
@@ -516,10 +417,12 @@ describe('useLeaderboards', () => {
         userId: testUser._id,
       });
 
-      expect(result.current.isDeleting).toBe(true);
-
       await waitFor(() => {
-        expect(result.current.isDeleting).toBe(false);
+        expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:delete', {
+          leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
+          userId: testUser._id,
+          leaderboardType: leaderboardType.Enum.private,
+        });
       });
 
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
@@ -527,12 +430,6 @@ describe('useLeaderboards', () => {
         userId: testUser._id,
         leaderboardType: leaderboardType.Enum.private,
       });
-      expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:delete', {
-        leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
-        userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
-      });
-      expect(mockCaptureException).not.toHaveBeenCalled();
       expect(mockToast).not.toHaveBeenCalled();
     });
 
@@ -546,7 +443,6 @@ describe('useLeaderboards', () => {
       result.current.onPresentLeaderboardActions(testLeaderboardWithCurrentUserAsCreator);
 
       expect(showActionSheetWithOptionsSpy).toHaveBeenCalledWith(expectedActionSheetOptions, expect.any(Function));
-      expect(result.current.isDeleting).toBe(false);
       expect(alertSpy).toHaveBeenCalledWith(
         'Si prepričan/a?',
         'Ko je lestvica enkrat izbrisana je ni mogoče pridobiti nazaj.',
@@ -565,24 +461,16 @@ describe('useLeaderboards', () => {
         userId: testUser._id,
       });
 
-      expect(result.current.isDeleting).toBe(true);
-
       await waitFor(() => {
-        expect(result.current.isDeleting).toBe(false);
+        expect(mockToast).toHaveBeenCalledWith('Nekaj je šlo narobe.', { intent: 'error' });
       });
 
-      expect(mockToast).toHaveBeenCalledWith('Nekaj je šlo narobe.', { intent: 'error' });
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
         leaderboardType: leaderboardType.Enum.private,
       });
       expect(mockCaptureEvent).not.toHaveBeenCalledWith('leaderboards:delete', {
-        leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
-        userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
-      });
-      expect(mockCaptureException).toHaveBeenCalledWith(error, {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
         leaderboardType: leaderboardType.Enum.private,
@@ -598,18 +486,12 @@ describe('useLeaderboards', () => {
       result.current.onPresentLeaderboardActions(testLeaderboardWithCurrentUserAsCreator);
 
       expect(showActionSheetWithOptionsSpy).toHaveBeenCalledWith(expectedActionSheetOptions, expect.any(Function));
-      expect(result.current.isUpdating).toBe(false);
       expect(promptSpy).toHaveBeenCalledWith('Ime lestvice:', '', [
-        { isPreferred: false, style: 'cancel', text: 'Prekliči', onPress: expect.any(Function) },
+        { isPreferred: false, style: 'cancel', text: 'Prekliči' },
         { isPreferred: true, text: 'Posodobi', onPress: expect.any(Function) },
       ]);
 
-      await waitFor(() => {
-        expect(result.current.isUpdating).toBe(true);
-      });
-
       act(() => {
-        // @ts-expect-error
         promptSpy.mock.lastCall?.[2]?.[1].onPress?.('New leaderboard name');
       });
 
@@ -620,7 +502,11 @@ describe('useLeaderboards', () => {
       });
 
       await waitFor(() => {
-        expect(result.current.isUpdating).toBe(false);
+        expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:update_name', {
+          leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
+          userId: testUser._id,
+          leaderboardType: leaderboardType.Enum.private,
+        });
       });
 
       expect(mockToast).not.toHaveBeenCalled();
@@ -629,12 +515,6 @@ describe('useLeaderboards', () => {
         userId: testUser._id,
         leaderboardType: leaderboardType.Enum.private,
       });
-      expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:update_name', {
-        leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
-        userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
-      });
-      expect(mockCaptureException).not.toHaveBeenCalled();
     });
 
     it('should trigger update leaderboard name mutation - error scenario', async () => {
@@ -647,18 +527,12 @@ describe('useLeaderboards', () => {
       result.current.onPresentLeaderboardActions(testLeaderboardWithCurrentUserAsCreator);
 
       expect(showActionSheetWithOptionsSpy).toHaveBeenCalledWith(expectedActionSheetOptions, expect.any(Function));
-      expect(result.current.isUpdating).toBe(false);
       expect(promptSpy).toHaveBeenCalledWith('Ime lestvice:', '', [
-        { isPreferred: false, style: 'cancel', text: 'Prekliči', onPress: expect.any(Function) },
+        { isPreferred: false, style: 'cancel', text: 'Prekliči' },
         { isPreferred: true, text: 'Posodobi', onPress: expect.any(Function) },
       ]);
 
-      await waitFor(() => {
-        expect(result.current.isUpdating).toBe(true);
-      });
-
       act(() => {
-        // @ts-expect-error
         promptSpy.mock.lastCall?.[2]?.[1].onPress?.('New leaderboard name');
       });
 
@@ -669,21 +543,14 @@ describe('useLeaderboards', () => {
       });
 
       await waitFor(() => {
-        expect(result.current.isUpdating).toBe(false);
+        expect(mockToast).toHaveBeenCalledWith('Nekaj je šlo narobe.', { intent: 'error' });
       });
-
-      expect(mockToast).toHaveBeenCalledWith('Nekaj je šlo narobe.', { intent: 'error' });
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
         leaderboardType: leaderboardType.Enum.private,
       });
       expect(mockCaptureEvent).not.toHaveBeenCalledWith('leaderboards:update_name', {
-        leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
-        userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
-      });
-      expect(mockCaptureException).toHaveBeenCalledWith(error, {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
         leaderboardType: leaderboardType.Enum.private,
@@ -701,26 +568,16 @@ describe('useLeaderboards', () => {
         result.current.onPresentLeaderboardActions(testLeaderboardWithCurrentUserAsCreator);
 
         expect(showActionSheetWithOptionsSpy).toHaveBeenCalledWith(expectedActionSheetOptions, expect.any(Function));
-        expect(result.current.isUpdating).toBe(false);
         expect(promptSpy).toHaveBeenCalledWith('Ime lestvice:', '', [
-          { isPreferred: false, style: 'cancel', text: 'Prekliči', onPress: expect.any(Function) },
+          { isPreferred: false, style: 'cancel', text: 'Prekliči' },
           { isPreferred: true, text: 'Posodobi', onPress: expect.any(Function) },
         ]);
 
-        await waitFor(() => {
-          expect(result.current.isUpdating).toBe(true);
-        });
-
         act(() => {
-          // @ts-expect-error
           promptSpy.mock.lastCall?.[2]?.[1].onPress?.(newLeaderboardName);
         });
 
         expect(mockUpdateLeaderboardName).not.toHaveBeenCalled();
-
-        await waitFor(() => {
-          expect(result.current.isUpdating).toBe(false);
-        });
 
         expect(mockToast).not.toHaveBeenCalled();
         expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
@@ -733,7 +590,6 @@ describe('useLeaderboards', () => {
           userId: testUser._id,
           leaderboardType: leaderboardType.Enum.private,
         });
-        expect(mockCaptureException).not.toHaveBeenCalled();
       }
     );
 
@@ -746,26 +602,16 @@ describe('useLeaderboards', () => {
       result.current.onPresentLeaderboardActions(testLeaderboardWithCurrentUserAsCreator);
 
       expect(showActionSheetWithOptionsSpy).toHaveBeenCalledWith(expectedActionSheetOptions, expect.any(Function));
-      expect(result.current.isUpdating).toBe(false);
       expect(promptSpy).toHaveBeenCalledWith('Ime lestvice:', '', [
-        { isPreferred: false, style: 'cancel', text: 'Prekliči', onPress: expect.any(Function) },
+        { isPreferred: false, style: 'cancel', text: 'Prekliči' },
         { isPreferred: true, text: 'Posodobi', onPress: expect.any(Function) },
       ]);
 
-      await waitFor(() => {
-        expect(result.current.isUpdating).toBe(true);
-      });
-
       act(() => {
-        // @ts-expect-error
         promptSpy.mock.lastCall?.[2]?.[0].onPress?.();
       });
 
       expect(mockUpdateLeaderboardName).not.toHaveBeenCalled();
-
-      await waitFor(() => {
-        expect(result.current.isUpdating).toBe(false);
-      });
 
       expect(mockToast).not.toHaveBeenCalled();
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
@@ -778,7 +624,6 @@ describe('useLeaderboards', () => {
         userId: testUser._id,
         leaderboardType: leaderboardType.Enum.private,
       });
-      expect(mockCaptureException).not.toHaveBeenCalled();
     });
 
     it('should display alert with invite code on "Invite friend" action trigger', async () => {
@@ -796,8 +641,7 @@ describe('useLeaderboards', () => {
       ]);
 
       act(() => {
-        // @ts-expect-error
-        promptSpy.mock.lastCall?.[2]?.[1].onPress?.();
+        alertSpy.mock.lastCall?.[2]?.[1].onPress?.();
       });
 
       await waitFor(() => {
@@ -816,7 +660,6 @@ describe('useLeaderboards', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:invite_code:copy', {
         leaderboardType: leaderboardType.Enum.private,
       });
-      expect(mockCaptureException).not.toHaveBeenCalled();
     });
 
     it('should not display alert with invite code on "Invite friend" action trigger when leaderboard does not have an invite code', async () => {
@@ -843,7 +686,6 @@ describe('useLeaderboards', () => {
       expect(mockCaptureEvent).not.toHaveBeenCalledWith('leaderboards:invite_code:copy', {
         leaderboardType: leaderboardType.Enum.private,
       });
-      expect(mockCaptureException).not.toHaveBeenCalled();
     });
   });
 
@@ -866,7 +708,6 @@ describe('useLeaderboards', () => {
       result.current.onPresentLeaderboardActions(testLeaderboard);
 
       expect(showActionSheetWithOptionsSpy).toHaveBeenCalledWith(expectedActionSheetOptions, expect.any(Function));
-      expect(result.current.isLeaving).toBe(false);
       expect(alertSpy).toHaveBeenCalledWith(
         'Si prepričan/a?',
         'Ko enkrat zapustiš lestvico bodo iz te lestvice izbrisani vsi tvoji pretekli rezultati.',
@@ -880,17 +721,9 @@ describe('useLeaderboards', () => {
         alertSpy.mock.lastCall?.[2]?.[1].onPress?.();
       });
 
-      await waitFor(() => {
-        expect(result.current.isLeaving).toBe(true);
-      });
-
       expect(mockLeavePrivateLeaderboard).toHaveBeenCalledWith({
         leaderboardId: testLeaderboard._id,
         userId: testUser._id,
-      });
-
-      await waitFor(() => {
-        expect(result.current.isLeaving).toBe(false);
       });
 
       expect(mockToast).not.toHaveBeenCalled();
@@ -899,12 +732,13 @@ describe('useLeaderboards', () => {
         userId: testUser._id,
         leaderboardType: leaderboardType.Enum.private,
       });
-      expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:leave', {
-        leaderboardId: testLeaderboard._id,
-        userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+      await waitFor(() => {
+        expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:leave', {
+          leaderboardId: testLeaderboard._id,
+          userId: testUser._id,
+          leaderboardType: leaderboardType.Enum.private,
+        });
       });
-      expect(mockCaptureException).not.toHaveBeenCalled();
     });
 
     it('should trigger leave leaderboard mutation - error scenario', async () => {
@@ -917,7 +751,6 @@ describe('useLeaderboards', () => {
       result.current.onPresentLeaderboardActions(testLeaderboard);
 
       expect(showActionSheetWithOptionsSpy).toHaveBeenCalledWith(expectedActionSheetOptions, expect.any(Function));
-      expect(result.current.isLeaving).toBe(false);
       expect(alertSpy).toHaveBeenCalledWith(
         'Si prepričan/a?',
         'Ko enkrat zapustiš lestvico bodo iz te lestvice izbrisani vsi tvoji pretekli rezultati.',
@@ -931,10 +764,6 @@ describe('useLeaderboards', () => {
         alertSpy.mock.lastCall?.[2]?.[1].onPress?.();
       });
 
-      await waitFor(() => {
-        expect(result.current.isLeaving).toBe(true);
-      });
-
       expect(mockLeavePrivateLeaderboard).toHaveBeenCalledWith({
         leaderboardId: testLeaderboard._id,
         userId: testUser._id,
@@ -944,21 +773,12 @@ describe('useLeaderboards', () => {
         expect(mockToast).toHaveBeenCalledWith('Nekaj je šlo narobe', { intent: 'error' });
       });
 
-      await waitFor(() => {
-        expect(result.current.isLeaving).toBe(false);
-      });
-
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboard._id,
         userId: testUser._id,
         leaderboardType: leaderboardType.Enum.private,
       });
       expect(mockCaptureEvent).not.toHaveBeenCalledWith('leaderboards:leave', {
-        leaderboardId: testLeaderboard._id,
-        userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
-      });
-      expect(mockCaptureException).toHaveBeenCalledWith(error, {
         leaderboardId: testLeaderboard._id,
         userId: testUser._id,
         leaderboardType: leaderboardType.Enum.private,
@@ -975,7 +795,6 @@ describe('useLeaderboards', () => {
       result.current.onPresentLeaderboardActions(testLeaderboard);
 
       expect(showActionSheetWithOptionsSpy).toHaveBeenCalledWith(expectedActionSheetOptions, expect.any(Function));
-      expect(result.current.isLeaving).toBe(false);
       expect(alertSpy).not.toHaveBeenCalled();
 
       expect(mockLeavePrivateLeaderboard).not.toHaveBeenCalled();
@@ -991,7 +810,6 @@ describe('useLeaderboards', () => {
         userId: testUser._id,
         leaderboardType: leaderboardType.Enum.private,
       });
-      expect(mockCaptureException).not.toHaveBeenCalled();
     });
 
     it('should display alert with invite code on "Invite friend" action trigger', async () => {
@@ -1009,8 +827,7 @@ describe('useLeaderboards', () => {
       ]);
 
       act(() => {
-        // @ts-expect-error
-        promptSpy.mock.lastCall?.[2]?.[1].onPress?.();
+        alertSpy.mock.lastCall?.[2]?.[1].onPress?.();
       });
 
       await waitFor(() => {
@@ -1029,7 +846,6 @@ describe('useLeaderboards', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:invite_code:copy', {
         leaderboardType: leaderboardType.Enum.private,
       });
-      expect(mockCaptureException).not.toHaveBeenCalled();
     });
   });
 });

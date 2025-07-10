@@ -1,11 +1,10 @@
-import { useMutation, useQuery } from 'convex/react';
 import { ConvexError } from 'convex/values';
 import * as Clipboard from 'expo-clipboard';
 import { usePostHog } from 'posthog-react-native';
-import { useRef, useState } from 'react';
-import { ActionSheetIOS, Alert } from 'react-native';
+import { Alert } from 'react-native';
 
-import { api } from '@/convex/_generated/api';
+import { useActionSheet } from '@/context/ActionSheet';
+import { usePrompt } from '@/context/Prompt';
 import { type Id } from '@/convex/_generated/dataModel';
 import {
   type LeaderboardWithScores,
@@ -14,6 +13,14 @@ import {
   leaderboardType,
 } from '@/convex/leaderboards/models';
 
+import {
+  useCreatePrivateLeaderboardMutation,
+  useDeletePrivateLeaderboardMutation,
+  useJoinPrivateLeaderboardMutation,
+  useLeavePrivateLeaderboardMutation,
+  useUpdateLeaderboardNameMutation,
+} from '../mutations';
+import { useLeaderboardsQuery } from '../queries';
 import { useToaster } from '../useToaster';
 import { useUser } from '../useUser';
 
@@ -21,20 +28,15 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
   const { user } = useUser();
   const toaster = useToaster();
   const posthog = usePostHog();
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [isJoining, setIsJoining] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isLeaving, setIsLeaving] = useState(false);
-  const timestampRef = useRef(Date.now());
-  const createPrivateLeaderboard = useMutation(api.leaderboards.queries.createPrivateLeaderboard);
-  const joinPrivateLeaderboard = useMutation(api.leaderboards.queries.joinPrivateLeaderboard);
-  const deletePrivateLeaderboard = useMutation(api.leaderboards.queries.deletePrivateLeaderboard);
-  const leavePrivateLeaderboard = useMutation(api.leaderboards.queries.leavePrivateLeadeboard);
-  const updateLeaderboardName = useMutation(api.leaderboards.queries.updateLeaderboardName);
-  const leaderboards = useQuery(
-    api.leaderboards.queries.list,
-    user?._id ? { userId: user._id, type, range, timestamp: timestampRef.current } : 'skip'
+  const actionSheet = useActionSheet();
+  const prompt = usePrompt();
+  const { mutate: createPrivateLeaderboard, isLoading: isCreating } = useCreatePrivateLeaderboardMutation();
+  const { mutate: joinPrivateLeaderboard, isLoading: isJoining } = useJoinPrivateLeaderboardMutation();
+  const { mutate: deletePrivateLeaderboard, isLoading: isDeleting } = useDeletePrivateLeaderboardMutation();
+  const { mutate: leavePrivateLeaderboard, isLoading: isLeaving } = useLeavePrivateLeaderboardMutation();
+  const { mutate: updateLeaderboardName, isLoading: isUpdating } = useUpdateLeaderboardNameMutation();
+  const { data: leaderboards, isLoading } = useLeaderboardsQuery(
+    user?._id ? { userId: user._id, type, range } : 'skip'
   );
 
   const handleLeaveLeaderboard = (leaderboardId: Id<'leaderboards'>) => {
@@ -52,8 +54,6 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
           style: 'destructive',
           text: 'Zapusti',
           onPress() {
-            setIsLeaving(true);
-
             leavePrivateLeaderboard({ leaderboardId, userId: user._id })
               .then(() => {
                 posthog.capture('leaderboards:leave', {
@@ -62,16 +62,8 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
                   leaderboardType: leaderboardType.Enum.private,
                 });
               })
-              .catch((err) => {
-                posthog.captureException(err, {
-                  leaderboardId,
-                  userId: user._id,
-                  leaderboardType: leaderboardType.Enum.private,
-                });
+              .catch(() => {
                 toaster.toast('Nekaj je šlo narobe', { intent: 'error' });
-              })
-              .finally(() => {
-                setIsLeaving(false);
               });
           },
         },
@@ -91,8 +83,6 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
         style: 'destructive',
         text: 'Izbriši',
         onPress() {
-          setIsDeleting(true);
-
           deletePrivateLeaderboard({ leaderboardId, userId: user._id })
             .then(() => {
               posthog.capture('leaderboards:delete', {
@@ -101,16 +91,8 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
                 leaderboardType: leaderboardType.Enum.private,
               });
             })
-            .catch((err) => {
-              posthog.captureException(err, {
-                leaderboardId,
-                userId: user._id,
-                leaderboardType: leaderboardType.Enum.private,
-              });
+            .catch(() => {
               toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
-            })
-            .finally(() => {
-              setIsDeleting(false);
             });
         },
       },
@@ -122,23 +104,17 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
       return;
     }
 
-    setIsUpdating(true);
-
-    Alert.prompt('Ime lestvice:', '', [
+    prompt('Ime lestvice:', '', [
       {
         text: 'Prekliči',
         isPreferred: false,
         style: 'cancel',
-        onPress() {
-          setIsUpdating(false);
-        },
       },
       {
         text: 'Posodobi',
         isPreferred: true,
         onPress(leaderboardName) {
           if (!leaderboardName) {
-            setIsUpdating(false);
             return;
           }
           updateLeaderboardName({ leaderboardId, userId: user._id, data: { name: leaderboardName } })
@@ -149,16 +125,8 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
                 leaderboardType: leaderboardType.Enum.private,
               });
             })
-            .catch((err) => {
-              posthog.captureException(err, {
-                leaderboardId,
-                userId: user._id,
-                leaderboardType: leaderboardType.Enum.private,
-              });
+            .catch(() => {
               toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
-            })
-            .finally(() => {
-              setIsUpdating(false);
             });
         },
       },
@@ -170,23 +138,17 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
       return;
     }
 
-    setIsJoining(true);
-
-    Alert.prompt('Koda:', '', [
+    prompt('Koda:', '', [
       {
         text: 'Prekliči',
         isPreferred: false,
         style: 'cancel',
-        onPress() {
-          setIsJoining(false);
-        },
       },
       {
         text: 'Pridruži se',
         isPreferred: true,
         onPress(inviteCode) {
           if (!inviteCode) {
-            setIsJoining(false);
             return;
           }
 
@@ -199,7 +161,6 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
               });
             })
             .catch((err) => {
-              posthog.captureException(err, { userId: user._id, leaderboardType: leaderboardType.Enum.private });
               if (err instanceof ConvexError) {
                 if (err.data.message === 'Invalid invite code.') {
                   toaster.toast('Neveljavna koda.', { intent: 'error' });
@@ -211,9 +172,6 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
               } else {
                 toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
               }
-            })
-            .finally(() => {
-              setIsJoining(false);
             });
         },
       },
@@ -225,23 +183,17 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
       return;
     }
 
-    setIsCreating(true);
-
-    Alert.prompt('Ime lestvice:', '', [
+    prompt('Ime lestvice:', '', [
       {
         text: 'Prekliči',
         isPreferred: false,
         style: 'cancel',
-        onPress() {
-          setIsCreating(false);
-        },
       },
       {
         text: 'Ustvari',
         isPreferred: true,
         onPress(leaderboardName) {
           if (!leaderboardName) {
-            setIsCreating(false);
             return;
           }
 
@@ -253,12 +205,8 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
                 leaderboardType: leaderboardType.Enum.private,
               });
             })
-            .catch((err) => {
-              posthog.captureException(err, { userId: user._id, leaderboardType: leaderboardType.Enum.private });
+            .catch(() => {
               toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
-            })
-            .finally(() => {
-              setIsCreating(false);
             });
         },
       },
@@ -296,7 +244,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
       leaderboardType: leaderboardType.Enum.private,
     });
 
-    ActionSheetIOS.showActionSheetWithOptions(
+    actionSheet.present(
       {
         options: isCurrentUserCreator
           ? ['Izbriši lestvico', 'Uredi ime lestvice', 'Povabi prijatelja', 'Prekliči']
@@ -330,7 +278,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
   return {
     isJoining,
     isCreating,
-    isLoading: typeof leaderboards === 'undefined',
+    isLoading,
     isUpdating,
     isDeleting,
     isLeaving,
