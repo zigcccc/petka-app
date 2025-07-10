@@ -165,7 +165,7 @@ export const readUserPuzzlesStatistics = query({
         currentStreak = 0;
       }
 
-      if (numOfAttempts > 0) {
+      if (numOfAttempts > 0 && isLastAttemptCorrect) {
         attemptsDistribution[numOfAttempts] = (attemptsDistribution[numOfAttempts] ?? 0) + 1;
       }
     }

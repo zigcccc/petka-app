@@ -1,8 +1,12 @@
 import * as Haptics from 'expo-haptics';
 import { usePostHog } from 'posthog-react-native';
+import { useCallback } from 'react';
+import { Share } from 'react-native';
 
+import { checkedStatusToEmojiMap } from '@/constants/puzzles';
 import { isAttemptCorrect } from '@/convex/puzzleGuessAttempts/helpers';
 import { puzzleType } from '@/convex/puzzles/models';
+import { getDateObjectFromPuzzle } from '@/utils/puzzles';
 
 import { useCreatePuzzleGuessAttemptMutation, useMarkPuzzleAsSolvedMutation } from '../mutations';
 import { useActiveDailyPuzzleQuery, usePuzzleAttemptsQuery } from '../queries';
@@ -21,6 +25,7 @@ export function useDailyPuzzle() {
   );
   const isSolved = isAttemptCorrect(attempts?.at(-1));
   const isFailed = attempts?.length === 6 && !isSolved;
+  const isDone = isSolved || isFailed;
 
   const handleCreatePuzzleGuessAttempt = async (attempt: string) => {
     try {
@@ -40,12 +45,28 @@ export function useDailyPuzzle() {
     }
   };
 
+  const handleSharePuzzleResults = useCallback(async () => {
+    if (!puzzle || !attempts) {
+      return;
+    }
+
+    const dateObj = getDateObjectFromPuzzle(puzzle);
+    const messageTitle = `Petka (${dateObj.format('DD. MM. YYYY')}) - ${isFailed ? 'X' : attempts.length}/6`;
+    const mappedAttempts = attempts
+      .map((attempt) => attempt.checkedLetters.map(({ status }) => checkedStatusToEmojiMap.get(status)).join(''))
+      .join('\n');
+
+    await Share.share({ message: `${messageTitle}\n\n${mappedAttempts}` });
+  }, [puzzle, attempts, isFailed]);
+
   return {
     attempts,
     puzzle,
     isLoading,
     isSolved,
     isFailed,
+    isDone,
     onSubmitAttempt: handleCreatePuzzleGuessAttempt,
+    onShareResults: handleSharePuzzleResults,
   };
 }

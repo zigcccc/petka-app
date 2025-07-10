@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react-native';
 import { useRouter, useNavigation, type ErrorBoundaryProps } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
 import { useEffect } from 'react';
-import { ActivityIndicator, Image, View } from 'react-native';
+import { ActivityIndicator, Image, Platform, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { GuessGrid, Keyboard, useGuessGrid } from '@/components/elements';
@@ -31,11 +31,11 @@ export default function DailyPuzzleScreen() {
   const router = useRouter();
   const navigation = useNavigation();
   const posthog = usePostHog();
-  const { attempts, puzzle, isLoading, isSolved, onSubmitAttempt } = useDailyPuzzle();
+  const { attempts, puzzle, isLoading, isDone, onSubmitAttempt } = useDailyPuzzle();
   const { grid, onInput, isValidating, allCheckedLetters } = useGuessGrid({ attempts, onSubmitAttempt });
 
   useEffect(() => {
-    if (isSolved) {
+    if (isDone) {
       router.navigate('/play/daily-puzzle-solved');
       navigation.setOptions({
         headerRight: () => (
@@ -47,7 +47,7 @@ export default function DailyPuzzleScreen() {
     } else {
       navigation.setOptions({ headerRight: null });
     }
-  }, [isSolved, router, navigation]);
+  }, [isDone, router, navigation]);
 
   if (!puzzle) {
     if (!isLoading) {
@@ -73,12 +73,12 @@ export default function DailyPuzzleScreen() {
         <GuessGrid attempts={attempts} grid={grid} isValidating={isValidating} />
       </View>
       <View style={styles.spacer} />
-      <Keyboard checkedLetters={allCheckedLetters} isDisabled={isSolved} onKeyPress={onInput} />
+      <Keyboard checkedLetters={allCheckedLetters} isDisabled={isDone} onKeyPress={onInput} />
     </View>
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
   spacer: {
     flex: 1,
   },
@@ -92,6 +92,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   container: {
     flex: 1,
+    paddingBottom: Platform.select({ android: rt.insets.bottom + theme.spacing[3], ios: 0 }),
   },
   content: {
     paddingTop: theme.spacing[6],

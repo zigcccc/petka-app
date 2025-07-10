@@ -1,7 +1,9 @@
 import * as Haptics from 'expo-haptics';
 import { usePostHog } from 'posthog-react-native';
 import { useCallback, useEffect } from 'react';
+import { Share } from 'react-native';
 
+import { checkedStatusToEmojiMap } from '@/constants/puzzles';
 import { isAttemptCorrect } from '@/convex/puzzleGuessAttempts/helpers';
 import { puzzleType } from '@/convex/puzzles/models';
 
@@ -28,6 +30,7 @@ export function useTrainingPuzzle() {
 
   const isSolved = isAttemptCorrect(attempts?.at(-1));
   const isFailed = attempts?.length === 6 && !isSolved;
+  const isDone = isSolved || isFailed;
 
   const handleCreatePuzzleGuessAttempt = async (attempt: string) => {
     try {
@@ -59,6 +62,19 @@ export function useTrainingPuzzle() {
     posthog.capture('puzzle:solved', { puzzleId: puzzle?._id!, userId: user?._id!, type: puzzleType.Enum.training });
   };
 
+  const handleSharePuzzleResults = useCallback(async () => {
+    if (!attempts) {
+      return;
+    }
+
+    const messageTitle = `Petka (trening) - ${isFailed ? 'X' : attempts.length}/6`;
+    const mappedAttempts = attempts
+      .map((attempt) => attempt.checkedLetters.map(({ status }) => checkedStatusToEmojiMap.get(status)).join(''))
+      .join('\n');
+
+    await Share.share({ message: `${messageTitle}\n\n${mappedAttempts}` });
+  }, [attempts, isFailed]);
+
   useEffect(() => {
     // Puzzle query has finished but no puzzle was found - we need to create a new one!
     if (puzzle === null && !isCreatingPuzzle) {
@@ -73,8 +89,10 @@ export function useTrainingPuzzle() {
     isCreating: isCreatingPuzzle,
     isSolved,
     isFailed,
+    isDone,
     isMarkingAsSolved,
     onSubmitAttempt: handleCreatePuzzleGuessAttempt,
     onMarkAsSolved: handleMarkPuzzleAsSolved,
+    onShareResults: handleSharePuzzleResults,
   };
 }

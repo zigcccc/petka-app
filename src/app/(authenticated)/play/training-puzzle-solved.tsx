@@ -7,34 +7,36 @@ import { AttemptsDistributionGraph } from '@/components/elements';
 import { Button, Card, Text } from '@/components/ui';
 import { puzzleType } from '@/convex/puzzles/models';
 import { usePuzzleStatistics } from '@/hooks/usePuzzlesStatistics';
-import { useToaster } from '@/hooks/useToaster';
 import { useTrainingPuzzle } from '@/hooks/useTrainingPuzzle';
 
 export default function TrainingPuzzleSolvedScreen() {
   const router = useRouter();
-  const toaster = useToaster();
-  const { attempts, onMarkAsSolved, isMarkingAsSolved } = useTrainingPuzzle();
+  const { attempts, onMarkAsSolved, isMarkingAsSolved, isFailed, onShareResults } = useTrainingPuzzle();
   const { isLoading, data } = usePuzzleStatistics(puzzleType.Enum.training);
 
+  const title = isFailed ? 'O joj... 🙄' : 'Čestitke 🥳';
+  const subtitle = isFailed ? 'Tokrat ti ni uspelo rešiti izziva.' : 'Uspešno si opravil/a trening izziv.';
+
   const handleCreateNewChallenge = async () => {
-    try {
-      onMarkAsSolved();
-      router.back();
-    } catch {
-      toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
-    }
+    onMarkAsSolved();
+    router.back();
   };
 
   return (
     <View style={styles.container}>
       <Text size="2xl" weight="bold">
-        Čestitke 🥳
+        {title}
       </Text>
-      <Text size="lg">Uspešno si opravil/a trening izziv.</Text>
+      <Text size="lg">{subtitle}</Text>
       <View style={styles.content}>
         {isLoading ? (
           <View style={styles.contentLoadingContainer}>
-            <ActivityIndicator size="small" />
+            <ActivityIndicator
+              accessibilityLabel="Nalagam statistiko trening izzivov..."
+              accessibilityRole="spinbutton"
+              accessible
+              size="small"
+            />
           </View>
         ) : (
           <>
@@ -42,7 +44,7 @@ export default function TrainingPuzzleSolvedScreen() {
               Trening statistika
             </Text>
             <View style={styles.gameStatsContainer}>
-              <View style={styles.gameStatsEntry}>
+              <View style={styles.gameStatsEntry} testID="num-of-played-games">
                 <Text color="grey50" size="xs">
                   Odigranih
                 </Text>
@@ -50,7 +52,7 @@ export default function TrainingPuzzleSolvedScreen() {
                   {data.numberOfAllPuzzles}
                 </Text>
               </View>
-              <View style={styles.gameStatsEntry}>
+              <View style={styles.gameStatsEntry} testID="percentage-solved-games">
                 <Text color="grey50" size="xs">
                   % rešenih
                 </Text>
@@ -58,7 +60,7 @@ export default function TrainingPuzzleSolvedScreen() {
                   {data.solvedPercentage}%
                 </Text>
               </View>
-              <View style={styles.gameStatsEntry}>
+              <View style={styles.gameStatsEntry} testID="current-streak">
                 <Text color="grey50" numberOfLines={1} size="xs">
                   Niz rešenih
                 </Text>
@@ -70,13 +72,16 @@ export default function TrainingPuzzleSolvedScreen() {
             <Card title="Distribucija poskusov">
               <AttemptsDistributionGraph
                 distribtions={data.attemptsDistribution}
+                isPuzzleFailed={isFailed}
                 numberOfAllPuzzles={data.numberOfSolvedPuzzles}
                 numberOfCurrentAttempts={attempts?.length}
               />
             </Card>
-            <Button onPress={() => null} size="sm" variant="outline">
+            <Button intent="shaded" onPress={onShareResults} size="sm" variant="outline">
               <Button.Text>Deli</Button.Text>
-              <Octicons color="green" name="share" size={16} />
+              <Button.Icon>
+                <Octicons name="share" />
+              </Button.Icon>
             </Button>
           </>
         )}

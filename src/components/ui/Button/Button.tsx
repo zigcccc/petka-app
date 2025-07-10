@@ -1,4 +1,5 @@
-import { createContext, useContext, useMemo, type PropsWithChildren } from 'react';
+import { type IconProps } from '@expo/vector-icons/build/createIconSet';
+import { cloneElement, createContext, type ReactElement, useContext, useMemo, type PropsWithChildren } from 'react';
 import { ActivityIndicator, Pressable, type StyleProp, Text, type ViewStyle } from 'react-native';
 import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
 
@@ -17,10 +18,19 @@ const intentToSpinnerColorMap = new Map<Props['intent'], string>([
   ['primary', defaultTheme.colors.petka.green],
   ['secondary', defaultTheme.colors.petka.yellow],
   ['terciary', defaultTheme.colors.petka.black],
+  ['shaded', defaultTheme.colors.grey[70]],
+]);
+
+const sizeToIconSizeMap = new Map<Required<Props>['size'], number>([
+  ['xxs', 12],
+  ['xs', 14],
+  ['sm', 16],
+  ['md', 18],
+  ['lg', 20],
 ]);
 
 const ButtonContext = createContext<Pick<
-  Props,
+  Required<Props>,
   'fullwidth' | 'size' | 'variant' | 'disabled' | 'loading' | 'intent'
 > | null>(null);
 
@@ -37,7 +47,7 @@ function useButtonContext() {
 export function Button({
   children,
   disabled = false,
-  fullwidth,
+  fullwidth = false,
   intent = 'primary',
   loading = false,
   onPress,
@@ -78,7 +88,7 @@ export function Button({
             accessibilityRole="spinbutton"
             accessible
             color={spinnerColor}
-            size={size === 'lg' ? 22 : 20}
+            size={sizeToIconSizeMap.get(size)! + 2}
             style={styles.loader}
           />
         ) : (
@@ -97,6 +107,28 @@ function ButtonText({ children }: Readonly<PropsWithChildren>) {
 }
 
 Button.Text = ButtonText;
+
+function ButtonIcon({ children }: Readonly<{ children: ReactElement<IconProps<string>> }>) {
+  const buttonStyles = useButtonContext();
+  styles.useVariants(buttonStyles);
+
+  if (!children) {
+    return null;
+  }
+
+  return (
+    <>
+      {cloneElement(children, {
+        color: styles.text.color ?? '',
+        size: sizeToIconSizeMap.get(buttonStyles.size),
+        testID: children.props.testID ?? `icon-${children.props.name}`,
+        accessibilityLabel: `icon-${children.props.name}`,
+      })}
+    </>
+  );
+}
+
+Button.Icon = ButtonIcon;
 
 const styles = StyleSheet.create((theme) => ({
   container: {
@@ -137,9 +169,13 @@ const styles = StyleSheet.create((theme) => ({
         secondary: {},
         terciary: {},
         danger: {},
+        shaded: {},
       },
       variant: {
         fill: {},
+        transparent: {
+          backgroundColor: 'transparent',
+        },
         outline: {
           borderWidth: 1,
         },
@@ -191,6 +227,13 @@ const styles = StyleSheet.create((theme) => ({
         },
       },
       {
+        variant: 'fill',
+        intent: 'shaded',
+        styles: {
+          backgroundColor: theme.colors.grey[70],
+        },
+      },
+      {
         variant: 'outline',
         intent: 'primary',
         styles: {
@@ -216,6 +259,13 @@ const styles = StyleSheet.create((theme) => ({
         intent: 'danger',
         styles: {
           borderColor: theme.colors.red[40],
+        },
+      },
+      {
+        variant: 'outline',
+        intent: 'shaded',
+        styles: {
+          borderColor: theme.colors.grey[70],
         },
       },
     ],
@@ -257,12 +307,14 @@ const styles = StyleSheet.create((theme) => ({
         secondary: {},
         terciary: {},
         danger: {},
+        shaded: {},
       },
       variant: {
         fill: {
           color: theme.colors.white,
         },
         outline: {},
+        transparent: {},
       },
     },
     compoundVariants: [
@@ -292,6 +344,48 @@ const styles = StyleSheet.create((theme) => ({
         intent: 'danger',
         styles: {
           color: theme.colors.red[40],
+        },
+      },
+      {
+        variant: 'outline',
+        intent: 'shaded',
+        styles: {
+          color: theme.colors.grey[70],
+        },
+      },
+      {
+        variant: 'transparent',
+        intent: 'primary',
+        styles: {
+          color: theme.colors.petka.green,
+        },
+      },
+      {
+        variant: 'transparent',
+        intent: 'seconary',
+        styles: {
+          color: theme.colors.petka.yellow,
+        },
+      },
+      {
+        variant: 'transparent',
+        intent: 'terciary',
+        styles: {
+          color: theme.colors.petka.black,
+        },
+      },
+      {
+        variant: 'transparent',
+        intent: 'danger',
+        styles: {
+          color: theme.colors.red[40],
+        },
+      },
+      {
+        variant: 'transparent',
+        intent: 'shaded',
+        styles: {
+          color: theme.colors.grey[70],
         },
       },
     ],

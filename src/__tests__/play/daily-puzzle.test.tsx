@@ -43,6 +43,7 @@ describe('DailyPuzzleScreen', () => {
     puzzle: testDailyPuzzle1,
     isLoading: false,
     isSolved: false,
+    isDone: false,
     onSubmitAttempt: jest.fn(),
   };
 
@@ -57,8 +58,8 @@ describe('DailyPuzzleScreen', () => {
     jest.clearAllMocks();
   });
 
-  it('should navigate to puzzle solved screen and set navigation options with header right element when puzzle is solved', () => {
-    useDailyPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, isSolved: true });
+  it('should navigate to puzzle solved screen and set navigation options with header right element when puzzle is done', () => {
+    useDailyPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, isDone: true });
 
     render(<DailyPuzzleScreen />);
 
@@ -67,7 +68,7 @@ describe('DailyPuzzleScreen', () => {
   });
 
   it('should not navigate to puzzle solved screen and set navigation options with header right element set to null when puzzle is not solved', () => {
-    useDailyPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, isSolved: false });
+    useDailyPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, isDone: false });
 
     render(<DailyPuzzleScreen />);
 

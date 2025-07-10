@@ -36,7 +36,7 @@ describe('<HistoryGrid />', () => {
   it('renders without crashing', () => {
     render(<HistoryGrid puzzle={getPuzzleWithDate(today)} />);
 
-    expect(screen.getByText(today.format('dddd, DD. MMMM YYYY'))).toBeOnTheScreen();
+    expect(screen.getByText(today.format('dddd, DD. MMM YYYY'))).toBeOnTheScreen();
   });
 
   it('shows solution for daily puzzle in the past', () => {
@@ -108,6 +108,6 @@ describe('<HistoryGrid />', () => {
   it('renders without userId', () => {
     const puzzle = getPuzzleWithDate(today, { solvedBy: [] });
     render(<HistoryGrid puzzle={puzzle} />);
-    expect(screen.getByText(today.format('dddd, DD. MMMM YYYY'))).toBeOnTheScreen();
+    expect(screen.getByText(today.format('dddd, DD. MMM YYYY'))).toBeOnTheScreen();
   });
 });

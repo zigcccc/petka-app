@@ -1,6 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react-native';
 import * as Haptics from 'expo-haptics';
 import { usePostHog } from 'posthog-react-native';
+import { Share } from 'react-native';
 
 import { type Id } from '@/convex/_generated/dataModel';
 import { puzzleType } from '@/convex/puzzles/models';
@@ -57,6 +58,7 @@ describe('useDailyPuzzle', () => {
   const useToasterSpy = useToaster as jest.Mock;
   const hapticsNotificationAsyncSpy = jest.spyOn(Haptics, 'notificationAsync');
   const hapticsImpactAsyncSpy = jest.spyOn(Haptics, 'impactAsync');
+  const shareSpy = jest.spyOn(Share, 'share').mockImplementation(() => Promise.resolve({ action: 'sharedAction' }));
 
   beforeEach(() => {
     useMarkPuzzleAsSolvedMutationSpy.mockReturnValue({ mutate: mockMarkPuzzleAsSolved });
@@ -144,6 +146,37 @@ describe('useDailyPuzzle', () => {
     const { result } = renderHook(() => useDailyPuzzle());
 
     expect(result.current.isFailed).toBe(false);
+  });
+
+  it.each([
+    {
+      desc: 'last puzzle attempt is correct (isSolved)',
+      attempts: [testIncorrectPuzzleGuessAttempt1, testCorrectPuzzleGuessAttempt1],
+    },
+    {
+      desc: 'length of attempts is 6 and last attempts is not correct (isFailed)',
+      attempts: new Array(6).fill(null).map((_, idx) => ({
+        ...testIncorrectPuzzleGuessAttempt1,
+        _id: `incorrectAttempt${idx}` as Id<'puzzleGuessAttempts'>,
+      })),
+    },
+  ])('should set isDone=true when $desc', ({ attempts }) => {
+    usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
+
+    const { result } = renderHook(() => useDailyPuzzle());
+
+    expect(result.current.isDone).toBe(true);
+  });
+
+  it.each([
+    { desc: 'attempts data is not available', attempts: undefined },
+    { desc: 'attempts length is not 6', attempts: [testIncorrectPuzzleGuessAttempt1] },
+  ])('should set isDone=false when $desc', ({ attempts }) => {
+    usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
+
+    const { result } = renderHook(() => useDailyPuzzle());
+
+    expect(result.current.isDone).toBe(false);
   });
 
   it('should trigger createPuzzleAttempt mutation on onSubmitAttempt action - success scenario, attempt is not correct', async () => {
@@ -309,5 +342,57 @@ describe('useDailyPuzzle', () => {
 
     expect(mockMarkPuzzleAsSolved).not.toHaveBeenCalled();
     expect(mockCaptureEvent).not.toHaveBeenCalled();
+  });
+
+  it('should display share context menu on onShareMessage trigger when puzzle and attempts data is available - isFailed=false', () => {
+    useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: testDailyPuzzle1 });
+    usePuzzleAttemptsQuerySpy.mockReturnValue({
+      data: [testIncorrectPuzzleGuessAttempt1, testCorrectPuzzleGuessAttempt1],
+    });
+
+    const { result } = renderHook(() => useDailyPuzzle());
+
+    act(() => {
+      result.current.onShareResults();
+    });
+
+    expect(shareSpy).toHaveBeenCalledWith({
+      message: `Petka (02. 07. 2025) - 2/6\n\n🟩⬛️🟨⬛️⬛️\n🟩🟩🟩🟩🟩`,
+    });
+  });
+
+  it('should display share context menu on onShareMessage trigger when puzzle and attempts data is available - isFailed=true', () => {
+    const attempts = new Array(6).fill(null).map((_, idx) => ({
+      ...testIncorrectPuzzleGuessAttempt1,
+      _id: `incorrectAttempt${idx}` as Id<'puzzleGuessAttempts'>,
+    }));
+    useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: testDailyPuzzle1 });
+    usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
+
+    const { result } = renderHook(() => useDailyPuzzle());
+
+    act(() => {
+      result.current.onShareResults();
+    });
+
+    expect(shareSpy).toHaveBeenCalledWith({
+      message: `Petka (02. 07. 2025) - X/6\n\n🟩⬛️🟨⬛️⬛️\n🟩⬛️🟨⬛️⬛️\n🟩⬛️🟨⬛️⬛️\n🟩⬛️🟨⬛️⬛️\n🟩⬛️🟨⬛️⬛️\n🟩⬛️🟨⬛️⬛️`,
+    });
+  });
+
+  it.each([
+    { desc: 'puzzle data is not available', puzzle: null, attempts: [testCorrectPuzzleGuessAttempt1] },
+    { desc: 'attempts data is not available', puzzle: testDailyPuzzle1, attempts: null },
+  ])('should not display share context menu on onShareMessage trigger when $desc', ({ puzzle, attempts }) => {
+    useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: puzzle });
+    usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
+
+    const { result } = renderHook(() => useDailyPuzzle());
+
+    act(() => {
+      result.current.onShareResults();
+    });
+
+    expect(shareSpy).not.toHaveBeenCalled();
   });
 });

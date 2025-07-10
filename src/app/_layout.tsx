@@ -1,3 +1,4 @@
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as Sentry from '@sentry/react-native';
 import { ConvexProvider, ConvexReactClient } from 'convex/react';
 import dayjs from 'dayjs';
@@ -12,6 +13,8 @@ import { SafeAreaView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native-unistyles';
 
+import { ActionSheetProvider } from '@/context/ActionSheet';
+import { PromptProvider } from '@/context/Prompt';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useUser } from '@/hooks/useUser';
 
@@ -116,19 +119,17 @@ function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView>
-      <SafeAreaView style={{ flex: 1 }}>
-        <Stack screenOptions={{ contentStyle: styles.content }}>
-          <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="create-account"
-            options={{ presentation: 'modal', title: '', headerShadowVisible: false }}
-          />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </SafeAreaView>
-    </GestureHandlerRootView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <Stack screenOptions={{ contentStyle: styles.content }}>
+        <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="create-account"
+          options={{ presentation: 'modal', title: '', headerShadowVisible: false }}
+        />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style="auto" />
+    </SafeAreaView>
   );
 }
 
@@ -140,7 +141,15 @@ function RootLayoutWithProviders() {
       options={{ host: 'https://eu.i.posthog.com', disabled: __DEV__ }}
     >
       <ConvexProvider client={convex}>
-        <RootLayout />
+        <GestureHandlerRootView>
+          <BottomSheetModalProvider>
+            <ActionSheetProvider>
+              <PromptProvider>
+                <RootLayout />
+              </PromptProvider>
+            </ActionSheetProvider>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
       </ConvexProvider>
     </PostHogProvider>
   );
