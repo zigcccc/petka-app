@@ -18,6 +18,7 @@ import { ActionSheetProvider } from '@/context/ActionSheet';
 import { PromptProvider } from '@/context/Prompt';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useUser } from '@/hooks/useUser';
+import { registerForPushNotificationsAsync } from '@/utils/notifications';
 
 import 'dayjs/locale/sl';
 import 'react-native-reanimated';
@@ -76,10 +77,14 @@ function RootLayout() {
   const isReady = fontsLoaded && imagesLoaded;
 
   useEffect(() => {
-    async function requestTrackingPermission() {
-      await Tracking.requestTrackingPermissionsAsync();
+    async function requestPermissionsAsync() {
+      try {
+        await Promise.all([registerForPushNotificationsAsync(), Tracking.requestTrackingPermissionsAsync()]);
+      } catch {
+        // pass
+      }
     }
-    requestTrackingPermission();
+    requestPermissionsAsync();
   }, []);
 
   useEffect(() => {
