@@ -1,8 +1,9 @@
+import { waitFor } from '@testing-library/react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
-import { registerForPushNotificationsAsync } from './notifications';
+import { notificationsPermissionsLookup, registerForPushNotificationsAsync } from './notifications';
 
 jest.mock('expo-notifications', () => ({
   ...jest.requireActual('expo-notifications'),
@@ -140,6 +141,52 @@ describe('registerForPushNotificationsAsync', () => {
       await registerForPushNotificationsAsync();
 
       expect(mockGetExpoPushTokenAsync).toHaveBeenCalledWith({ projectId: 'testProjectId' });
+    }
+  );
+});
+
+describe('notificationsPermissionsLookup', () => {
+  const mockGetPermissionsAsync = Notifications.getPermissionsAsync as jest.Mock;
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should not trigger getPermissionsAsync call when callback is not passed', () => {
+    notificationsPermissionsLookup();
+    expect(mockGetPermissionsAsync).not.toHaveBeenCalled();
+  });
+
+  it('should trigger getPermissionsAsync call when callback is passed - status is denied and cannot ask again', async () => {
+    mockGetPermissionsAsync.mockResolvedValue({ status: Notifications.PermissionStatus.DENIED, canAskAgain: false });
+
+    const callback = jest.fn();
+    notificationsPermissionsLookup(callback);
+
+    expect(mockGetPermissionsAsync).toHaveBeenCalled();
+
+    await waitFor(() => {
+      expect(callback).toHaveBeenCalledWith(false);
+    });
+  });
+
+  it.each([
+    { status: Notifications.PermissionStatus.GRANTED, canAskAgain: false },
+    { status: Notifications.PermissionStatus.UNDETERMINED, canAskAgain: false },
+    { status: Notifications.PermissionStatus.DENIED, canAskAgain: true },
+  ])(
+    'should trigger getPermissionsAsync call when callback is passed - status is $status and canAskAgain is $canAskAgain',
+    async ({ status, canAskAgain }) => {
+      mockGetPermissionsAsync.mockResolvedValue({ status, canAskAgain });
+
+      const callback = jest.fn();
+      notificationsPermissionsLookup(callback);
+
+      expect(mockGetPermissionsAsync).toHaveBeenCalled();
+
+      await waitFor(() => {
+        expect(callback).toHaveBeenCalledWith(true);
+      });
     }
   );
 });
