@@ -14,7 +14,7 @@ const config: ExpoConfig = {
   orientation: 'portrait',
   icon: iconPath,
   scheme: 'petkaapp',
-  userInterfaceStyle: 'automatic',
+  userInterfaceStyle: 'light',
   newArchEnabled: true,
   ios: {
     supportsTablet: true,
