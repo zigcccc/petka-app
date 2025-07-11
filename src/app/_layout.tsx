@@ -96,7 +96,7 @@ function RootLayout() {
     if (!imagesLoaded) {
       loadLocalImageAssets();
     }
-  }, [imagesLoaded, setImagesLoaded]);
+  }, [imagesLoaded]);
 
   useEffect(() => {
     posthog.screen(pathname, params);
@@ -115,12 +115,13 @@ function RootLayout() {
       const url = response.notification.request.content.data?.url;
 
       if (typeof url === 'string') {
+        posthog.capture('notifications:opened', { url });
         router.push(url as Href);
       }
     });
 
     return () => subscription.remove();
-  }, [router]);
+  }, [posthog, router]);
 
   if (!isReady) {
     return null;
