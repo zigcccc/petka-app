@@ -15,6 +15,7 @@ type Props = PropsWithChildren<{
 
 const intentToSpinnerColorMap = new Map<Props['intent'], string>([
   ['danger', defaultTheme.colors.red[40]],
+  ['warning', defaultTheme.colors.gold[40]],
   ['primary', defaultTheme.colors.petka.green],
   ['secondary', defaultTheme.colors.petka.yellow],
   ['terciary', defaultTheme.colors.petka.black],
@@ -169,6 +170,7 @@ const styles = StyleSheet.create((theme) => ({
         secondary: {},
         terciary: {},
         danger: {},
+        warning: {},
         shaded: {},
       },
       variant: {
@@ -228,6 +230,13 @@ const styles = StyleSheet.create((theme) => ({
       },
       {
         variant: 'fill',
+        intent: 'warning',
+        styles: {
+          backgroundColor: theme.colors.red[40],
+        },
+      },
+      {
+        variant: 'fill',
         intent: 'shaded',
         styles: {
           backgroundColor: theme.colors.grey[70],
@@ -259,6 +268,13 @@ const styles = StyleSheet.create((theme) => ({
         intent: 'danger',
         styles: {
           borderColor: theme.colors.red[40],
+        },
+      },
+      {
+        variant: 'outline',
+        intent: 'warning',
+        styles: {
+          borderColor: theme.colors.gold[40],
         },
       },
       {
@@ -348,6 +364,13 @@ const styles = StyleSheet.create((theme) => ({
       },
       {
         variant: 'outline',
+        intent: 'warning',
+        styles: {
+          color: theme.colors.gold[40],
+        },
+      },
+      {
+        variant: 'outline',
         intent: 'shaded',
         styles: {
           color: theme.colors.grey[70],
@@ -379,6 +402,13 @@ const styles = StyleSheet.create((theme) => ({
         intent: 'danger',
         styles: {
           color: theme.colors.red[40],
+        },
+      },
+      {
+        variant: 'transparent',
+        intent: 'warning',
+        styles: {
+          color: theme.colors.gold[40],
         },
       },
       {
