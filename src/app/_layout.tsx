@@ -7,6 +7,7 @@ import { useFonts } from 'expo-font';
 import * as Notifications from 'expo-notifications';
 import { type Href, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import * as Tracking from 'expo-tracking-transparency';
 import { PostHogProvider, usePostHog } from 'posthog-react-native';
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native';
@@ -73,6 +74,13 @@ function RootLayout() {
   });
 
   const isReady = fontsLoaded && imagesLoaded;
+
+  useEffect(() => {
+    async function requestTrackingPermission() {
+      await Tracking.requestTrackingPermissionsAsync();
+    }
+    requestTrackingPermission();
+  }, []);
 
   useEffect(() => {
     async function loadLocalImageAssets() {
