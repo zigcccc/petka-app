@@ -46,10 +46,8 @@ export const toggleUserNotificationsStatus = mutation({
       }
 
       await pushNotifications.recordToken(ctx, { userId, pushToken });
-      await pushNotifications.unpauseNotificationsForUser(ctx, { userId });
     } else {
       await pushNotifications.removeToken(ctx, { userId });
-      await pushNotifications.pauseNotificationsForUser(ctx, { userId });
     }
   },
 });

@@ -71,6 +71,9 @@ const styles = StyleSheet.create((theme) => ({
         red40: {
           color: theme.colors.red[40],
         },
+        gold40: {
+          color: theme.colors.gold[40],
+        },
         white: {
           color: theme.colors.white,
         },

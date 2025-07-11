@@ -2,9 +2,10 @@ import { ConvexError } from 'convex/values';
 import { zid } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
+import { internal } from '../_generated/api';
 import { type Id } from '../_generated/dataModel';
 import { generateRandomString, weekBounds, windowAround } from '../shared/helpers';
-import { mutation, query } from '../shared/queries';
+import { internalMutation, mutation, query } from '../shared/queries';
 import { type User } from '../users/models';
 
 import {
@@ -168,6 +169,31 @@ export const readGlobalLeaderboard = query({
   },
 });
 
+export const populateLeaderboardWithExistingRecords = internalMutation({
+  args: { userId: zid('users'), leaderboardId: zid('leaderboards') },
+  async handler(ctx, { userId, leaderboardId }) {
+    const globalLeaderboard = await ctx.db
+      .query('leaderboards')
+      .withIndex('by_type', (q) => q.eq('type', leaderboardType.Enum.global))
+      .unique();
+    if (!globalLeaderboard) {
+      throw new ConvexError({ message: 'Global leaderboard not found', code: 500 });
+    }
+    const existingLeaderboardEntriesQuery = ctx.db
+      .query('leaderboardEntries')
+      .withIndex('by_leaderboard_user', (q) => q.eq('leaderboardId', globalLeaderboard._id).eq('userId', userId));
+
+    for await (const entry of existingLeaderboardEntriesQuery) {
+      await ctx.db.insert('leaderboardEntries', {
+        leaderboardId: leaderboardId,
+        userId,
+        puzzleId: entry.puzzleId,
+        score: entry.score,
+      });
+    }
+  },
+});
+
 export const createPrivateLeaderboard = mutation({
   args: { userId: zid('users'), data: createLeaderboardModel },
   async handler(ctx, { userId, data }) {
@@ -193,6 +219,11 @@ export const createPrivateLeaderboard = mutation({
         creatorId: normalizedUserId,
         users: [normalizedUserId],
         inviteCode,
+      });
+
+      ctx.scheduler.runAfter(0, internal.leaderboards.queries.populateLeaderboardWithExistingRecords, {
+        userId: normalizedUserId,
+        leaderboardId: createdLeaderboardId,
       });
 
       return createdLeaderboardId;
@@ -226,6 +257,11 @@ export const joinPrivateLeaderboard = mutation({
 
     await ctx.db.patch(leaderboard._id, {
       users: leaderboard.users ? [...leaderboard.users, normalizedUserId] : [normalizedUserId],
+    });
+
+    ctx.scheduler.runAfter(0, internal.leaderboards.queries.populateLeaderboardWithExistingRecords, {
+      userId: normalizedUserId,
+      leaderboardId: leaderboard._id,
     });
 
     return leaderboard;

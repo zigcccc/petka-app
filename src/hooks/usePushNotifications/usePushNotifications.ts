@@ -1,14 +1,17 @@
+import { useFocusEffect } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { AppState } from 'react-native';
 
 import { type Id } from '@/convex/_generated/dataModel';
-import { registerForPushNotificationsAsync } from '@/utils/notifications';
+import { notificationsPermissionsLookup, registerForPushNotificationsAsync } from '@/utils/notifications';
 
 import { useRegisterUserForPushNotificationsMutation, useToggleUserPushNotificationsMutation } from '../mutations';
 import { useUserNotificationsStatusQuery } from '../queries';
 import { useToaster } from '../useToaster';
 
 export function usePushNotifications(userId?: Id<'users'>) {
+  const [systemNotificationsEnabled, setSystemNotificationsEnabled] = useState(true);
   const { mutate: registerUserForPushNotifcations, isLoading: isRegistering } =
     useRegisterUserForPushNotificationsMutation();
   const { mutate: togglePushNotifications } = useToggleUserPushNotificationsMutation();
@@ -54,5 +57,24 @@ export function usePushNotifications(userId?: Id<'users'>) {
     [isRegistering, registerUserForPushNotifcations, posthog]
   );
 
-  return useMemo(() => ({ register, toggle, status, enabled }), [enabled, register, status, toggle]);
+  useFocusEffect(
+    useCallback(() => {
+      notificationsPermissionsLookup(setSystemNotificationsEnabled);
+    }, [])
+  );
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (status) => {
+      if (status === 'active') {
+        notificationsPermissionsLookup(setSystemNotificationsEnabled);
+      }
+    });
+
+    return () => subscription.remove();
+  }, []);
+
+  return useMemo(
+    () => ({ register, toggle, status, enabled, systemNotificationsEnabled }),
+    [enabled, register, status, toggle, systemNotificationsEnabled]
+  );
 }

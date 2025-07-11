@@ -10,6 +10,16 @@ import { useToaster } from '../useToaster';
 
 import { usePushNotifications } from './usePushNotifications';
 
+jest.mock('expo-router', () => ({
+  ...jest.requireActual('expo-router'),
+  useFocusEffect: jest.fn().mockImplementation((cb) => cb()),
+}));
+
+jest.mock('expo-notifications', () => ({
+  ...jest.requireActual('expo-notifications'),
+  getPermissionsAsync: jest.fn().mockResolvedValue({}),
+}));
+
 jest.mock('posthog-react-native', () => ({
   ...jest.requireActual('posthog-react-native'),
   usePostHog: jest.fn(),

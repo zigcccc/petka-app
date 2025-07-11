@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import * as Clipboard from 'expo-clipboard';
 import * as Device from 'expo-device';
+import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { type ComponentProps } from 'react';
 import { Text as MockText, View as MockView } from 'react-native';
@@ -48,6 +49,7 @@ describe('Settings screen', () => {
   const useUserSpy = useUser as jest.Mock;
   const usePushNotificationsSpy = usePushNotifications as jest.Mock;
   const clipboardSetStringAsyncSpy = jest.spyOn(Clipboard, 'setStringAsync').mockResolvedValue(true);
+  const openSettingsSpy = jest.spyOn(Linking, 'openSettings');
 
   const mockNavigate = jest.fn();
   const mockToast = jest.fn();
@@ -60,6 +62,7 @@ describe('Settings screen', () => {
     useToasterSpy.mockReturnValue({ toast: mockToast });
     useUserSpy.mockReturnValue({ user: testUser1, deleteUser: mockDeleteUser, isDeleting: false });
     usePushNotificationsSpy.mockReturnValue({
+      systemNotificationsEnabled: true,
       status: { hasToken: true, paused: false },
       toggle: mockTogglePushNotifications,
     });
@@ -101,7 +104,11 @@ describe('Settings screen', () => {
   });
 
   it('should render the "Toggle push notifications" switch with value=true when status.hasToken=true', () => {
-    usePushNotificationsSpy.mockReturnValue({ status: { hasToken: true }, toggle: mockTogglePushNotifications });
+    usePushNotificationsSpy.mockReturnValue({
+      status: { hasToken: true },
+      toggle: mockTogglePushNotifications,
+      systemNotificationsEnabled: true,
+    });
 
     render(<SettingsScreen />);
 
@@ -112,7 +119,27 @@ describe('Settings screen', () => {
   it.each([null, { hasToken: false }])(
     'should render the "Toggle push notifications" switch with value=false when status=%s',
     (status) => {
-      usePushNotificationsSpy.mockReturnValue({ status, toggle: mockTogglePushNotifications });
+      usePushNotificationsSpy.mockReturnValue({
+        status,
+        toggle: mockTogglePushNotifications,
+        systemNotificationsEnabled: false,
+      });
+
+      render(<SettingsScreen />);
+
+      expect(screen.getByRole('switch')).toHaveProp('value', false);
+      expect(screen.getByRole('switch')).toHaveAccessibilityValue({ text: 'Off' });
+    }
+  );
+
+  it.each([null, undefined, false])(
+    'should render the "Toggle push notifications" switch with value=false when systemNotificationsEnabled=%s',
+    (systemNotificationsEnabled) => {
+      usePushNotificationsSpy.mockReturnValue({
+        status: { hasToken: true },
+        toggle: mockTogglePushNotifications,
+        systemNotificationsEnabled,
+      });
 
       render(<SettingsScreen />);
 
@@ -146,5 +173,25 @@ describe('Settings screen', () => {
     await waitFor(() => {
       expect(mockToast).toHaveBeenCalledWith('ID kopiran', { message: testUser1._id, intent: 'success' });
     });
+  });
+
+  it('should display a hint with link to system settings when systemNotificationsEnabled=false', () => {
+    usePushNotificationsSpy.mockReturnValue({ systemNotificationsEnabled: false });
+
+    render(<SettingsScreen />);
+
+    expect(screen.queryByText('Preprečil/a si pošiljanje potisnih obvestil')).toBeOnTheScreen();
+
+    fireEvent.press(screen.getByRole('button', { name: 'Odpri nastavitve' }));
+
+    expect(openSettingsSpy).toHaveBeenCalled();
+  });
+
+  it('should not display a hint with link to system settings when systemNotificationsEnabled=true', () => {
+    usePushNotificationsSpy.mockReturnValue({ systemNotificationsEnabled: true });
+
+    render(<SettingsScreen />);
+
+    expect(screen.queryByText('Preprečil/a si pošiljanje potisnih obvestil')).not.toBeOnTheScreen();
   });
 });

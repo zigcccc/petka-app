@@ -39,3 +39,17 @@ export async function registerForPushNotificationsAsync() {
 
   return pushTokenString;
 }
+
+export function notificationsPermissionsLookup(callback?: (isEnabled: boolean) => void) {
+  if (!callback) {
+    return;
+  }
+
+  Notifications.getPermissionsAsync().then(({ status, canAskAgain }) => {
+    if (status === Notifications.PermissionStatus.DENIED && !canAskAgain) {
+      callback(false);
+    } else {
+      callback(true);
+    }
+  });
+}

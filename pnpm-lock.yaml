@@ -122,6 +122,9 @@ importers:
       expo-system-ui:
         specifier: ~5.0.10
         version: 5.0.10(expo@53.0.19(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native-web@0.20.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))
+      expo-tracking-transparency:
+        specifier: ^5.2.4
+        version: 5.2.4(expo@53.0.19(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))
       expo-updates:
         specifier: ~0.28.17
         version: 0.28.17(expo@53.0.19(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react@19.0.0)
@@ -3237,6 +3240,12 @@ packages:
     peerDependenciesMeta:
       react-native-web:
         optional: true
+
+  expo-tracking-transparency@5.2.4:
+    resolution: {integrity: sha512-Evog1rmbSLrODuG8AukEoV0y1RzQiJelX95rFuXY3kxHZQbiBOQ7YzAOsuYACztDf4XDoSODStdHSgUkgKNxJA==}
+    peerDependencies:
+      expo: '*'
+      react-native: '*'
 
   expo-updates-interface@1.1.0:
     resolution: {integrity: sha512-DeB+fRe0hUDPZhpJ4X4bFMAItatFBUPjw/TVSbJsaf3Exeami+2qbbJhWkcTMoYHOB73nOIcaYcWXYJnCJXO0w==}
@@ -9677,6 +9686,11 @@ snapshots:
       react-native-web: 0.20.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
     transitivePeerDependencies:
       - supports-color
+
+  expo-tracking-transparency@5.2.4(expo@53.0.19(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0)):
+    dependencies:
+      expo: 53.0.19(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      react-native: 0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0)
 
   expo-updates-interface@1.1.0(expo@53.0.19(@babel/core@7.27.4)(@expo/metro-runtime@5.0.4(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0)))(react-native-webview@13.13.5(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.27.4)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)):
     dependencies:

@@ -7,6 +7,7 @@ import { useFonts } from 'expo-font';
 import * as Notifications from 'expo-notifications';
 import { type Href, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import * as Tracking from 'expo-tracking-transparency';
 import { PostHogProvider, usePostHog } from 'posthog-react-native';
 import { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native';
@@ -17,6 +18,7 @@ import { ActionSheetProvider } from '@/context/ActionSheet';
 import { PromptProvider } from '@/context/Prompt';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useUser } from '@/hooks/useUser';
+import { registerForPushNotificationsAsync } from '@/utils/notifications';
 
 import 'dayjs/locale/sl';
 import 'react-native-reanimated';
@@ -75,6 +77,17 @@ function RootLayout() {
   const isReady = fontsLoaded && imagesLoaded;
 
   useEffect(() => {
+    async function requestPermissionsAsync() {
+      try {
+        await Promise.all([registerForPushNotificationsAsync(), Tracking.requestTrackingPermissionsAsync()]);
+      } catch {
+        // pass
+      }
+    }
+    requestPermissionsAsync();
+  }, []);
+
+  useEffect(() => {
     async function loadLocalImageAssets() {
       await Asset.loadAsync([
         require('@/assets/images/petka-app-icon.png'),
@@ -88,7 +101,7 @@ function RootLayout() {
     if (!imagesLoaded) {
       loadLocalImageAssets();
     }
-  }, [imagesLoaded, setImagesLoaded]);
+  }, [imagesLoaded]);
 
   useEffect(() => {
     posthog.screen(pathname, params);
@@ -107,12 +120,13 @@ function RootLayout() {
       const url = response.notification.request.content.data?.url;
 
       if (typeof url === 'string') {
+        posthog.capture('notifications:opened', { url });
         router.push(url as Href);
       }
     });
 
     return () => subscription.remove();
-  }, [router]);
+  }, [posthog, router]);
 
   if (!isReady) {
     return null;

@@ -174,7 +174,6 @@ jobs:
           echo "NEW_VERSION=$NEW_VERSION"
 
           jq ".version = \"$NEW_VERSION\"" package.json > tmp && mv tmp package.json
-          jq ".expo.version = \"$NEW_VERSION\"" app.json > tmp && mv tmp app.json
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
 
       - name: Push EAS Update to Production
