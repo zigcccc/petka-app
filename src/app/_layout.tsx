@@ -77,15 +77,27 @@ function RootLayout() {
   const isReady = fontsLoaded && imagesLoaded;
 
   useEffect(() => {
-    async function requestPermissionsAsync() {
+    async function requestPushNotificationsPermissionsAsync() {
       try {
-        await Promise.all([registerForPushNotificationsAsync(), Tracking.requestTrackingPermissionsAsync()]);
+        await registerForPushNotificationsAsync();
       } catch {
         // pass
       }
     }
-    requestPermissionsAsync();
-  }, []);
+    async function requestAppTrackingPermissionsAsync() {
+      try {
+        const { granted } = await Tracking.requestTrackingPermissionsAsync();
+
+        if (granted) {
+          posthog.optIn();
+        }
+      } catch {
+        posthog.optOut();
+      }
+    }
+    requestAppTrackingPermissionsAsync();
+    requestPushNotificationsPermissionsAsync();
+  }, [posthog]);
 
   useEffect(() => {
     async function loadLocalImageAssets() {
@@ -152,7 +164,7 @@ function RootLayoutWithProviders() {
     <PostHogProvider
       apiKey={process.env.EXPO_PUBLIC_POSTHOG_API_KEY}
       autocapture={false}
-      options={{ host: 'https://eu.i.posthog.com', disabled: __DEV__ }}
+      options={{ host: 'https://eu.i.posthog.com', disabled: __DEV__, defaultOptIn: false }}
     >
       <ConvexProvider client={convex}>
         <GestureHandlerRootView>
