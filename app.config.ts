@@ -17,7 +17,7 @@ const config: ExpoConfig = {
   userInterfaceStyle: 'light',
   newArchEnabled: true,
   ios: {
-    supportsTablet: true,
+    supportsTablet: false,
     bundleIdentifier: identifier,
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
