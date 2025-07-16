@@ -59,6 +59,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     flexDirection: 'column',
     gap: theme.spacing[4],
     opacity: isValidating ? 0.4 : 1,
+    alignSelf: 'center',
   }),
   row: {
     flexDirection: 'row',
@@ -92,7 +93,10 @@ const styles = StyleSheet.create((theme, rt) => ({
             : theme.colors.grey[20],
       borderWidth: 2,
       // screen width - 2*20 padding - 4*12 gap
-      width: cellWidth ?? (rt.screen.width - 40 - 4 * 12) / 5,
+      width: {
+        xs: cellWidth ?? (rt.screen.width - 40 - 4 * 12) / 5,
+        md: cellWidth ?? 100,
+      },
       aspectRatio: '1/1',
       alignItems: 'center',
       justifyContent: 'center',

@@ -140,27 +140,30 @@ const styles = StyleSheet.create((theme) => ({
     variants: {
       size: {
         xxs: {
-          paddingVertical: theme.spacing[3],
+          paddingVertical: { xs: theme.spacing[3], md: theme.spacing[5] },
           paddingHorizontal: theme.spacing[4],
           gap: theme.spacing[2],
         },
         xs: {
-          paddingVertical: theme.spacing[4],
+          paddingVertical: { xs: theme.spacing[4], md: theme.spacing[5] },
           paddingHorizontal: theme.spacing[5],
           gap: theme.spacing[2],
         },
         sm: {
-          paddingVertical: theme.spacing[4],
+          paddingVertical: { xs: theme.spacing[4], md: theme.spacing[5] },
           paddingHorizontal: theme.spacing[5],
           gap: theme.spacing[3],
         },
         md: {
-          paddingVertical: theme.spacing[5],
+          paddingVertical: { xs: theme.spacing[5], md: theme.spacing[7] },
           paddingHorizontal: theme.spacing[6],
           gap: theme.spacing[4],
         },
         lg: {
-          paddingVertical: theme.spacing[6],
+          paddingVertical: {
+            xs: theme.spacing[6],
+            md: theme.spacing[8],
+          },
           paddingHorizontal: theme.spacing[7],
           gap: theme.spacing[4],
         },
