@@ -19,7 +19,7 @@ export const createUserModel = z.object({
       message: 'Vzdevek ne sme vsebovati spletnih ali e-poštnih naslovov.',
     })
     .regex(/[a-zA-Z0-9]/, {
-      message: 'Vzdevek mora vsebovati vsaj eno črko ali številko',
+      message: 'Vzdevek mora vsebovati vsaj eno črko ali številko.',
     }),
 });
 export type CreateUser = z.infer<typeof createUserModel>;
