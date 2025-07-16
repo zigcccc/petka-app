@@ -18,7 +18,7 @@ export default function DailyChallengesHistoryScreen() {
     { initialNumItems: 7 }
   );
 
-  const cellWidth = (width - 96) / 5;
+  const cellWidth = width > 768 ? 100 : (width - 96) / 5;
   const estimatedItemSize = cellWidth * 6 + 24;
 
   const handleEndReached = useCallback(() => {

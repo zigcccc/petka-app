@@ -101,7 +101,10 @@ const styles = StyleSheet.create((theme, rt) => ({
     flex: 1,
     paddingTop: theme.spacing[2],
     paddingHorizontal: theme.spacing[6],
-    paddingBottom: rt.insets.bottom + rt.insets.ime,
+    paddingBottom: {
+      xs: rt.insets.bottom + rt.insets.ime,
+      md: rt.insets.bottom + theme.spacing[6],
+    },
   },
   content: {
     paddingTop: theme.spacing[8],
