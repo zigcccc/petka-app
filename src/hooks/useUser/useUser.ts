@@ -3,9 +3,9 @@ import { usePostHog } from 'posthog-react-native';
 import { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 
-import { type PatchUser } from '@/convex/users/models';
+import { type CreateUser, type PatchUser } from '@/convex/users/models';
 
-import { useDeleteUserMutation, usePatchUserMutation } from '../mutations';
+import { useCreateUserMutation, useDeleteUserMutation, usePatchUserMutation } from '../mutations';
 import { useUserQuery } from '../queries';
 import { useToaster } from '../useToaster';
 
@@ -18,6 +18,7 @@ export function useUser() {
   const hasUserId = userId !== LOADING_USER_ID && userId !== null;
   const shouldCreateAccount = userId !== LOADING_USER_ID && userId === null;
 
+  const { mutate: createUser } = useCreateUserMutation();
   const { mutate: patchUser } = usePatchUserMutation();
   const { mutate: deleteUser, isLoading: isDeleting } = useDeleteUserMutation();
   const { data: user, isNotFound } = useUserQuery(hasUserId ? { id: userId } : 'skip');
@@ -52,6 +53,12 @@ export function useUser() {
     );
   };
 
+  const handleCreateUser = async (data: CreateUser) => {
+    const createdUserId = await createUser({ data });
+    handleSetUserId(createdUserId);
+    posthog.capture('users:created', { userId: createdUserId });
+  };
+
   const handleUpdateUser = async (data: PatchUser) => {
     if (!user?._id) {
       return;
@@ -84,6 +91,7 @@ export function useUser() {
     isUnitialized: userId === LOADING_USER_ID,
     setUserId: handleSetUserId,
     shouldCreateAccount,
+    createUser: handleCreateUser,
     updateUser: handleUpdateUser,
     user,
     userId,
