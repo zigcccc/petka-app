@@ -47,6 +47,7 @@ ios/
 db/seeders/**/*.jsonl
 
 .env.local
+google-*.json
 
 # Testing
 coverage/
