@@ -93,7 +93,7 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: 'space-between',
     paddingBottom: theme.spacing[4],
   },
-  grid: { flexDirection: 'column', gap: theme.spacing[3] },
+  grid: { flexDirection: 'column', gap: theme.spacing[3], alignSelf: 'center' },
   gridRow: { flexDirection: 'row', gap: theme.spacing[3] },
   overlay: {
     ...StyleSheet.absoluteFillObject,

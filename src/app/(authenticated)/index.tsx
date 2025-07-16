@@ -75,9 +75,13 @@ const styles = StyleSheet.create((theme, rt) => ({
   image: {
     aspectRatio: '1168/224',
     resizeMode: 'contain',
-    width: '100%',
+    width: {
+      xs: '100%',
+      md: 400,
+    },
     height: 'auto',
     marginTop: 128,
+    alignSelf: 'center',
   },
   actions: {
     flexDirection: 'column',
