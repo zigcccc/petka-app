@@ -1,9 +1,9 @@
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 export const keys = [
-  ['a', 'b', 'c', 'č', 'd', 'e', 'f', 'g', 'h'],
-  ['i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r'],
-  ['{Enter}', 's', 'š', 't', 'u', 'v', 'z', 'ž', '{Backspace}'],
+  ['e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'š', 'ž'],
+  ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'č'],
+  ['{Enter}', 'c', 'v', 'b', 'n', 'm', '-', '{Backspace}'],
 ] as const;
 
 export type KeyboardKey = (typeof keys)[number][number];
