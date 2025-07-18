@@ -9,7 +9,7 @@ export const read = query({
   async handler(ctx, args) {
     const term = await ctx.db
       .query('dictionaryEntries')
-      .filter((q) => q.eq(q.field('word'), args.term))
+      .withIndex('dictionary_word', (q) => q.eq('word', args.term))
       .first();
 
     return term;
