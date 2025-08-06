@@ -25,9 +25,14 @@ export function generateUseQueryHook<QueryFn extends FunctionReference<'query'>>
   };
 }
 
+function getTodayTimestamp() {
+  const now = new Date(Date.now());
+  return Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+}
+
 export function generateUseQueryHookWithTimestampArg<QueryFn extends FunctionReference<'query'>>(queryFn: QueryFn) {
   return function useQueryHook(args: Omit<QueryFn['_args'], 'timestamp'> | 'skip') {
-    const timestampRef = useRef(Date.now());
+    const timestampRef = useRef(getTodayTimestamp());
     // @ts-expect-error Arg types mismatch - end usage is fine
     const data = useQuery(queryFn, args === 'skip' ? args : { ...args, timestamp: timestampRef.current });
 
