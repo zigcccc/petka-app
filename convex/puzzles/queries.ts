@@ -193,7 +193,7 @@ export const createTrainingPuzzle = mutation({
     }
 
     const today = new Date();
-    const words = await ctx.db.query('dictionaryEntries').collect();
+    const words = await ctx.db.query('dictionaryEntries').take(200);
     const word = pickRandomWord(words);
 
     const puzzleId = await ctx.db.insert('puzzles', {
