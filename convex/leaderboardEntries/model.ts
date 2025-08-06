@@ -9,6 +9,7 @@ export const leaderboardEntryModel = getBaseDbModel('leaderboardEntries').extend
   userId: zid('users'),
   puzzleId: zid('puzzles'),
   score: z.number(),
+  recordedAt: z.number().optional(),
 });
 export type LeaderboardEntry = z.infer<typeof leaderboardEntryModel>;
 
