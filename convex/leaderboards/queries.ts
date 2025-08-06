@@ -41,13 +41,13 @@ export const list = query({
     for (const leaderboard of userJoinedLeaderboards) {
       const leaderboardEntries = await ctx.db
         .query('leaderboardEntries')
-        .withIndex('by_leaderboard', (q) => {
+        .withIndex('by_leaderboard_recordedAt', (q) => {
           if (range === leaderboardRange.Enum.weekly) {
             const { lastMonday, nextSunday } = weekBounds(timestamp);
             return q
               .eq('leaderboardId', leaderboard._id)
-              .gte('_creationTime', lastMonday.getTime())
-              .lte('_creationTime', nextSunday.getTime());
+              .gte('recordedAt', lastMonday.getTime())
+              .lte('recordedAt', nextSunday.getTime());
           }
 
           return q.eq('leaderboardId', leaderboard._id);
@@ -192,6 +192,7 @@ export const populateLeaderboardWithExistingRecords = internalMutation({
         userId,
         puzzleId: entry.puzzleId,
         score: entry.score,
+        recordedAt: entry.recordedAt,
       });
     }
   },

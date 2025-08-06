@@ -253,6 +253,7 @@ export const markAsSolved = mutation({
           userId: normalizedUserId,
           puzzleId: normalizedPuzzleId,
           score: puzzleScore,
+          recordedAt: Date.now(),
         });
       }
     }

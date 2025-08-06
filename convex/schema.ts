@@ -16,7 +16,8 @@ export default defineSchema({
   leaderboardEntries: leaderboardEntriesTable
     .index('by_user', ['userId'])
     .index('by_leaderboard', ['leaderboardId'])
-    .index('by_leaderboard_user', ['leaderboardId', 'userId']),
+    .index('by_leaderboard_user', ['leaderboardId', 'userId'])
+    .index('by_leaderboard_recordedAt', ['leaderboardId', 'recordedAt']),
   puzzles: puzzlesTable
     .index('by_type', ['type'])
     .index('by_type_creator', ['type', 'creatorId'])
