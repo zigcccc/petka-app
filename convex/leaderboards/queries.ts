@@ -1,9 +1,10 @@
+import { type NamedTableInfo, type Query } from 'convex/server';
 import { ConvexError } from 'convex/values';
 import { zid } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
 import { internal } from '../_generated/api';
-import { type Id } from '../_generated/dataModel';
+import { type DataModel, type Id } from '../_generated/dataModel';
 import { generateRandomString, weekBounds, windowAround } from '../shared/helpers';
 import { internalMutation, mutation, query } from '../shared/queries';
 import { type User } from '../users/models';
@@ -38,22 +39,20 @@ export const list = query({
     const leaderboardsWithScores: LeaderboardWithScores[] = [];
 
     for (const leaderboard of userJoinedLeaderboards) {
-      let leaderboardEntriesBaseQuery = ctx.db
+      const leaderboardEntries = await ctx.db
         .query('leaderboardEntries')
-        .withIndex('by_leaderboard', (q) => q.eq('leaderboardId', leaderboard._id));
+        .withIndex('by_leaderboard', (q) => {
+          if (range === leaderboardRange.Enum.weekly) {
+            const { lastMonday, nextSunday } = weekBounds(timestamp);
+            return q
+              .eq('leaderboardId', leaderboard._id)
+              .gte('_creationTime', lastMonday.getTime())
+              .lte('_creationTime', nextSunday.getTime());
+          }
 
-      if (range === leaderboardRange.Enum.weekly) {
-        const { lastMonday, nextSunday } = weekBounds(timestamp);
-
-        leaderboardEntriesBaseQuery = leaderboardEntriesBaseQuery.filter((q) =>
-          q.and(
-            q.gte(q.field('_creationTime'), lastMonday.getTime()),
-            q.lte(q.field('_creationTime'), nextSunday.getTime())
-          )
-        );
-      }
-
-      const leaderboardEntries = await leaderboardEntriesBaseQuery.collect();
+          return q.eq('leaderboardId', leaderboard._id);
+        })
+        .collect();
 
       const usersScoreMap = leaderboard.users
         ? new Map(leaderboard.users.map((userId) => [userId, 0]))
@@ -108,19 +107,23 @@ export const readGlobalLeaderboard = query({
       throw new ConvexError({ message: 'Global leaderboard not found.', code: 400 });
     }
 
-    let leaderboardEntriesBaseQuery = ctx.db
-      .query('leaderboardEntries')
-      .withIndex('by_leaderboard', (q) => q.eq('leaderboardId', globalLeaderboard._id));
+    let leaderboardEntriesBaseQuery: Query<NamedTableInfo<DataModel, 'leaderboardEntries'>>;
 
     if (range === leaderboardRange.Enum.weekly) {
       const { lastMonday, nextSunday } = weekBounds(timestamp);
 
-      leaderboardEntriesBaseQuery = leaderboardEntriesBaseQuery.filter((q) =>
-        q.and(
-          q.gte(q.field('_creationTime'), lastMonday.getTime()),
-          q.lte(q.field('_creationTime'), nextSunday.getTime())
-        )
-      );
+      leaderboardEntriesBaseQuery = ctx.db
+        .query('leaderboardEntries')
+        .withIndex('by_leaderboard', (q) =>
+          q
+            .eq('leaderboardId', globalLeaderboard._id)
+            .gte('_creationTime', lastMonday.getTime())
+            .lte('_creationTime', nextSunday.getTime())
+        );
+    } else {
+      leaderboardEntriesBaseQuery = ctx.db
+        .query('leaderboardEntries')
+        .withIndex('by_leaderboard', (q) => q.eq('leaderboardId', globalLeaderboard._id));
     }
 
     const leaderboardEntries = await leaderboardEntriesBaseQuery.collect();
