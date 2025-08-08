@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { api } from '@/convex/_generated/api';
 import { checkedLetterStatus, type CheckedLetter, type PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
+import { useGameplaySettings } from '@/hooks/useGameplaySettings';
 import { useToaster } from '@/hooks/useToaster';
 import { deepClone } from '@/utils/clone';
 
@@ -21,6 +22,7 @@ export function useGuessGrid({ attempts, onSubmitAttempt }: Options) {
   const toaster = useToaster();
   const convex = useConvex();
   const [guesses, setGuesses] = useState<(string | null)[][]>(initialGuesses);
+  const { autosubmitPuzzleAttempt } = useGameplaySettings();
   const [isValidating, setIsValidating] = useState(false);
 
   const allCheckedLetters = useMemo(() => {
@@ -61,8 +63,30 @@ export function useGuessGrid({ attempts, onSubmitAttempt }: Options) {
     setGuesses(initialGuesses);
   }, []);
 
+  const handleSubmitPuzzleAttempt = useCallback(
+    async (term: string, guesses: (string | null)[][], rowIdx: number) => {
+      setIsValidating(true);
+      try {
+        const validatedTerm = await convex.query(api.dictionary.queries.read, { term });
+        if (!validatedTerm) {
+          toaster.toast('Uporabite besedo is SSKJ', { intent: 'error' });
+          setGuesses(getUpdatedGrid(guesses, rowIdx, '{Backspace}'));
+        } else {
+          // Logic to check if the word is the correct word
+          await onSubmitAttempt(validatedTerm.word);
+        }
+      } catch {
+        toaster.toast('Prišlo je do napake', { intent: 'error' });
+        setGuesses(getUpdatedGrid(guesses, rowIdx, '{Backspace}'));
+      } finally {
+        setIsValidating(false);
+      }
+    },
+    [convex, onSubmitAttempt, toaster]
+  );
+
   const checkGuessLength = useCallback(
-    (guess: (string | null)[]) => {
+    async (guess: (string | null)[], grid: (string | null)[][], rowIdx: number) => {
       const filteredGuess = guess.filter(Boolean);
 
       if (filteredGuess.length !== 5) {
@@ -70,9 +94,9 @@ export function useGuessGrid({ attempts, onSubmitAttempt }: Options) {
         return;
       }
 
-      onSubmitAttempt(filteredGuess.join());
+      await handleSubmitPuzzleAttempt(filteredGuess.join(''), grid, rowIdx);
     },
-    [toaster, onSubmitAttempt]
+    [handleSubmitPuzzleAttempt, toaster]
   );
 
   const handleInput = useCallback(
@@ -83,31 +107,34 @@ export function useGuessGrid({ attempts, onSubmitAttempt }: Options) {
       }
 
       const rowIdx = findCurrentGridRowIdx(guesses);
-      const updatedGuesses = getUpdatedGrid(guesses, rowIdx, key, checkGuessLength);
+      const isLastRowFull = rowIdx === 0 ? false : guesses[rowIdx - 1].every((entry) => !!entry);
+      const isLastRowSubmitted = rowIdx === 0 ? true : !!attempts?.[rowIdx - 1];
+
+      let updatedGuesses: (string | null)[][];
+
+      if (autosubmitPuzzleAttempt) {
+        updatedGuesses = getUpdatedGrid(guesses, rowIdx, key, checkGuessLength);
+      } else {
+        if (!isLastRowFull || isLastRowSubmitted) {
+          updatedGuesses = getUpdatedGrid(guesses, rowIdx, key, checkGuessLength);
+        } else if (key === '{Backspace}' || key === '{Enter}') {
+          updatedGuesses = getUpdatedGrid(guesses, rowIdx - 1, key, checkGuessLength);
+        } else {
+          updatedGuesses = guesses;
+        }
+      }
+
       setGuesses(updatedGuesses);
 
       const currentGuess = updatedGuesses[rowIdx].filter(Boolean);
 
       if (currentGuess.length === 5) {
-        setIsValidating(true);
-        try {
-          const term = await convex.query(api.dictionary.queries.read, { term: currentGuess.join('') });
-          if (!term) {
-            toaster.toast('Uporabite besedo is SSKJ', { intent: 'error' });
-            setGuesses(getUpdatedGrid(updatedGuesses, rowIdx, '{Backspace}'));
-          } else {
-            // Logic to check if the word is the correct word
-            await onSubmitAttempt(term.word);
-          }
-        } catch {
-          toaster.toast('Prišlo je do napake', { intent: 'error' });
-          setGuesses(getUpdatedGrid(updatedGuesses, rowIdx, '{Backspace}'));
-        } finally {
-          setIsValidating(false);
+        if (autosubmitPuzzleAttempt) {
+          await handleSubmitPuzzleAttempt(currentGuess.join(''), updatedGuesses, rowIdx);
         }
       }
     },
-    [checkGuessLength, convex, guesses, isValidating, onSubmitAttempt, toaster]
+    [attempts, autosubmitPuzzleAttempt, checkGuessLength, guesses, handleSubmitPuzzleAttempt, isValidating]
   );
 
   useEffect(() => {

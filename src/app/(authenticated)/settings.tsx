@@ -8,7 +8,8 @@ import { Switch, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { GenericStackScreen } from '@/components/navigation';
-import { Button, Card, Text } from '@/components/ui';
+import { Button, Card, RadioInput, Text } from '@/components/ui';
+import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useToaster } from '@/hooks/useToaster';
 import { useUser } from '@/hooks/useUser';
@@ -19,6 +20,7 @@ export default function SettingsScreen() {
   const toaster = useToaster();
   const { user, deleteUser, isDeleting } = useUser();
   const { status, toggle, systemNotificationsEnabled } = usePushNotifications(user?._id);
+  const { autosubmitPuzzleAttempt, keyboardType, updateSettings, setDefaultSettings } = useGameplaySettings();
 
   const handleCopyUserId = async () => {
     await Clipboard.setStringAsync(user?._id ?? '');
@@ -32,10 +34,44 @@ export default function SettingsScreen() {
   return (
     <GenericStackScreen title="Nastavitve">
       <View style={styles.container}>
+        <Card title="Nastavitve igranja">
+          <Card.ActionRow
+            action={
+              <Switch
+                accessibilityLabel="Avtomatsko preveri besedo"
+                accessibilityValue={{ text: autosubmitPuzzleAttempt ? 'On' : 'Off' }}
+                onValueChange={(newValue) => updateSettings({ autosubmitPuzzleAttempt: newValue })}
+                value={autosubmitPuzzleAttempt}
+              />
+            }
+            title="Avtomatsko preveri besedo"
+          >
+            Beseda se preveri samodejno po vnosu 5. črke, sicer ob pritisku na &quot;Enter&quot;.
+          </Card.ActionRow>
+          <Card.ActionRow
+            extra={
+              <RadioInput
+                onChange={(newKeyboardType) => updateSettings({ keyboardType: newKeyboardType })}
+                style={styles.radioContainer}
+                value={keyboardType}
+              >
+                <RadioInput.Item label="QWERTY tipkovnica" value={gameplayKeyboardType.Enum.qwerty} />
+                <RadioInput.Item label="ABCDE tipkovnica" value={gameplayKeyboardType.Enum.abcde} />
+              </RadioInput>
+            }
+            title="Razporeditev tipk"
+          >
+            Določa razporeditev črk na tipkovnici (QWERTY ali ABCDE). Ne vpliva na preverjanje besed.
+          </Card.ActionRow>
+          <Button intent="terciary" onPress={setDefaultSettings} size="sm" variant="outline">
+            Ponastavi
+          </Button>
+        </Card>
         <Card title="Obvestila">
           <Card.ActionRow
             action={
               <Switch
+                accessibilityLabel="Dovoli pošiljanje potisnih obvestil"
                 accessibilityState={{ disabled: !Device.isDevice }}
                 accessibilityValue={{ text: status?.hasToken && systemNotificationsEnabled ? 'On' : 'Off' }}
                 disabled={!Device.isDevice || !systemNotificationsEnabled}
@@ -114,6 +150,9 @@ const styles = StyleSheet.create((theme) => ({
   container: {
     paddingTop: theme.spacing[4],
     gap: theme.spacing[8],
+  },
+  radioContainer: {
+    paddingTop: theme.spacing[5],
   },
   hint: {
     backgroundColor: theme.colors.gold[5],

@@ -1,11 +1,23 @@
 import { render, screen, fireEvent } from '@testing-library/react-native';
 
 import { checkedLetterStatus } from '@/convex/puzzleGuessAttempts/models';
+import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
 import { defaultTheme } from '@/styles/themes';
 
 import { Keyboard } from './Keyboard';
 
+jest.mock('@/hooks/useGameplaySettings', () => ({
+  ...jest.requireActual('@/hooks/useGameplaySettings'),
+  useGameplaySettings: jest.fn().mockReturnValue({}),
+}));
+
 describe('<Keyboard />', () => {
+  const useGameplaySettingsSpy = useGameplaySettings as jest.Mock;
+
+  beforeEach(() => {
+    useGameplaySettingsSpy.mockReturnValue({ keyboardType: gameplayKeyboardType.Enum.qwerty });
+  });
+
   it('should render without crashing', () => {
     render(
       <Keyboard
@@ -62,4 +74,17 @@ describe('<Keyboard />', () => {
     // Should render at least one key (e.g., 'a')
     expect(screen.getByTestId('keyboard-key--a')).toBeOnTheScreen();
   });
+
+  it.each([
+    { keyboardType: gameplayKeyboardType.Enum.abcde, expectedFirstKey: 'a' },
+    { keyboardType: gameplayKeyboardType.Enum.qwerty, expectedFirstKey: 'e' },
+  ])(
+    'should render "$expectedFirstKey" as the first key when keyboard layout is $keyboardType',
+    ({ keyboardType, expectedFirstKey }) => {
+      useGameplaySettingsSpy.mockReturnValue({ keyboardType });
+      render(<Keyboard checkedLetters={[]} isDisabled={false} onKeyPress={() => {}} />);
+
+      expect(screen.getAllByTestId(/keyboard-key--*/)[0]).toHaveTextContent(expectedFirstKey);
+    }
+  );
 });

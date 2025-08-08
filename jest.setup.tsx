@@ -24,4 +24,5 @@ jest.mock('@expo/vector-icons', () => ({
 jest.mock('@gorhom/bottom-sheet', () => ({
   __esModule: true,
   ...require('@gorhom/bottom-sheet/mock'),
+  ...require('./src/tests/mocks/bottomsheet'),
 }));

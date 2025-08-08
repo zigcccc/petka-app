@@ -77,9 +77,24 @@ describe('Settings screen', () => {
 
     expect(screen.queryByText('Nastavitve')).toBeOnTheScreen();
 
+    expect(screen.queryByText('Nastavitve igranja')).toBeOnTheScreen();
+    expect(screen.queryByText('Avtomatsko preveri besedo')).toBeOnTheScreen();
+    expect(
+      screen.queryByText('Beseda se preveri samodejno po vnosu 5. črke, sicer ob pritisku na "Enter".')
+    ).toBeOnTheScreen();
+    expect(screen.queryByRole('switch', { name: 'Avtomatsko preveri besedo' })).toBeOnTheScreen();
+
+    expect(screen.queryByText('Razporeditev tipk')).toBeOnTheScreen();
+    expect(
+      screen.queryByText('Določa razporeditev črk na tipkovnici (QWERTY ali ABCDE). Ne vpliva na preverjanje besed.')
+    ).toBeOnTheScreen();
+    expect(screen.queryByRole('radio', { name: 'QWERTY tipkovnica' })).toBeOnTheScreen();
+    expect(screen.queryByRole('radio', { name: 'ABCDE tipkovnica' })).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: 'Ponastavi' })).toBeOnTheScreen();
+
     expect(screen.queryByText('Obvestila')).toBeOnTheScreen();
     expect(screen.queryByText('Dovoli pošiljanje potisnih obvestil')).toBeOnTheScreen();
-    expect(screen.queryByRole('switch')).toBeOnTheScreen();
+    expect(screen.queryByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toBeOnTheScreen();
 
     expect(screen.queryByText('Uporabniški profil')).toBeOnTheScreen();
 
@@ -100,7 +115,7 @@ describe('Settings screen', () => {
 
     render(<SettingsScreen />);
 
-    expect(screen.getByRole('switch')).toBeDisabled();
+    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toBeDisabled();
   });
 
   it('should render the "Toggle push notifications" switch with value=true when status.hasToken=true', () => {
@@ -112,8 +127,10 @@ describe('Settings screen', () => {
 
     render(<SettingsScreen />);
 
-    expect(screen.getByRole('switch')).toHaveProp('value', true);
-    expect(screen.getByRole('switch')).toHaveAccessibilityValue({ text: 'On' });
+    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', true);
+    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
+      text: 'On',
+    });
   });
 
   it.each([null, { hasToken: false }])(
@@ -127,8 +144,10 @@ describe('Settings screen', () => {
 
       render(<SettingsScreen />);
 
-      expect(screen.getByRole('switch')).toHaveProp('value', false);
-      expect(screen.getByRole('switch')).toHaveAccessibilityValue({ text: 'Off' });
+      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
+      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
+        text: 'Off',
+      });
     }
   );
 
@@ -143,15 +162,17 @@ describe('Settings screen', () => {
 
       render(<SettingsScreen />);
 
-      expect(screen.getByRole('switch')).toHaveProp('value', false);
-      expect(screen.getByRole('switch')).toHaveAccessibilityValue({ text: 'Off' });
+      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
+      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
+        text: 'Off',
+      });
     }
   );
 
   it('should trigger toggle push notifications action on switch press', () => {
     render(<SettingsScreen />);
 
-    fireEvent(screen.getByRole('switch'), 'valueChange', true);
+    fireEvent(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' }), 'valueChange', true);
 
     expect(mockTogglePushNotifications).toHaveBeenCalledWith(true);
   });
