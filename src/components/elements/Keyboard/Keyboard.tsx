@@ -1,10 +1,12 @@
+import { useMemo } from 'react';
 import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Text } from '@/components/ui';
 import { type CheckedLetter, checkedLetterStatus } from '@/convex/puzzleGuessAttempts/models';
+import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
 
-import { keys, keysToIconMap, type KeyboardKey as KeyboardKeyType } from './Keyboard.constants';
+import { abcdKeys, keysToIconMap, qwertyKeys, type KeyboardKey as KeyboardKeyType } from './Keyboard.constants';
 
 type Props = {
   onKeyPress: (key: KeyboardKeyType) => void;
@@ -13,6 +15,12 @@ type Props = {
 };
 
 export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Readonly<Props>) {
+  const { keyboardType } = useGameplaySettings();
+
+  const keys = useMemo(() => {
+    return keyboardType === gameplayKeyboardType.Enum.qwerty ? qwertyKeys : abcdKeys;
+  }, [keyboardType]);
+
   return (
     <View style={styles.keyboard}>
       {keys.map((keysRow, idx) => (

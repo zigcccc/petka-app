@@ -51,8 +51,9 @@ export function Card({ actionsIconName = 'pencil', children, title, onShowAction
 function ActionRow({
   action = null,
   children,
+  extra = null,
   title,
-}: Readonly<PropsWithChildren<{ action?: ReactNode; title: string }>>) {
+}: Readonly<PropsWithChildren<{ action?: ReactNode; extra?: ReactNode; title: string }>>) {
   return (
     <View style={styles.actionRow}>
       <View style={styles.actionRowText({ hasAction: !!action })}>
@@ -62,6 +63,7 @@ function ActionRow({
         <Text color="grey70" size="xs">
           {children}
         </Text>
+        {extra}
       </View>
       {action}
     </View>
