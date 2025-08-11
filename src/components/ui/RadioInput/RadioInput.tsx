@@ -40,10 +40,10 @@ function RadioInputItem({ label, value }: Readonly<RadioInputItemProps>) {
   return (
     <Pressable
       accessibilityLabel={label}
+      accessibilityRole="radio"
       accessibilityState={{ selected: isSelected }}
       accessible
       onPress={() => context.onChange(value)}
-      role="radio"
       style={radioItemStyles.container}
     >
       {isSelected && <Octicons name="check" size={16} testID="radio-input--item--check-icon" />}
