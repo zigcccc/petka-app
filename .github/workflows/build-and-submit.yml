@@ -2,47 +2,68 @@ name: Build & Submit to stores
 
 on:
   workflow_dispatch:
-    inputs:
-      commit_sha:
-        description: 'Commit SHA to build from'
-        required: true
-      version:
-        description: 'App version to use (optional, leave blank to fetch from artifact)'
-        required: false
 
 jobs:
   build-submit:
     name: Build and Submit to stores
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout specified commit
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.inputs.commit_sha }}
+      # 1️⃣ Get latest successful run ID of main-deploy.yml on main branch
+      - name: Get latest run ID
+        id: get-run
+        run: |
+          RUN_ID=$(gh run list \
+            --workflow=main-deploy.yml \
+            --branch=main \
+            --json databaseId,conclusion \
+            --jq '[.[] | select(.conclusion=="success")][0].databaseId')
+          
+          if [ -z "$RUN_ID" ]; then
+            echo "No successful main-deploy.yml runs found on main."
+            exit 1
+          fi
+          
+          echo "Latest run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Try to download version artifact
-        if: ${{ github.event.inputs.version == '' }}
+      # 2️⃣ Download version.txt artifact from that run
+      - name: Download version artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: main-deploy.yml
+          run_id: ${{ steps.get-run.outputs.run_id }}
           name: version
-          run_id: ${{ github.event.inputs.commit_sha }}
           path: .
-        continue-on-error: true
 
-      - name: Determine version
+      # 3️⃣ Determine version from artifact
+      - name: Read version
         id: version
         run: |
-          if [ -n "${{ github.event.inputs.version }}" ]; then
-            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-          elif [ -f version.txt ]; then
-            echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
-          else
-            echo "Version not found; exiting."
+          if [ ! -f version.txt ]; then
+            echo "version.txt not found."
             exit 1
           fi
+          VERSION=$(cat version.txt)
+          echo "Version from artifact: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      # 4️⃣ Checkout the commit from that main-deploy run
+      - name: Get commit SHA for run
+        id: get-commit
+        run: |
+          COMMIT_SHA=$(gh run view ${{ steps.get-run.outputs.run_id }} --json headSha --jq '.headSha')
+          echo "Commit SHA: $COMMIT_SHA"
+          echo "sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.get-commit.outputs.sha }}
 
       - name: Update package.json version
         run: |
