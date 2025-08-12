@@ -1,15 +1,8 @@
-name: Code Quality
+name: Production deploy
 on:
   push:
     branches:
       - main
-
-  workflow_dispatch:
-    inputs:
-      build_submit:
-        description: 'Run Build & Submit step in Expo job?'
-        required: false
-        default: 'false'
 
 jobs:
   lint-test:
@@ -181,7 +174,13 @@ jobs:
           echo "NEW_VERSION=$NEW_VERSION"
 
           jq ".version = \"$NEW_VERSION\"" package.json > tmp && mv tmp package.json
+          echo "$NEW_VERSION" > version.txt
           echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: version
+          path: version.txt
 
       - name: Push EAS Update to Production
         run: eas update --channel production --message "v${{steps.version.outputs.version}}"
@@ -190,10 +189,4 @@ jobs:
         run: pnpx sentry-expo-upload-sourcemaps dist
         env:
           SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
-
-      - name: Build & Submit
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_submit == 'true' }}
-        run: eas build --platform all --non-interactive --auto-submit --no-wait
-
-
       

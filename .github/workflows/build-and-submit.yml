@@ -1,0 +1,68 @@
+name: Manual Build & Submit
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Commit SHA to build from'
+        required: true
+      version:
+        description: 'App version to use (optional, leave blank to fetch from artifact)'
+        required: false
+
+jobs:
+  build-submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout specified commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.commit_sha }}
+
+      - name: Try to download version artifact
+        if: ${{ github.event.inputs.version == '' }}
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: main-deploy.yml
+          name: version
+          run_id: ${{ github.event.inputs.commit_sha }}
+          path: .
+        continue-on-error: true
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          elif [ -f version.txt ]; then
+            echo "version=$(cat version.txt)" >> $GITHUB_OUTPUT
+          else
+            echo "Version not found; exiting."
+            exit 1
+          fi
+
+      - name: Update package.json version
+        run: |
+          jq ".version = \"${{ steps.version.outputs.version }}\"" package.json > tmp && mv tmp package.json
+          echo "package.json updated to version ${{ steps.version.outputs.version }}"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+          packager: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build & Submit
+        run: |
+          echo "Using version: ${{ steps.version.outputs.version }}"
+          eas build --profile production --platform all --non-interactive --auto-submit --no-wait
