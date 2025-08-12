@@ -28,5 +28,13 @@
         "APP_ENV": "production"
       }
     }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6748521073"
+      }
+    },
+    "android": {}
   }
 }

@@ -4,6 +4,13 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+    inputs:
+      build_submit:
+        description: 'Run Build & Submit step in Expo job?'
+        required: false
+        default: 'false'
+
 jobs:
   lint-test:
     name: Lint, test
@@ -183,6 +190,10 @@ jobs:
         run: pnpx sentry-expo-upload-sourcemaps dist
         env:
           SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
+
+      - name: Build & Submit
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_submit == 'true' }}
+        run: eas build --platform all --non-interactive --auto-submit --no-wait
 
 
       
