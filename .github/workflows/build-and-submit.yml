@@ -54,9 +54,18 @@ jobs:
       - name: Get commit SHA for run
         id: get-commit
         run: |
-          COMMIT_SHA=$(gh run view ${{ steps.get-run.outputs.run_id }} --json headSha --jq '.headSha')
+          COMMIT_SHA=$(gh run view ${{ steps.get-run.outputs.run_id }} \
+            --repo ${{ github.repository }} \
+            --json headSha \
+            --jq '.headSha')
+
+          if [ -z "$COMMIT_SHA" ]; then
+            echo "Commit SHA not found for run ${{ steps.get-run.outputs.run_id }}"
+            exit 1
+          fi
+
           echo "Commit SHA: $COMMIT_SHA"
-          echo "sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
+          echo "commit_sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
