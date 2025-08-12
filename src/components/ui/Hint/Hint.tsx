@@ -1,7 +1,7 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
 import { type PropsWithChildren, type ReactNode } from 'react';
 import { View } from 'react-native';
-import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
+import { StyleSheet, withUnistyles, type UnistylesVariants } from 'react-native-unistyles';
 
 import { Text } from '../Text';
 
@@ -11,13 +11,30 @@ type Props = PropsWithChildren<{
 }> &
   UnistylesVariants<typeof styles>;
 
+const UniIcon = withUnistyles(Octicons);
+
 export function Hint({ actions, children, intent = 'warning', title }: Props) {
   styles.useVariants({ intent });
 
   return (
     <View style={styles.hint}>
       <View style={styles.hintHeader}>
-        <Ionicons color={styles.hintTitle.color} name="information-circle" size={16} />
+        <UniIcon
+          name="info"
+          size={14}
+          testID="hint--icon"
+          uniProps={(theme) => {
+            const intentToIconColorMap = new Map([
+              ['warning', theme.colors.gold[40]],
+              ['info', theme.colors.blue[40]],
+              ['success', theme.colors.green[40]],
+              ['danger', theme.colors.red[40]],
+            ]);
+            return {
+              color: intentToIconColorMap.get(intent),
+            };
+          }}
+        />
         <Text numberOfLines={1} size="sm" style={styles.hintTitle} weight="bold">
           {title}
         </Text>

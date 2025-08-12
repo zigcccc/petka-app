@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-import { type PropsWithChildren } from 'react';
+import { type Octicons } from '@expo/vector-icons';
+import { type ComponentProps } from 'react';
 import { Text as MockText } from 'react-native';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
@@ -18,7 +19,18 @@ jest.mock('expo', () => ({
 
 jest.mock('@expo/vector-icons', () => ({
   ...jest.requireActual('@expo/vector-icons'),
-  Octicons: (props: PropsWithChildren) => <MockText {...props} />,
+  Octicons: (props: ComponentProps<typeof Octicons> & { uniProps?: (theme: unknown) => any }) => {
+    const { defaultTheme } = jest.requireActual('./src/styles/themes');
+    const transformedProps = props.uniProps ? props.uniProps(defaultTheme) : {};
+
+    return (
+      <MockText
+        {...props}
+        accessibilityLabel={props.accessibilityLabel ?? props.name}
+        style={{ color: transformedProps?.color ?? props.color }}
+      />
+    );
+  },
 }));
 
 jest.mock('@gorhom/bottom-sheet', () => ({
