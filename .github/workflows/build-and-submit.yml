@@ -14,7 +14,7 @@ jobs:
         run: |
           RUN_ID=$(gh run list \
             --repo ${{ github.repository }} \
-            --workflow=main-deploy.yml \
+            --workflow=main.yml \
             --branch=main \
             --json databaseId,conclusion \
             --jq '[.[] | select(.conclusion=="success")][0].databaseId')
