@@ -13,6 +13,7 @@ jobs:
         id: get-run
         run: |
           RUN_ID=$(gh run list \
+            --repo ${{ github.repository }} \
             --workflow=main-deploy.yml \
             --branch=main \
             --json databaseId,conclusion \
