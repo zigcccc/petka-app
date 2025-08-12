@@ -8,6 +8,7 @@ import { Text as MockText, View as MockView } from 'react-native';
 
 import SettingsScreen from '@/app/(authenticated)/settings';
 import { type GenericStackScreen } from '@/components/navigation';
+import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useToaster } from '@/hooks/useToaster';
 import { useUser } from '@/hooks/useUser';
@@ -43,11 +44,17 @@ jest.mock('@/hooks/usePushNotifications', () => ({
   usePushNotifications: jest.fn(),
 }));
 
+jest.mock('@/hooks/useGameplaySettings', () => ({
+  ...jest.requireActual('@/hooks/useGameplaySettings'),
+  useGameplaySettings: jest.fn(),
+}));
+
 describe('Settings screen', () => {
   const useRouterSpy = useRouter as jest.Mock;
   const useToasterSpy = useToaster as jest.Mock;
   const useUserSpy = useUser as jest.Mock;
   const usePushNotificationsSpy = usePushNotifications as jest.Mock;
+  const useGameplaySettingsSpy = useGameplaySettings as jest.Mock;
   const clipboardSetStringAsyncSpy = jest.spyOn(Clipboard, 'setStringAsync').mockResolvedValue(true);
   const openSettingsSpy = jest.spyOn(Linking, 'openSettings');
 
@@ -55,8 +62,10 @@ describe('Settings screen', () => {
   const mockToast = jest.fn();
   const mockDeleteUser = jest.fn();
   const mockTogglePushNotifications = jest.fn();
+  const mockSetDefaultSettings = jest.fn();
+  const mockUpdateSettings = jest.fn();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     Object.defineProperty(Device, 'isDevice', { writable: true, value: true });
     useRouterSpy.mockReturnValue({ navigate: mockNavigate });
     useToasterSpy.mockReturnValue({ toast: mockToast });
@@ -65,6 +74,12 @@ describe('Settings screen', () => {
       systemNotificationsEnabled: true,
       status: { hasToken: true, paused: false },
       toggle: mockTogglePushNotifications,
+    });
+    useGameplaySettingsSpy.mockReturnValue({
+      autosubmitPuzzleAttempt: true,
+      keyboardType: gameplayKeyboardType.Enum.qwerty,
+      updateSettings: mockUpdateSettings,
+      setDefaultSettings: mockSetDefaultSettings,
     });
   });
 
@@ -77,9 +92,24 @@ describe('Settings screen', () => {
 
     expect(screen.queryByText('Nastavitve')).toBeOnTheScreen();
 
+    expect(screen.queryByText('Nastavitve igranja')).toBeOnTheScreen();
+    expect(screen.queryByText('Avtomatsko preveri besedo')).toBeOnTheScreen();
+    expect(
+      screen.queryByText('Beseda se preveri samodejno po vnosu 5. črke, sicer ob pritisku na "Enter".')
+    ).toBeOnTheScreen();
+    expect(screen.queryByRole('switch', { name: 'Avtomatsko preveri besedo' })).toBeOnTheScreen();
+
+    expect(screen.queryByText('Razporeditev tipk')).toBeOnTheScreen();
+    expect(
+      screen.queryByText('Določa razporeditev črk na tipkovnici (QWERTY ali ABCDE). Ne vpliva na preverjanje besed.')
+    ).toBeOnTheScreen();
+    expect(screen.queryByRole('radio', { name: 'QWERTY tipkovnica' })).toBeOnTheScreen();
+    expect(screen.queryByRole('radio', { name: 'ABCDE tipkovnica' })).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: 'Ponastavi' })).toBeOnTheScreen();
+
     expect(screen.queryByText('Obvestila')).toBeOnTheScreen();
     expect(screen.queryByText('Dovoli pošiljanje potisnih obvestil')).toBeOnTheScreen();
-    expect(screen.queryByRole('switch')).toBeOnTheScreen();
+    expect(screen.queryByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toBeOnTheScreen();
 
     expect(screen.queryByText('Uporabniški profil')).toBeOnTheScreen();
 
@@ -95,12 +125,38 @@ describe('Settings screen', () => {
     expect(screen.queryByRole('button', { name: 'Kopiraj' })).toBeOnTheScreen();
   });
 
+  it('should toggle the state of "autosubmitPuzzleAttempt" setting on switch press', async () => {
+    render(<SettingsScreen />);
+
+    expect(screen.getByRole('switch', { name: /Avtomatsko preveri besedo/ })).toHaveAccessibilityValue({ text: 'On' });
+    fireEvent(screen.getByRole('switch', { name: /Avtomatsko preveri besedo/ }), 'onValueChange', false);
+
+    expect(mockUpdateSettings).toHaveBeenCalledWith({ autosubmitPuzzleAttempt: false });
+  });
+
+  it('should update the value of "keyboardType" setting on radio input press', async () => {
+    render(<SettingsScreen />);
+
+    fireEvent.press(screen.getByRole('radio', { name: /QWERTY tipkovnica/ }));
+    expect(mockUpdateSettings).toHaveBeenCalledWith({ keyboardType: gameplayKeyboardType.Enum.qwerty });
+
+    fireEvent.press(screen.getByRole('radio', { name: /ABCDE tipkovnica/ }));
+    expect(mockUpdateSettings).toHaveBeenCalledWith({ keyboardType: gameplayKeyboardType.Enum.abcde });
+  });
+
+  it('should set default settings on "Ponastavi" button press', async () => {
+    render(<SettingsScreen />);
+
+    fireEvent.press(screen.getByRole('button', { name: /Ponastavi/ }));
+    expect(mockSetDefaultSettings).toHaveBeenCalled();
+  });
+
   it('should render the "Toggle push notifications" switch as disabled if not on physical device', () => {
     Object.defineProperty(Device, 'isDevice', { writable: true, value: false });
 
     render(<SettingsScreen />);
 
-    expect(screen.getByRole('switch')).toBeDisabled();
+    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toBeDisabled();
   });
 
   it('should render the "Toggle push notifications" switch with value=true when status.hasToken=true', () => {
@@ -112,8 +168,10 @@ describe('Settings screen', () => {
 
     render(<SettingsScreen />);
 
-    expect(screen.getByRole('switch')).toHaveProp('value', true);
-    expect(screen.getByRole('switch')).toHaveAccessibilityValue({ text: 'On' });
+    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', true);
+    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
+      text: 'On',
+    });
   });
 
   it.each([null, { hasToken: false }])(
@@ -127,8 +185,10 @@ describe('Settings screen', () => {
 
       render(<SettingsScreen />);
 
-      expect(screen.getByRole('switch')).toHaveProp('value', false);
-      expect(screen.getByRole('switch')).toHaveAccessibilityValue({ text: 'Off' });
+      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
+      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
+        text: 'Off',
+      });
     }
   );
 
@@ -143,15 +203,17 @@ describe('Settings screen', () => {
 
       render(<SettingsScreen />);
 
-      expect(screen.getByRole('switch')).toHaveProp('value', false);
-      expect(screen.getByRole('switch')).toHaveAccessibilityValue({ text: 'Off' });
+      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
+      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
+        text: 'Off',
+      });
     }
   );
 
   it('should trigger toggle push notifications action on switch press', () => {
     render(<SettingsScreen />);
 
-    fireEvent(screen.getByRole('switch'), 'valueChange', true);
+    fireEvent(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' }), 'valueChange', true);
 
     expect(mockTogglePushNotifications).toHaveBeenCalledWith(true);
   });

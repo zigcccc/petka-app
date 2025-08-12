@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react-nativ
 import { ConvexError } from 'convex/values';
 import { useRouter } from 'expo-router';
 
-import CreateAccountScreen from '@/app/create-account';
+import CreateAccountScreen from '@/app/onboard/create-account';
 import { useToaster } from '@/hooks/useToaster';
 import { useUser } from '@/hooks/useUser';
 
@@ -26,12 +26,12 @@ describe('Create Account Screen', () => {
   const useToasterSpy = useToaster as jest.Mock;
   const useUserSpy = useUser as jest.Mock;
 
-  const mockReplace = jest.fn();
+  const mockNavigate = jest.fn();
   const mockToast = jest.fn();
   const mockCreateUser = jest.fn();
 
   beforeEach(() => {
-    useRouterSpy.mockReturnValue({ replace: mockReplace });
+    useRouterSpy.mockReturnValue({ navigate: mockNavigate });
     useToasterSpy.mockReturnValue({ toast: mockToast });
     useUserSpy.mockReturnValue({ createUser: mockCreateUser });
   });
@@ -153,7 +153,7 @@ describe('Create Account Screen', () => {
     });
 
     await waitFor(() => {
-      expect(mockReplace).toHaveBeenCalledWith('/(authenticated)');
+      expect(mockNavigate).toHaveBeenCalledWith('/onboard/gameplay-settings');
     });
 
     expect(mockToast).not.toHaveBeenCalled();
@@ -178,7 +178,7 @@ describe('Create Account Screen', () => {
       expect(screen.queryByText('Vzdevek "Tyson" je zaseden.')).toBeOnTheScreen();
     });
 
-    expect(mockReplace).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('should trigger createUser API request with valid data - error scenario, unknown error', async () => {
@@ -200,6 +200,6 @@ describe('Create Account Screen', () => {
       expect(screen.queryByText('Vzdevek "Tyson" je zaseden.')).not.toBeOnTheScreen();
     });
 
-    expect(mockReplace).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

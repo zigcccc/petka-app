@@ -1,20 +1,30 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { useRouter } from 'expo-router';
 
 import HomeScreen from '@/app/(authenticated)';
+import { useGameplaySettings } from '@/hooks/useGameplaySettings';
 
 jest.mock('expo-router', () => ({
   ...jest.requireActual('expo-router'),
   useRouter: jest.fn(),
+  useFocusEffect: jest.fn().mockImplementation((cb) => cb()),
+}));
+
+jest.mock('@/hooks/useGameplaySettings', () => ({
+  ...jest.requireActual('@/hooks/useGameplaySettings'),
+  useGameplaySettings: jest.fn().mockReturnValue({}),
 }));
 
 describe('Home screen', () => {
   const useRouterSpy = useRouter as jest.Mock;
+  const useGameplaySettingsSpy = useGameplaySettings as jest.Mock;
 
   const mockNavigate = jest.fn();
+  const mockSetDefaultSettings = jest.fn();
 
   beforeEach(() => {
     useRouterSpy.mockReturnValue({ navigate: mockNavigate });
+    useGameplaySettingsSpy.mockReturnValue({ isUninitialised: false, setDefaultSettings: mockSetDefaultSettings });
   });
 
   afterEach(() => {
@@ -41,5 +51,65 @@ describe('Home screen', () => {
 
     fireEvent.press(screen.getByRole('button', { name: /icon-gear/ }));
     expect(mockNavigate).toHaveBeenNthCalledWith(6, '/settings');
+  });
+
+  it('should not present bottom sheet for configuring gameplay settings if settings are already initialised', async () => {
+    useGameplaySettingsSpy.mockReturnValue({ isUninitialised: false, setDefaultSettings: mockSetDefaultSettings });
+
+    render(<HomeScreen />);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText('Na tej napravi še nisi nastavil/a svojih preferenc glede reševanja ugank.')
+      ).not.toBeOnTheScreen();
+    });
+  });
+
+  it('should present bottom sheet for configuring gameplay settings if settings are uninitialised and redirect to settings page on "Prilagodi nastavitve" button press', async () => {
+    useGameplaySettingsSpy.mockReturnValue({ isUninitialised: true, setDefaultSettings: mockSetDefaultSettings });
+
+    render(<HomeScreen />);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText('Na tej napravi še nisi nastavil/a svojih preferenc glede reševanja ugank.')
+      ).toBeOnTheScreen();
+    });
+
+    expect(screen.queryByText('🛠️ Prilagodi nastavitve reševanja')).toBeOnTheScreen();
+    expect(
+      screen.queryByText('Za bolj prilagojeno in lažje reševanje lahko izbirate med naslednjimi nastavitvami:')
+    ).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: 'Prilagodi nastavitve' })).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: 'Uporabi privzete nastavitve' })).toBeOnTheScreen();
+
+    fireEvent.press(screen.getByRole('button', { name: 'Prilagodi nastavitve' }));
+
+    expect(mockNavigate).toHaveBeenCalledWith('/settings');
+    expect(mockSetDefaultSettings).toHaveBeenCalled();
+  });
+
+  it('should present bottom sheet for configuring gameplay settings if settings are uninitialised and dismiess the sheet on "Uporabi privzete nastavitve" button press', async () => {
+    useGameplaySettingsSpy.mockReturnValue({ isUninitialised: true, setDefaultSettings: mockSetDefaultSettings });
+
+    render(<HomeScreen />);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText('Na tej napravi še nisi nastavil/a svojih preferenc glede reševanja ugank.')
+      ).toBeOnTheScreen();
+    });
+
+    expect(screen.queryByText('🛠️ Prilagodi nastavitve reševanja')).toBeOnTheScreen();
+    expect(
+      screen.queryByText('Za bolj prilagojeno in lažje reševanje lahko izbirate med naslednjimi nastavitvami:')
+    ).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: 'Prilagodi nastavitve' })).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: 'Uporabi privzete nastavitve' })).toBeOnTheScreen();
+
+    fireEvent.press(screen.getByRole('button', { name: 'Uporabi privzete nastavitve' }));
+
+    expect(mockNavigate).not.toHaveBeenCalledWith('/settings');
+    expect(mockSetDefaultSettings).toHaveBeenCalled();
   });
 });

@@ -27,7 +27,7 @@ export default function CreateAccountScreen() {
   const onSubmit: SubmitHandler<CreateUser> = async (data) => {
     try {
       await createUser(data);
-      router.replace('/(authenticated)');
+      router.navigate('/onboard/gameplay-settings');
     } catch (err) {
       const isConflictError = err instanceof ConvexError && err.data.code === 409;
       const errMsg = isConflictError ? 'Ta vzdevek je zaseden' : 'Nekaj je šlo narobe';
