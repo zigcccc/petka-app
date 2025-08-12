@@ -1,4 +1,4 @@
-name: Manual Build & Submit
+name: Build & Submit to stores
 
 on:
   workflow_dispatch:
@@ -12,6 +12,7 @@ on:
 
 jobs:
   build-submit:
+    name: Build and Submit to stores
     runs-on: ubuntu-latest
     steps:
       - name: Checkout specified commit
