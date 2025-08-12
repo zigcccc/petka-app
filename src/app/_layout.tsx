@@ -62,7 +62,7 @@ function RootLayout() {
   const pathname = usePathname();
   const params = useGlobalSearchParams();
   const router = useRouter();
-  const { user, shouldCreateAccount } = useUser();
+  const { user } = useUser();
   const notifications = usePushNotifications(user?._id);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [fontsLoaded] = useFonts({
@@ -149,12 +149,12 @@ function RootLayout() {
       <Stack screenOptions={{ contentStyle: styles.content }}>
         <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
         <Stack.Screen
-          name="create-account"
+          name="onboard"
           options={{
             presentation: 'modal',
             title: '',
             headerShadowVisible: false,
-            gestureEnabled: !shouldCreateAccount,
+            gestureEnabled: false,
             headerBackVisible: false,
           }}
         />

@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import * as Clipboard from 'expo-clipboard';
 import * as Device from 'expo-device';
@@ -8,12 +7,11 @@ import { Switch, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { GenericStackScreen } from '@/components/navigation';
-import { Button, Card, RadioInput, Text } from '@/components/ui';
+import { Button, Card, Hint, RadioInput, Text } from '@/components/ui';
 import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useToaster } from '@/hooks/useToaster';
 import { useUser } from '@/hooks/useUser';
-import { defaultTheme } from '@/styles/themes';
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -84,23 +82,20 @@ export default function SettingsScreen() {
             Potisno obvestilo boste prejeli 1x dnevno kot opomnik za dnevni izziv.
           </Card.ActionRow>
           {!systemNotificationsEnabled && (
-            <View style={styles.hint}>
-              <View style={styles.hintHeader}>
-                <Ionicons color={defaultTheme.colors.gold[40]} name="information-circle" size={16} />
-                <Text color="gold40" size="sm" weight="bold">
-                  Preprečil/a si pošiljanje potisnih obvestil
-                </Text>
-              </View>
-              <View style={styles.hintBody}>
-                <Text color="grey70" size="xs">
-                  Ta naprava nima dovoljenja za pošiljanje potisnih obvestil. Preden lahko vklopiš pošiljanje obvestil v
-                  aplikaciji, moraš to omogočiti v nastavitvah naprave.
-                </Text>
-              </View>
-              <Button intent="warning" onPress={handleOpenAppSettings} size="sm" variant="outline">
-                Odpri nastavitve
-              </Button>
-            </View>
+            <Hint
+              actions={
+                <Button intent="warning" onPress={handleOpenAppSettings} size="sm" variant="outline">
+                  Odpri nastavitve
+                </Button>
+              }
+              intent="warning"
+              title="Preprečil/a si pošiljanje potisnih obvestil"
+            >
+              <Text color="grey70" size="xs">
+                Ta naprava nima dovoljenja za pošiljanje potisnih obvestil. Preden lahko vklopiš pošiljanje obvestil v
+                aplikaciji, moraš to omogočiti v nastavitvah naprave.
+              </Text>
+            </Hint>
           )}
         </Card>
         <Card title="Uporabniški profil">
@@ -134,7 +129,7 @@ export default function SettingsScreen() {
           <Button
             intent="danger"
             loading={isDeleting}
-            onPress={() => deleteUser(() => router.replace('/create-account'))}
+            onPress={() => deleteUser(() => router.replace('/onboard/create-account'))}
             size="sm"
             variant="outline"
           >
@@ -153,19 +148,5 @@ const styles = StyleSheet.create((theme) => ({
   },
   radioContainer: {
     paddingTop: theme.spacing[5],
-  },
-  hint: {
-    backgroundColor: theme.colors.gold[5],
-    padding: theme.spacing[3],
-    borderRadius: 8,
-  },
-  hintHeader: {
-    flexDirection: 'row',
-    gap: theme.spacing[2],
-    alignItems: 'center',
-  },
-  hintBody: {
-    paddingTop: theme.spacing[2],
-    paddingBottom: theme.spacing[3],
   },
 }));
