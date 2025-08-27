@@ -126,10 +126,10 @@ export function useGuessGrid({ attempts, onSubmitAttempt }: Options) {
 
       setGuesses(updatedGuesses);
 
-      const currentGuess = updatedGuesses[rowIdx].filter(Boolean);
+      if (autosubmitPuzzleAttempt) {
+        const currentGuess = updatedGuesses[rowIdx].filter(Boolean);
 
-      if (currentGuess.length === 5) {
-        if (autosubmitPuzzleAttempt) {
+        if (currentGuess.length === 5) {
           await handleSubmitPuzzleAttempt(currentGuess.join(''), updatedGuesses, rowIdx);
         }
       }
