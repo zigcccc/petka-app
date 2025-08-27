@@ -3,7 +3,8 @@ import { deepClone } from '@/utils/clone';
 import { type KeyboardKey } from '../Keyboard';
 
 export const findCurrentGridRowIdx = (grid: (string | null)[][]) => {
-  return grid.findIndex((row) => !row.every(Boolean));
+  const rowIdx = grid.findIndex((row) => !row.every(Boolean));
+  return rowIdx >= 0 ? rowIdx : 6;
 };
 
 export const findCellIndexToInsert = (grid: (string | null)[][], rowIdx: number) => {
