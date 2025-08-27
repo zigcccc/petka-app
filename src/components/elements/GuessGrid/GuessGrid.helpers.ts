@@ -4,7 +4,7 @@ import { type KeyboardKey } from '../Keyboard';
 
 export const findCurrentGridRowIdx = (grid: (string | null)[][]) => {
   const rowIdx = grid.findIndex((row) => !row.every(Boolean));
-  return rowIdx >= 0 ? rowIdx : 6;
+  return rowIdx >= 0 ? rowIdx : grid.length;
 };
 
 export const findCellIndexToInsert = (grid: (string | null)[][], rowIdx: number) => {
