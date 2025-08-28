@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-native';
+import { renderHook as renderHookBase } from '@testing-library/react-native';
 import type { FunctionReference } from 'convex/server';
 
 import { generateUseQueryHook, generateUseQueryHookWithTimestampArg } from './generateUseQueryHook';
@@ -17,6 +17,8 @@ const userQueryFn = {} as UserQuery;
 
 describe('generateUseQueryHook', () => {
   const useUserQuery = generateUseQueryHook(userQueryFn);
+
+  const renderHook = renderHookBase<ReturnType<typeof useUserQuery>, { id: string }>;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -84,6 +86,8 @@ describe('generateUseQueryHook', () => {
 
 describe('generateUseQueryHookWithTimestampArg', () => {
   const useUserQueryWithTs = generateUseQueryHookWithTimestampArg(userQueryFn);
+
+  const renderHook = renderHookBase<ReturnType<typeof useUserQueryWithTs>, { id: string }>;
 
   beforeEach(() => {
     jest.clearAllMocks();
