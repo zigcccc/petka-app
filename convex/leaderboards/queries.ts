@@ -89,6 +89,9 @@ export const list = query({
   },
 });
 
+/**
+ * @deprecated Removed with version 1.1.40
+ */
 export const readGlobalLeaderboard = query({
   args: { range: leaderboardRange, userId: z.string(), timestamp: z.number() },
   async handler(ctx, { range, userId, timestamp }) {
