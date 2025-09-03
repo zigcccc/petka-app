@@ -4,6 +4,8 @@ import { useRouter } from 'expo-router';
 import HomeScreen from '@/app/(authenticated)';
 import { useDailyPuzzlePresenceList } from '@/hooks/presence';
 import { useGameplaySettings } from '@/hooks/useGameplaySettings';
+import { useUser } from '@/hooks/useUser';
+import { testUser1 } from '@/tests/fixtures/users';
 
 jest.mock('expo-router', () => ({
   ...jest.requireActual('expo-router'),
@@ -21,10 +23,16 @@ jest.mock('@/hooks/presence', () => ({
   useDailyPuzzlePresenceList: jest.fn().mockReturnValue([]),
 }));
 
+jest.mock('@/hooks/useUser', () => ({
+  ...jest.requireActual('@/hooks/useUser'),
+  useUser: jest.fn().mockReturnValue({}),
+}));
+
 describe('Home screen', () => {
   const useRouterSpy = useRouter as jest.Mock;
   const useGameplaySettingsSpy = useGameplaySettings as jest.Mock;
   const useDailyPuzzlePresenceListSpy = useDailyPuzzlePresenceList as jest.Mock;
+  const useUserSpy = useUser as jest.Mock;
 
   const mockNavigate = jest.fn();
   const mockSetDefaultSettings = jest.fn();
@@ -33,6 +41,7 @@ describe('Home screen', () => {
     useRouterSpy.mockReturnValue({ navigate: mockNavigate });
     useGameplaySettingsSpy.mockReturnValue({ isUninitialised: false, setDefaultSettings: mockSetDefaultSettings });
     useDailyPuzzlePresenceListSpy.mockReturnValue([]);
+    useUserSpy.mockReturnValue({ user: testUser1 });
   });
 
   afterEach(() => {
@@ -138,4 +147,22 @@ describe('Home screen', () => {
       expect(screen.queryByText('dnevni izziv 🧠', { exact: false })).not.toBeOnTheScreen();
     }
   );
+
+  it('should not render currenty online users playing daily puzzle if the only current user data is not available', () => {
+    useUserSpy.mockReturnValue({ user: null });
+    useDailyPuzzlePresenceListSpy.mockReturnValue([{ userId: 'theOnlineUser', online: true }]);
+
+    render(<HomeScreen />);
+
+    expect(screen.queryByText('dnevni izziv 🧠', { exact: false })).not.toBeOnTheScreen();
+  });
+
+  it('should not render currenty online users playing daily puzzle if the only online user is the current user', () => {
+    useUserSpy.mockReturnValue({ user: { ...testUser1, nickname: 'theOnlineUser' } });
+    useDailyPuzzlePresenceListSpy.mockReturnValue([{ userId: 'theOnlineUser', online: true }]);
+
+    render(<HomeScreen />);
+
+    expect(screen.queryByText('dnevni izziv 🧠', { exact: false })).not.toBeOnTheScreen();
+  });
 });

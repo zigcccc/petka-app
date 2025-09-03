@@ -8,10 +8,14 @@ import { usePlural } from '@/hooks/usePlural';
 
 type Props = {
   presence: PresenceState[];
+  currentUserNickname: string;
 };
 
-export function DailyPuzzleUsersPresence({ presence }: Readonly<Props>) {
-  const onlineUsers = useMemo(() => presence.filter((state) => !!state.userId && state.online), [presence]);
+export function DailyPuzzleUsersPresence({ currentUserNickname, presence }: Readonly<Props>) {
+  const onlineUsers = useMemo(
+    () => presence.filter((state) => !!state.userId && state.online && state.userId !== currentUserNickname),
+    [currentUserNickname, presence]
+  );
   const numItemsToDisplay = Math.min(onlineUsers.length, 4);
 
   const currentlyPlayingText = usePlural(onlineUsers.length, {
