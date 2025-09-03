@@ -1,0 +1,100 @@
+name: Build & Submit to stores
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-submit:
+    name: Build and Submit to stores
+    runs-on: ubuntu-latest
+    steps:
+      # 1️⃣ Get latest successful run ID of main-deploy.yml on main branch
+      - name: Get latest run ID
+        id: get-run
+        run: |
+          RUN_ID=$(gh run list \
+            --repo ${{ github.repository }} \
+            --workflow=main.yml \
+            --branch=main \
+            --json databaseId,conclusion \
+            --jq '[.[] | select(.conclusion=="success")][0].databaseId')
+          
+          if [ -z "$RUN_ID" ]; then
+            echo "No successful main-deploy.yml runs found on main."
+            exit 1
+          fi
+          
+          echo "Latest run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2️⃣ Download version.txt artifact from that run
+      - name: Download version artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          run_id: ${{ steps.get-run.outputs.run_id }}
+          name: version
+          path: .
+
+      # 3️⃣ Determine version from artifact
+      - name: Read version
+        id: version
+        run: |
+          if [ ! -f version.txt ]; then
+            echo "version.txt not found."
+            exit 1
+          fi
+          VERSION=$(cat version.txt)
+          echo "Version from artifact: $VERSION"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      # 4️⃣ Checkout the commit from that main-deploy run
+      - name: Get commit SHA for run
+        id: get-commit
+        run: |
+          COMMIT_SHA=$(gh run view ${{ steps.get-run.outputs.run_id }} \
+            --repo ${{ github.repository }} \
+            --json headSha \
+            --jq '.headSha')
+
+          if [ -z "$COMMIT_SHA" ]; then
+            echo "Commit SHA not found for run ${{ steps.get-run.outputs.run_id }}"
+            exit 1
+          fi
+
+          echo "Commit SHA: $COMMIT_SHA"
+          echo "commit_sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.get-commit.outputs.sha }}
+
+      - name: Update package.json version
+        run: |
+          jq ".version = \"${{ steps.version.outputs.version }}\"" package.json > tmp && mv tmp package.json
+          echo "package.json updated to version ${{ steps.version.outputs.version }}"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+          packager: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build & Submit
+        run: |
+          echo "Using version: ${{ steps.version.outputs.version }}"
+          eas build --profile production --platform all --non-interactive --auto-submit --no-wait

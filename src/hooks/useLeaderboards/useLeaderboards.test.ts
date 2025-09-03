@@ -1,4 +1,4 @@
-import { act, renderHook, waitFor } from '@testing-library/react-native';
+import { act, renderHook as renderHookBase, waitFor } from '@testing-library/react-native';
 import { ConvexError } from 'convex/values';
 import * as Clipboard from 'expo-clipboard';
 import { usePostHog } from 'posthog-react-native';
@@ -7,7 +7,12 @@ import { Alert } from 'react-native';
 import { useActionSheet } from '@/context/ActionSheet';
 import { usePrompt } from '@/context/Prompt';
 import { type Id } from '@/convex/_generated/dataModel';
-import { leaderboardRange, leaderboardType } from '@/convex/leaderboards/models';
+import {
+  type LeaderboardRange,
+  leaderboardRange,
+  type LeaderboardType,
+  leaderboardType,
+} from '@/convex/leaderboards/models';
 
 import {
   useCreatePrivateLeaderboardMutation,
@@ -103,6 +108,11 @@ describe('useLeaderboards', () => {
   const testUser = { _id: 'testUserId' as Id<'users'> };
 
   const initialProps = { type: leaderboardType.Enum.private, range: leaderboardRange.Enum.weekly };
+
+  const renderHook = renderHookBase<
+    ReturnType<typeof useLeaderboards>,
+    { type: LeaderboardType; range: LeaderboardRange }
+  >;
 
   beforeEach(() => {
     useToasterSpy.mockReturnValue({ toast: mockToast });

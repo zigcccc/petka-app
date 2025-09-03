@@ -3,19 +3,13 @@ import { useNavigation } from 'expo-router';
 
 import WeeklyLeaderboardScreen from '@/app/(authenticated)/leaderboards/weekly-leaderboard';
 import { leaderboardRange, leaderboardType } from '@/convex/leaderboards/models';
-import { useGlobalLeaderboard } from '@/hooks/useGlobalLeaderboard';
 import { useLeaderboards } from '@/hooks/useLeaderboards';
-import { testGlobalLeaderboard1, testPrivateLeaderboard1 } from '@/tests/fixtures/leaderboards';
+import { testPrivateLeaderboard1 } from '@/tests/fixtures/leaderboards';
 
 jest.mock('expo-router', () => ({
   ...jest.requireActual('expo-router'),
   useFocusEffect: jest.fn().mockImplementation((cb) => cb()),
   useNavigation: jest.fn().mockReturnValue({}),
-}));
-
-jest.mock('@/hooks/useGlobalLeaderboard', () => ({
-  ...jest.requireActual('@/hooks/useGlobalLeaderboard'),
-  useGlobalLeaderboard: jest.fn().mockReturnValue({}),
 }));
 
 jest.mock('@/hooks/useLeaderboards', () => ({
@@ -30,12 +24,10 @@ describe('<WeeklyLeaderboardScreen />', () => {
   const mockSetOptions = jest.fn();
 
   const useNavigationSpy = useNavigation as jest.Mock;
-  const useGlobalLeaderboardSpy = useGlobalLeaderboard as jest.Mock;
   const useLeaderboardsSpy = useLeaderboards as jest.Mock;
 
   beforeEach(() => {
     useNavigationSpy.mockReturnValue({ getParent: jest.fn().mockReturnValue({ setOptions: mockSetOptions }) });
-    useGlobalLeaderboardSpy.mockReturnValue({ data: testGlobalLeaderboard1 });
     useLeaderboardsSpy.mockReturnValue({
       leaderboards: [testPrivateLeaderboard1],
       isCreating: false,
@@ -53,7 +45,6 @@ describe('<WeeklyLeaderboardScreen />', () => {
   it('should trigger global leaderboard and private leaderboards queries with "weekly" param', () => {
     render(<WeeklyLeaderboardScreen />);
 
-    expect(useGlobalLeaderboardSpy).toHaveBeenCalledWith(leaderboardRange.Enum.weekly);
     expect(useLeaderboardsSpy).toHaveBeenCalledWith(leaderboardType.Enum.private, leaderboardRange.Enum.weekly);
   });
 
@@ -63,11 +54,9 @@ describe('<WeeklyLeaderboardScreen />', () => {
     expect(mockSetOptions).toHaveBeenCalledWith({ title: 'Tedenska lestvica' });
   });
 
-  it('should render global and private leaderboards', () => {
+  it('should render private leaderboards', () => {
     render(<WeeklyLeaderboardScreen />);
 
-    expect(screen.queryByText('Globalna lestvica')).toBeOnTheScreen();
-    expect(screen.queryByText('Tvoje lestvice')).toBeOnTheScreen();
     expect(screen.queryByText(testPrivateLeaderboard1.name!)).toBeOnTheScreen();
   });
 
@@ -98,7 +87,7 @@ describe('<WeeklyLeaderboardScreen />', () => {
       useLeaderboardsSpy.mockReturnValue({ leaderboards });
       render(<WeeklyLeaderboardScreen />);
 
-      expect(screen.queryByText('Pridružen/a nisi še nobeni zasebni lestvici...')).toBeOnTheScreen();
+      expect(screen.queryByText('Pridružen/a nisi še nobeni lestvici...')).toBeOnTheScreen();
     }
   );
 });

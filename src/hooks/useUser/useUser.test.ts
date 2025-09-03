@@ -5,7 +5,7 @@ import { Alert } from 'react-native';
 
 import { testUser1 } from '@/tests/fixtures/users';
 
-import { useDeleteUserMutation, usePatchUserMutation } from '../mutations';
+import { useCreateUserMutation, useDeleteUserMutation, usePatchUserMutation } from '../mutations';
 import { useUserQuery } from '../queries';
 import { useToaster } from '../useToaster';
 
@@ -23,6 +23,7 @@ jest.mock('../queries', () => ({
 
 jest.mock('../mutations', () => ({
   ...jest.requireActual('../mutations'),
+  useCreateUserMutation: jest.fn().mockReturnValue({}),
   useDeleteUserMutation: jest.fn().mockReturnValue({}),
   usePatchUserMutation: jest.fn().mockReturnValue({}),
 }));
@@ -34,6 +35,7 @@ jest.mock('../useToaster', () => ({
 
 describe('useUser', () => {
   const useUserQuerySpy = useUserQuery as jest.Mock;
+  const useCreateUserMutationSpy = useCreateUserMutation as jest.Mock;
   const useDeleteUserMutationSpy = useDeleteUserMutation as jest.Mock;
   const usePatchUserMutationSpy = usePatchUserMutation as jest.Mock;
   const usePostHogSpy = usePostHog as jest.Mock;
@@ -47,6 +49,7 @@ describe('useUser', () => {
   const mockIdentify = jest.fn();
   const mockPatchUser = jest.fn().mockResolvedValue(null);
   const mockDeleteUser = jest.fn().mockResolvedValue(null);
+  const mockCreateUser = jest.fn().mockResolvedValue(null);
   const mockToast = jest.fn();
 
   beforeEach(() => {
@@ -54,6 +57,7 @@ describe('useUser', () => {
     usePostHogSpy.mockReturnValue({ capture: mockCaptureEvent, identify: mockIdentify });
     useDeleteUserMutationSpy.mockReturnValue({ mutate: mockDeleteUser });
     usePatchUserMutationSpy.mockReturnValue({ mutate: mockPatchUser });
+    useCreateUserMutationSpy.mockReturnValue({ mutate: mockCreateUser });
   });
 
   afterEach(() => {
@@ -113,6 +117,27 @@ describe('useUser', () => {
     expect(asyncStorageRemoveItemSpy).toHaveBeenCalledWith('userId');
 
     await waitFor(() => expect(result.current.userId).toBe(null));
+  });
+
+  it('should trigger create user mutation on createUser action', async () => {
+    mockCreateUser.mockResolvedValue(testUser1._id);
+    const { result } = renderHook(() => useUser());
+
+    act(() => {
+      result.current.createUser({ nickname: 'New nickname' });
+    });
+
+    await waitFor(() => {
+      expect(mockCreateUser).toHaveBeenCalledWith({ data: { nickname: 'New nickname' } });
+    });
+
+    await waitFor(() => {
+      expect(result.current.userId).toBe(testUser1._id);
+    });
+
+    await waitFor(() => {
+      expect(mockCaptureEvent).toHaveBeenCalledWith('users:created', { userId: testUser1._id });
+    });
   });
 
   it('should trigger patch user mutation on updateUser action', async () => {

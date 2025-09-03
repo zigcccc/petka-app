@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-native';
+import { renderHook as renderHookBase } from '@testing-library/react-native';
 import type { FunctionReference } from 'convex/server';
 
 import { generateUseQueryHook, generateUseQueryHookWithTimestampArg } from './generateUseQueryHook';
@@ -17,6 +17,8 @@ const userQueryFn = {} as UserQuery;
 
 describe('generateUseQueryHook', () => {
   const useUserQuery = generateUseQueryHook(userQueryFn);
+
+  const renderHook = renderHookBase<ReturnType<typeof useUserQuery>, { id: string }>;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -85,6 +87,8 @@ describe('generateUseQueryHook', () => {
 describe('generateUseQueryHookWithTimestampArg', () => {
   const useUserQueryWithTs = generateUseQueryHookWithTimestampArg(userQueryFn);
 
+  const renderHook = renderHookBase<ReturnType<typeof useUserQueryWithTs>, { id: string }>;
+
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
@@ -95,7 +99,7 @@ describe('generateUseQueryHookWithTimestampArg', () => {
   });
 
   it('injects a timestamp and keeps it stable across renders', () => {
-    const start = new Date('2025-07-04T12:00:00Z').getTime();
+    const start = new Date('2025-07-04T12:00:00Z');
     jest.setSystemTime(start);
 
     /* first render – loading */
@@ -104,17 +108,17 @@ describe('generateUseQueryHookWithTimestampArg', () => {
 
     expect(mockUseQuery).toHaveBeenCalledWith(userQueryFn, {
       id: 'abc',
-      timestamp: start,
+      timestamp: Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()),
     });
 
     /* second render – data arrives, timestamp must stay the same */
-    jest.setSystemTime(start + 10_000);
+    jest.setSystemTime(start.getTime() + 10_000);
     mockUseQuery.mockReturnValueOnce({ name: 'Alice' });
     rerender({ id: 'abc' });
 
     expect(mockUseQuery).toHaveBeenLastCalledWith(userQueryFn, {
       id: 'abc',
-      timestamp: start,
+      timestamp: Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()),
     });
   });
 
@@ -133,12 +137,14 @@ describe('generateUseQueryHookWithTimestampArg', () => {
     const pingQueryFn = {} as PingQuery;
     const usePing = generateUseQueryHookWithTimestampArg(pingQueryFn);
 
-    const now = 1_646_000_000_000; // arbitrary fixed epoch
+    const now = new Date('2025-08-03T12:00:00Z');
     jest.setSystemTime(now);
     mockUseQuery.mockReturnValueOnce('pong');
 
     renderHook(() => usePing({}));
 
-    expect(mockUseQuery).toHaveBeenCalledWith(pingQueryFn, { timestamp: now });
+    expect(mockUseQuery).toHaveBeenCalledWith(pingQueryFn, {
+      timestamp: Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+    });
   });
 });

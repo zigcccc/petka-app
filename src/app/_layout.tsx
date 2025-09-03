@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/react-native';
 import { ConvexProvider, ConvexReactClient } from 'convex/react';
 import dayjs from 'dayjs';
 import { Asset } from 'expo-asset';
+import Constants from 'expo-constants';
 import { useFonts } from 'expo-font';
 import * as Notifications from 'expo-notifications';
 import { type Href, Stack, useGlobalSearchParams, usePathname, useRouter } from 'expo-router';
@@ -31,12 +32,16 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 });
 
 Sentry.init({
-  dsn: 'https://5239823974f8936789a62d8edb9beeb6@o4506279940587520.ingest.us.sentry.io/4509553115791360',
+  enabled: !Constants.debugMode,
+  dsn: Constants.debugMode
+    ? undefined
+    : 'https://5239823974f8936789a62d8edb9beeb6@o4506279940587520.ingest.us.sentry.io/4509553115791360',
   sendDefaultPii: true,
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1,
   tracesSampleRate: 1.0,
   profilesSampleRate: 1.0,
+  environment: process.env.APP_ENV,
   integrations: [
     Sentry.reactNavigationIntegration({ enableTimeToInitialDisplay: true }),
     Sentry.reactNativeTracingIntegration(),
@@ -149,8 +154,14 @@ function RootLayout() {
       <Stack screenOptions={{ contentStyle: styles.content }}>
         <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
         <Stack.Screen
-          name="create-account"
-          options={{ presentation: 'modal', title: '', headerShadowVisible: false }}
+          name="onboard"
+          options={{
+            presentation: 'modal',
+            title: '',
+            headerShadowVisible: false,
+            gestureEnabled: false,
+            headerBackVisible: false,
+          }}
         />
         <Stack.Screen name="+not-found" />
       </Stack>

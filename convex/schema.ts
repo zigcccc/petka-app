@@ -8,11 +8,7 @@ import { puzzlesTable } from './puzzles/models';
 import { usersTable } from './users/models';
 
 export default defineSchema({
-  dictionaryEntries: dictionaryEntriesTable
-    .index('dictionary_word', ['word'])
-    .index('dictionary_frequency', ['frequency'])
-    .index('dictionary_word_frequency', ['word', 'frequency'])
-    .searchIndex('dictionaryEntry_word', { searchField: 'word' }),
+  dictionaryEntries: dictionaryEntriesTable.index('dictionary_word', ['word']),
   leaderboards: leaderboardsTable
     .index('by_invite_code', ['inviteCode'])
     .index('by_type', ['type'])
@@ -20,16 +16,14 @@ export default defineSchema({
   leaderboardEntries: leaderboardEntriesTable
     .index('by_user', ['userId'])
     .index('by_leaderboard', ['leaderboardId'])
-    .index('by_leaderboard_user', ['leaderboardId', 'userId']),
+    .index('by_leaderboard_user', ['leaderboardId', 'userId'])
+    .index('by_leaderboard_recordedAt', ['leaderboardId', 'recordedAt']),
   puzzles: puzzlesTable
-    .index('by_puzzles_solution', ['solution'])
-    .index('by_creator_id', ['creatorId'])
     .index('by_type', ['type'])
     .index('by_type_creator', ['type', 'creatorId'])
-    .index('by_year_month_day', ['year', 'month', 'day']),
+    .index('by_type_year_month_day', ['type', 'year', 'month', 'day']),
   puzzleGuessAttempts: puzzleGuessAttemptsTable
     .index('by_user', ['userId'])
-    .index('by_puzzle', ['puzzleId'])
     .index('by_user_puzzle', ['userId', 'puzzleId']),
   users: usersTable.index('users_nickname', ['nickname']),
 });

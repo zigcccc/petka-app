@@ -1,10 +1,12 @@
+import { useMemo } from 'react';
 import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Text } from '@/components/ui';
 import { type CheckedLetter, checkedLetterStatus } from '@/convex/puzzleGuessAttempts/models';
+import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
 
-import { keys, keysToIconMap, type KeyboardKey as KeyboardKeyType } from './Keyboard.constants';
+import { abcdKeys, keysToIconMap, qwertyKeys, type KeyboardKey as KeyboardKeyType } from './Keyboard.constants';
 
 type Props = {
   onKeyPress: (key: KeyboardKeyType) => void;
@@ -13,6 +15,12 @@ type Props = {
 };
 
 export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Readonly<Props>) {
+  const { keyboardType } = useGameplaySettings();
+
+  const keys = useMemo(() => {
+    return keyboardType === gameplayKeyboardType.Enum.qwerty ? qwertyKeys : abcdKeys;
+  }, [keyboardType]);
+
   return (
     <View style={styles.keyboard}>
       {keys.map((keysRow, idx) => (
@@ -22,6 +30,7 @@ export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Readon
             const isCorrect = checkedLetter?.status === checkedLetterStatus.Enum.correct;
             const isInvalid = checkedLetter?.status === checkedLetterStatus.Enum.invalid;
             const isMisplaced = checkedLetter?.status === checkedLetterStatus.Enum.misplaced;
+            const isSpecialCharacter = key.startsWith('{') && key.endsWith('}');
 
             return (
               <Pressable
@@ -33,6 +42,7 @@ export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Readon
                     isCorrect,
                     isInvalid,
                     isMisplaced,
+                    isSpecialCharacter,
                   })
                 }
                 testID={`keyboard-key--${key}`}
@@ -69,11 +79,13 @@ const styles = StyleSheet.create((theme) => ({
     isInvalid,
     isMisplaced,
     pressed,
+    isSpecialCharacter,
   }: {
     pressed: boolean;
     isInvalid: boolean;
     isMisplaced: boolean;
     isCorrect: boolean;
+    isSpecialCharacter: boolean;
   }) => ({
     backgroundColor: isCorrect
       ? theme.colors.petka.green
@@ -83,8 +95,8 @@ const styles = StyleSheet.create((theme) => ({
           ? theme.colors.grey[70]
           : theme.colors.grey[20],
     opacity: pressed ? 0.4 : 1,
-    flexGrow: 1,
-    height: 68,
+    flexGrow: isSpecialCharacter ? 4 : 1,
+    height: 64,
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'center',

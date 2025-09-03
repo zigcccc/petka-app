@@ -7,7 +7,10 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { GuessGrid, Keyboard, useGuessGrid } from '@/components/elements';
 import { Button, Text } from '@/components/ui';
+import { api } from '@/convex/_generated/api';
+import { usePresence } from '@/hooks/presence';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
+import { useUser } from '@/hooks/useUser';
 
 export function ErrorBoundary({ retry }: ErrorBoundaryProps) {
   return (
@@ -31,8 +34,11 @@ export default function DailyPuzzleScreen() {
   const router = useRouter();
   const navigation = useNavigation();
   const posthog = usePostHog();
+  const { user } = useUser();
   const { attempts, puzzle, isLoading, isDone, onSubmitAttempt } = useDailyPuzzle();
   const { grid, onInput, isValidating, allCheckedLetters } = useGuessGrid({ attempts, onSubmitAttempt });
+
+  usePresence(api.presence, 'daily-puzzle', user?.nickname ?? '');
 
   useEffect(() => {
     if (isDone) {

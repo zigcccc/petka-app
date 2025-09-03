@@ -42,7 +42,7 @@ export function weekBounds(ts: number | string | Date) {
 
   const nextSun = new Date(center);
   nextSun.setDate(center.getDate() + ((7 - dow) % 7));
-  nextSun.setHours(0, 0, 0, 0);
+  nextSun.setHours(23, 59, 59, 0);
 
   return { lastMonday: lastMon, nextSunday: nextSun };
 }

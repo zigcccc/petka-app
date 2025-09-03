@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useConvex } from 'convex/react';
 import { ConvexError } from 'convex/values';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
 import { useForm, type SubmitHandler, type SubmitErrorHandler, Controller } from 'react-hook-form';
 import { View } from 'react-native';
@@ -15,6 +15,7 @@ import { useToaster } from '@/hooks/useToaster';
 import { useUser } from '@/hooks/useUser';
 
 export default function UpdateNicknameScreen() {
+  const router = useRouter();
   const toaster = useToaster();
   const convex = useConvex();
   const posthog = usePostHog();
@@ -22,7 +23,7 @@ export default function UpdateNicknameScreen() {
   const {
     control,
     handleSubmit,
-    formState: { isValid, isSubmitting, isDirty },
+    formState: { isSubmitting, isDirty },
     setError,
   } = useForm({
     resolver: zodResolver(createUserModel),
@@ -59,7 +60,7 @@ export default function UpdateNicknameScreen() {
   return (
     <View style={styles.container}>
       <Text size="2xl" weight="bold">
-        Posodobi vzdevek
+        Posodobi svoj vzdevek
       </Text>
       <View style={styles.content}>
         <Controller
@@ -84,12 +85,7 @@ export default function UpdateNicknameScreen() {
         />
       </View>
       <View style={{ flex: 1 }} />
-      <Button
-        disabled={!isValid || !isDirty}
-        loading={isSubmitting}
-        onPress={handleSubmit(onSubmit, onValidationError)}
-        size="lg"
-      >
+      <Button disabled={!isDirty} loading={isSubmitting} onPress={handleSubmit(onSubmit, onValidationError)} size="lg">
         Posodobi vzdevek
       </Button>
     </View>
@@ -101,7 +97,10 @@ const styles = StyleSheet.create((theme, rt) => ({
     flex: 1,
     paddingTop: theme.spacing[2],
     paddingHorizontal: theme.spacing[6],
-    paddingBottom: rt.insets.bottom + rt.insets.ime,
+    paddingBottom: {
+      xs: rt.insets.bottom + rt.insets.ime,
+      md: rt.insets.bottom + theme.spacing[6],
+    },
   },
   content: {
     paddingTop: theme.spacing[8],

@@ -43,17 +43,16 @@ export const sendReminderForDailyChallenge = internalMutation({
   args: {},
   async handler(ctx) {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
     const puzzle = await ctx.db
       .query('puzzles')
-      .withIndex('by_year_month_day', (q) =>
+      .withIndex('by_type_year_month_day', (q) =>
         q
+          .eq('type', puzzleType.Enum.daily)
           .eq('year', today.getFullYear())
           .eq('month', today.getMonth() + 1)
           .eq('day', today.getDate())
       )
-      .filter((q) => q.eq(q.field('type'), puzzleType.Enum.daily))
       .unique();
 
     if (!puzzle) {

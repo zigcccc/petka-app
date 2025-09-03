@@ -7,10 +7,14 @@ const name = isProd ? 'Petka' : 'Petka (DEV)';
 const identifier = isProd ? 'com.expo.app.petkaapp' : 'com.expo.app.dev.petkaapp';
 const iconPath = isProd ? './src/assets/images/petka-app-icon.png' : './src/assets/images/petka-app-icon-dev.png';
 
+const [major, minor] = appPackage.version.split('.');
+const runtimeVersion = `${major}.${minor}`;
+
 const config: ExpoConfig = {
   name,
   slug: 'petka-app',
   version: appPackage.version,
+  runtimeVersion,
   orientation: 'portrait',
   icon: iconPath,
   scheme: 'petkaapp',
@@ -30,6 +34,7 @@ const config: ExpoConfig = {
     },
     edgeToEdgeEnabled: true,
     package: identifier,
+    googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? './google-services.json',
   },
   web: {
     bundler: 'metro',
@@ -77,9 +82,6 @@ const config: ExpoConfig = {
     },
   },
   owner: 'expo.app',
-  runtimeVersion: {
-    policy: 'appVersion',
-  },
   updates: {
     url: 'https://u.expo.dev/7471426e-9273-43e1-b6cc-490fac00af54',
   },

@@ -47,6 +47,8 @@ ios/
 db/seeders/**/*.jsonl
 
 .env.local
+google-*.json
+petka-app-service-account.json
 
 # Testing
 coverage/

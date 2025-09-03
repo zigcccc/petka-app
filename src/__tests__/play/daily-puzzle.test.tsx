@@ -4,8 +4,12 @@ import { useNavigation, useRouter } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
 
 import DailyPuzzleScreen, { ErrorBoundary } from '@/app/(authenticated)/play/daily-puzzle';
+import { api } from '@/convex/_generated/api';
+import { usePresence } from '@/hooks/presence';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
+import { useUser } from '@/hooks/useUser';
 import { testDailyPuzzle1 } from '@/tests/fixtures/puzzles';
+import { testUser1 } from '@/tests/fixtures/users';
 
 jest.mock('posthog-react-native', () => ({
   ...jest.requireActual('posthog-react-native'),
@@ -23,6 +27,16 @@ jest.mock('@/hooks/useDailyPuzzle', () => ({
   useDailyPuzzle: jest.fn().mockReturnValue({}),
 }));
 
+jest.mock('@/hooks/presence', () => ({
+  ...jest.requireActual('@/hooks/presence'),
+  usePresence: jest.fn().mockReturnValue({}),
+}));
+
+jest.mock('@/hooks/useUser', () => ({
+  ...jest.requireActual('@/hooks/useUser'),
+  useUser: jest.fn().mockReturnValue({}),
+}));
+
 jest.mock('@sentry/react-native', () => ({
   captureException: jest.fn(),
 }));
@@ -37,6 +51,8 @@ describe('DailyPuzzleScreen', () => {
   const useNavigationSpy = useNavigation as jest.Mock;
   const useRouterSpy = useRouter as jest.Mock;
   const usePostHogSpy = usePostHog as jest.Mock;
+  const usePresenceSpy = usePresence as jest.Mock;
+  const useUserSpy = useUser as jest.Mock;
 
   const defaultDailyPuzzleOptions = {
     attempts: [],
@@ -52,6 +68,7 @@ describe('DailyPuzzleScreen', () => {
     useRouterSpy.mockReturnValue({ navigate: mockNavigate });
     useNavigationSpy.mockReturnValue({ setOptions: mockSetNavigationOptions });
     useDailyPuzzleSpy.mockReturnValue(defaultDailyPuzzleOptions);
+    useUserSpy.mockReturnValue({ user: testUser1 });
   });
 
   afterEach(() => {
@@ -114,6 +131,19 @@ describe('DailyPuzzleScreen', () => {
 
     expect(screen.getAllByTestId(/^guess-grid--row-\d+$/).length).toBe(6);
     expect(screen.getAllByTestId(/^keyboard-key--[A-Za-z]+$/).length).toBeGreaterThan(0);
+  });
+
+  it('should trigger user presence hook', () => {
+    render(<DailyPuzzleScreen />);
+
+    expect(usePresenceSpy).toHaveBeenCalledWith(api.presence, 'daily-puzzle', testUser1.nickname);
+  });
+
+  it('should trigger user presence hook with empty string as a user id when user data is not available', () => {
+    useUserSpy.mockReturnValue({ user: null });
+    render(<DailyPuzzleScreen />);
+
+    expect(usePresenceSpy).toHaveBeenCalledWith(api.presence, 'daily-puzzle', '');
   });
 });
 

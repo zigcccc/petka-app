@@ -1,10 +1,16 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { type PropsWithChildren } from 'react';
 import { Alert, type AlertButton, Button, Platform, Text } from 'react-native';
 
 import { PromptProvider } from './Prompt.provider';
 import { usePrompt } from './usePrompt';
+
+jest.mock('@gorhom/bottom-sheet', () => ({
+  __esModule: true,
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  ...require('@gorhom/bottom-sheet/mock'),
+}));
 
 describe('<PromptProvider />', () => {
   function setOS(os: 'ios' | 'android' = 'ios') {
@@ -98,7 +104,9 @@ describe('<PromptProvider />', () => {
 
     fireEvent.press(screen.getByRole('button', { name: 'PRESENT' }));
 
-    expect(screen.queryByText('Android title')).toBeOnTheScreen();
+    await waitFor(() => {
+      expect(screen.queryByText('Android title')).toBeOnTheScreen();
+    });
     expect(screen.queryByText('Android message')).toBeOnTheScreen();
     expect(screen.queryAllByRole('button', { name: /Prompt -/ }).length).toBe(3);
 

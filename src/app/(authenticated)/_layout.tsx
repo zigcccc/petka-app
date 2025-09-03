@@ -12,7 +12,7 @@ export default function AuthenticatedLayout() {
   useFocusEffect(
     useCallback(() => {
       if (shouldCreateAccount) {
-        router.navigate('/create-account');
+        router.navigate('/onboard/create-account');
       }
     }, [router, shouldCreateAccount])
   );

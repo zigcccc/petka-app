@@ -6,7 +6,7 @@ type WordEntry = {
   numOfTimesUsed: number;
 };
 
-export function pickRandomWord(words: WordEntry[], decayFactor = 1.75) {
+export function pickRandomWord(words: WordEntry[], decayFactor = 2.5) {
   if (words.length === 0) throw new Error('No words to choose from');
 
   const weights = words.map((w) => {

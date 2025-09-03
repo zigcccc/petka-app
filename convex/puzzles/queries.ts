@@ -94,13 +94,12 @@ export const readActiveDailyPuzzle = query({
     const date = new Date(timestamp);
     const dailyPuzzle = await ctx.db
       .query('puzzles')
-      .withIndex('by_type', (q) => q.eq('type', puzzleType.Enum.daily))
-      .filter((q) =>
-        q.and(
-          q.eq(q.field('year'), date.getFullYear()),
-          q.eq(q.field('month'), date.getMonth() + 1),
-          q.eq(q.field('day'), date.getDate())
-        )
+      .withIndex('by_type_year_month_day', (q) =>
+        q
+          .eq('type', puzzleType.Enum.daily)
+          .eq('year', date.getFullYear())
+          .eq('month', date.getMonth() + 1)
+          .eq('day', date.getDate())
       )
       .first();
 
@@ -193,7 +192,7 @@ export const createTrainingPuzzle = mutation({
     }
 
     const today = new Date();
-    const words = await ctx.db.query('dictionaryEntries').collect();
+    const words = await ctx.db.query('dictionaryEntries').take(200);
     const word = pickRandomWord(words);
 
     const puzzleId = await ctx.db.insert('puzzles', {
@@ -254,6 +253,7 @@ export const markAsSolved = mutation({
           userId: normalizedUserId,
           puzzleId: normalizedPuzzleId,
           score: puzzleScore,
+          recordedAt: Date.now(),
         });
       }
     }
