@@ -5,7 +5,20 @@ import { DailyPuzzleUsersPresence } from './DailyPuzzleUsersPresence';
 describe('<DailyPuzzleUsersPresence />', () => {
   it('should not render anything when there are no online users', () => {
     const { toJSON } = render(
-      <DailyPuzzleUsersPresence presence={[{ lastDisconnected: 1756888381508, online: false, userId: 'testUser1' }]} />
+      <DailyPuzzleUsersPresence
+        currentUserNickname="notTheTarget"
+        presence={[{ lastDisconnected: 1756888381508, online: false, userId: 'testUser1' }]}
+      />
+    );
+    expect(toJSON()).toBeNull();
+  });
+
+  it('should not render anything when the only online user is the current user', () => {
+    const { toJSON } = render(
+      <DailyPuzzleUsersPresence
+        currentUserNickname="testUser1"
+        presence={[{ lastDisconnected: 1756888381508, online: true, userId: 'testUser1' }]}
+      />
     );
     expect(toJSON()).toBeNull();
   });
@@ -13,6 +26,7 @@ describe('<DailyPuzzleUsersPresence />', () => {
   it('should render list of online user badges', () => {
     render(
       <DailyPuzzleUsersPresence
+        currentUserNickname="notTheTarget"
         presence={[
           { lastDisconnected: 1756888381508, online: true, userId: 'firstTestUser' },
           { lastDisconnected: 1756888381510, online: true, userId: 'secondTestUser' },
@@ -28,6 +42,7 @@ describe('<DailyPuzzleUsersPresence />', () => {
   it('should render "+X" badge when there are more than 4 users online', () => {
     render(
       <DailyPuzzleUsersPresence
+        currentUserNickname="notTheTarget"
         presence={[
           { lastDisconnected: 1756888381508, online: true, userId: 'firstTestUser' },
           { lastDisconnected: 1756888381510, online: true, userId: 'secondTestUser' },
@@ -54,7 +69,7 @@ describe('<DailyPuzzleUsersPresence />', () => {
       const presence = Array.from({ length: numOfOnlinePlayers })
         .fill(null)
         .map((_, idx) => ({ lastDisconnected: 1756888381508, online: true, userId: `user-${idx + 1}` }));
-      render(<DailyPuzzleUsersPresence presence={presence} />);
+      render(<DailyPuzzleUsersPresence currentUserNickname="notTheTarget" presence={presence} />);
 
       expect(screen.queryByText(expectedText, { exact: false })).toBeOnTheScreen();
     }
