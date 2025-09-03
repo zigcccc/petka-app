@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react-nativ
 import { useRouter } from 'expo-router';
 
 import HomeScreen from '@/app/(authenticated)';
+import { useDailyPuzzlePresenceList } from '@/hooks/presence';
 import { useGameplaySettings } from '@/hooks/useGameplaySettings';
 
 jest.mock('expo-router', () => ({
@@ -15,9 +16,15 @@ jest.mock('@/hooks/useGameplaySettings', () => ({
   useGameplaySettings: jest.fn().mockReturnValue({}),
 }));
 
+jest.mock('@/hooks/presence', () => ({
+  ...jest.requireActual('@/hooks/presence'),
+  useDailyPuzzlePresenceList: jest.fn().mockReturnValue([]),
+}));
+
 describe('Home screen', () => {
   const useRouterSpy = useRouter as jest.Mock;
   const useGameplaySettingsSpy = useGameplaySettings as jest.Mock;
+  const useDailyPuzzlePresenceListSpy = useDailyPuzzlePresenceList as jest.Mock;
 
   const mockNavigate = jest.fn();
   const mockSetDefaultSettings = jest.fn();
@@ -25,6 +32,7 @@ describe('Home screen', () => {
   beforeEach(() => {
     useRouterSpy.mockReturnValue({ navigate: mockNavigate });
     useGameplaySettingsSpy.mockReturnValue({ isUninitialised: false, setDefaultSettings: mockSetDefaultSettings });
+    useDailyPuzzlePresenceListSpy.mockReturnValue([]);
   });
 
   afterEach(() => {
@@ -112,4 +120,22 @@ describe('Home screen', () => {
     expect(mockNavigate).not.toHaveBeenCalledWith('/settings');
     expect(mockSetDefaultSettings).toHaveBeenCalled();
   });
+
+  it('should render currently online users playing daily puzzles if there are any', () => {
+    useDailyPuzzlePresenceListSpy.mockReturnValue([{ userId: 'onlineUserId', online: true }]);
+    render(<HomeScreen />);
+
+    expect(screen.queryByText('1 uporabnik igra dnevni izziv 🧠')).toBeOnTheScreen();
+  });
+
+  it.each([undefined, [], [{ userId: 'onlineUserId', online: false }]])(
+    'should not render currenty online users playing daily puzzle if there are not any (users=%s)',
+    (onlineUsers) => {
+      useDailyPuzzlePresenceListSpy.mockReturnValue(onlineUsers);
+
+      render(<HomeScreen />);
+
+      expect(screen.queryByText('dnevni izziv 🧠', { exact: false })).not.toBeOnTheScreen();
+    }
+  );
 });
