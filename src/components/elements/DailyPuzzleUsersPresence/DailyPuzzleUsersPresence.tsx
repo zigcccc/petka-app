@@ -10,7 +10,7 @@ type Props = {
   presence: PresenceState[];
 };
 
-export function DailyPuzzleUsersPresence({ presence }: Props) {
+export function DailyPuzzleUsersPresence({ presence }: Readonly<Props>) {
   const onlineUsers = useMemo(() => presence.filter((state) => !!state.userId && state.online), [presence]);
   const numItemsToDisplay = Math.min(onlineUsers.length, 4);
 
@@ -35,7 +35,7 @@ export function DailyPuzzleUsersPresence({ presence }: Props) {
         {usersToDisplay.map((state, idx) => (
           <View key={state.userId} style={styles.badge(idx)}>
             <Text size="xs" style={styles.badgeText} weight="bold">
-              {state.userId.at(0)}
+              {state.userId.charAt(0)}
             </Text>
           </View>
         ))}

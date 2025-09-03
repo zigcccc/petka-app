@@ -37,6 +37,11 @@ describe('usePresence', () => {
     jest.clearAllMocks();
     jest.useFakeTimers();
 
+    jest.spyOn(AppState, 'addEventListener').mockImplementation((_type: any, _handler: any) => {
+      return { remove: jest.fn() } as any;
+    });
+    (global as any).fetch = jest.fn(() => Promise.resolve({ ok: true }));
+
     useConvexSpy.mockReturnValue({ url: 'https://test.convex.dev' });
     useMutationSpy.mockImplementation(() => () => ({
       roomToken: 'room-token',
@@ -47,6 +52,7 @@ describe('usePresence', () => {
 
   afterEach(() => {
     jest.useRealTimers();
+    jest.restoreAllMocks();
   });
 
   it('initializes and sends heartbeat', async () => {

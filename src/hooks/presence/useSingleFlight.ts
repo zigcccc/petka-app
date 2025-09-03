@@ -5,10 +5,8 @@ export default function useSingleFlight<F extends (...args: any[]) => Promise<an
     inFlight: false,
     upNext: null as null | {
       fn: F;
-
-      resolve: any;
-
-      reject: any;
+      resolve: (value: Awaited<ReturnType<F>>) => void;
+      reject: (reason?: unknown) => void;
       args: Parameters<F>;
     },
   });
