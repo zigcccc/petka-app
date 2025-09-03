@@ -17,6 +17,7 @@ import type * as leaderboards_queries from "../leaderboards/queries.js";
 import type * as migrations from "../migrations.js";
 import type * as notifications_queries from "../notifications/queries.js";
 import type * as notifications_services from "../notifications/services.js";
+import type * as presence from "../presence.js";
 import type * as puzzleGuessAttempts_helpers from "../puzzleGuessAttempts/helpers.js";
 import type * as puzzleGuessAttempts_models from "../puzzleGuessAttempts/models.js";
 import type * as puzzleGuessAttempts_queries from "../puzzleGuessAttempts/queries.js";
@@ -53,6 +54,7 @@ declare const fullApi: ApiFromModules<{
   migrations: typeof migrations;
   "notifications/queries": typeof notifications_queries;
   "notifications/services": typeof notifications_services;
+  presence: typeof presence;
   "puzzleGuessAttempts/helpers": typeof puzzleGuessAttempts_helpers;
   "puzzleGuessAttempts/models": typeof puzzleGuessAttempts_models;
   "puzzleGuessAttempts/queries": typeof puzzleGuessAttempts_queries;
@@ -252,7 +254,7 @@ export declare const components: {
             | "maybe_delivered"
             | "unable_to_deliver";
           subtitle?: string;
-          title: string;
+          title?: string;
           ttl?: number;
         }
       >;
@@ -292,7 +294,7 @@ export declare const components: {
             | "maybe_delivered"
             | "unable_to_deliver";
           subtitle?: string;
-          title: string;
+          title?: string;
           ttl?: number;
         }>
       >;
@@ -353,7 +355,7 @@ export declare const components: {
             priority?: "default" | "normal" | "high";
             sound?: string | null;
             subtitle?: string;
-            title: string;
+            title?: string;
             ttl?: number;
           };
           userId: string;
@@ -370,6 +372,57 @@ export declare const components: {
         "mutation",
         "internal",
         { logLevel: "DEBUG" | "INFO" | "WARN" | "ERROR"; userId: string },
+        null
+      >;
+    };
+  };
+  presence: {
+    public: {
+      disconnect: FunctionReference<
+        "mutation",
+        "internal",
+        { sessionToken: string },
+        null
+      >;
+      heartbeat: FunctionReference<
+        "mutation",
+        "internal",
+        {
+          interval?: number;
+          roomId: string;
+          sessionId: string;
+          userId: string;
+        },
+        { roomToken: string; sessionToken: string }
+      >;
+      list: FunctionReference<
+        "query",
+        "internal",
+        { limit?: number; roomToken: string },
+        Array<{ lastDisconnected: number; online: boolean; userId: string }>
+      >;
+      listRoom: FunctionReference<
+        "query",
+        "internal",
+        { limit?: number; onlineOnly?: boolean; roomId: string },
+        Array<{ lastDisconnected: number; online: boolean; userId: string }>
+      >;
+      listUser: FunctionReference<
+        "query",
+        "internal",
+        { limit?: number; onlineOnly?: boolean; userId: string },
+        Array<{ lastDisconnected: number; online: boolean; roomId: string }>
+      >;
+      removeRoom: FunctionReference<
+        "mutation",
+        "internal",
+        { roomId: string },
+        null
+      >;
+      removeRoomUser: FunctionReference<
+        "mutation",
+        "internal",
+        { roomId: string; userId: string },
         null
       >;
     };
