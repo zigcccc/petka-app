@@ -5,13 +5,16 @@ import { type ComponentRef, useCallback, useRef } from 'react';
 import { Image, InteractionManager, Platform, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
+import { DailyPuzzleUsersPresence } from '@/components/elements';
 import { Button, Text } from '@/components/ui';
+import { useDailyPuzzlePresenceList } from '@/hooks/presence';
 import { useGameplaySettings } from '@/hooks/useGameplaySettings';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { isUninitialised, setDefaultSettings } = useGameplaySettings();
   const sheetRef = useRef<ComponentRef<typeof BottomSheetModal>>(null);
+  const presence = useDailyPuzzlePresenceList();
 
   const handleBottomSheetLinkPress = (href: Href) => {
     sheetRef.current?.dismiss();
@@ -35,6 +38,7 @@ export default function HomeScreen() {
       <View style={styles.container}>
         <Image source={require('@/assets/images/petka-app-wordmark.png')} style={styles.image} />
         <View style={styles.spacer} />
+        {presence && <DailyPuzzleUsersPresence presence={presence} />}
         <View style={styles.actions}>
           <Button onPress={() => router.navigate('/play/daily-puzzle')} size="lg">
             Igraj
