@@ -9,11 +9,13 @@ import { DailyPuzzleUsersPresence } from '@/components/elements';
 import { Button, Text } from '@/components/ui';
 import { useDailyPuzzlePresenceList } from '@/hooks/presence';
 import { useGameplaySettings } from '@/hooks/useGameplaySettings';
+import { useUser } from '@/hooks/useUser';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { isUninitialised, setDefaultSettings } = useGameplaySettings();
   const sheetRef = useRef<ComponentRef<typeof BottomSheetModal>>(null);
+  const { user } = useUser();
   const presence = useDailyPuzzlePresenceList();
 
   const handleBottomSheetLinkPress = (href: Href) => {
@@ -38,7 +40,7 @@ export default function HomeScreen() {
       <View style={styles.container}>
         <Image source={require('@/assets/images/petka-app-wordmark.png')} style={styles.image} />
         <View style={styles.spacer} />
-        {presence && <DailyPuzzleUsersPresence presence={presence} />}
+        {presence && user?._id && <DailyPuzzleUsersPresence currentUserNickname={user.nickname} presence={presence} />}
         <View style={styles.actions}>
           <Button onPress={() => router.navigate('/play/daily-puzzle')} size="lg">
             Igraj
