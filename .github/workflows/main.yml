@@ -191,7 +191,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
 
       - name: Create git tag
-        uses: actions-ecosystem/action-push-tag@v1
+        uses: thejeff77/action-push-tag@v1.0.0
         with:
           tag: v${{ steps.version.outputs.version }}
 
