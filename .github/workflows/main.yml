@@ -189,4 +189,19 @@ jobs:
         run: pnpx sentry-expo-upload-sourcemaps dist
         env:
           SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
+
+      - name: Create git tag
+        run: |
+          VERSION=${{steps.version.outputs.version}}
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{steps.version.outputs.version}}
+          name: Release v${{steps.version.outputs.version}}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       
