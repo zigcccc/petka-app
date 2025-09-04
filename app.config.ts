@@ -18,7 +18,7 @@ const config: ExpoConfig = {
   orientation: 'portrait',
   icon: iconPath,
   scheme: 'petkaapp',
-  userInterfaceStyle: 'light',
+  userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   ios: {
     supportsTablet: false,
@@ -34,7 +34,7 @@ const config: ExpoConfig = {
     },
     edgeToEdgeEnabled: true,
     package: identifier,
-    googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? './google-services.json',
+    googleServicesFile: isProd ? (process.env.GOOGLE_SERVICES_JSON ?? './google-services.json') : undefined,
   },
   web: {
     bundler: 'metro',
@@ -47,9 +47,12 @@ const config: ExpoConfig = {
       'expo-splash-screen',
       {
         image: './src/assets/images/petka-app-icon-splash.png',
-        imageWidth: 200,
+        imageWidth: 300,
         resizeMode: 'contain',
         backgroundColor: '#ffffff',
+        dark: {
+          backgroundColor: '#2E2F33',
+        },
       },
     ],
     'expo-asset',
