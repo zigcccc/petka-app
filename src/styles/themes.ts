@@ -117,3 +117,34 @@ export const defaultTheme = {
     },
   },
 } as const;
+
+export const lightTheme = {
+  ...defaultTheme,
+  colors: {
+    ...defaultTheme.colors,
+    background: defaultTheme.colors.white,
+    foreground: defaultTheme.colors.black,
+  },
+} as const;
+
+export const darkTheme = {
+  ...defaultTheme,
+  colors: {
+    ...defaultTheme.colors,
+    background: defaultTheme.colors.black,
+    foreground: defaultTheme.colors.white,
+    grey: {
+      5: 'rgb(12, 12, 15)',
+      10: 'rgb(24, 24, 27)',
+      20: 'rgb(72, 72, 80)',
+      30: 'rgb(167, 167, 175)',
+      50: 'rgb(198, 198, 203)',
+      60: 'rgb(230, 230, 232)',
+      70: 'rgb(243, 243, 243)',
+    },
+    blue: {
+      ...defaultTheme.colors.blue,
+      5: 'rgb(8, 22, 63)',
+    },
+  },
+};
