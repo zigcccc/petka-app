@@ -10,6 +10,7 @@ import { GenericStackScreen } from '@/components/navigation';
 import { Button, Card, Hint, RadioInput, Text } from '@/components/ui';
 import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
+import { useThemeSettings } from '@/hooks/useThemeSettings';
 import { useToaster } from '@/hooks/useToaster';
 import { useUser } from '@/hooks/useUser';
 
@@ -19,6 +20,7 @@ export default function SettingsScreen() {
   const { user, deleteUser, isDeleting } = useUser();
   const { status, toggle, systemNotificationsEnabled } = usePushNotifications(user?._id);
   const { autosubmitPuzzleAttempt, keyboardType, updateSettings, setDefaultSettings } = useGameplaySettings();
+  const { currentTheme, onThemeChange } = useThemeSettings();
 
   const handleCopyUserId = async () => {
     await Clipboard.setStringAsync(user?._id ?? '');
@@ -64,6 +66,20 @@ export default function SettingsScreen() {
           <Button intent="terciary" onPress={setDefaultSettings} size="sm" variant="outline">
             Ponastavi
           </Button>
+        </Card>
+        <Card title="Nastavitve prikaza">
+          <Card.ActionRow
+            extra={
+              <RadioInput onChange={onThemeChange} style={styles.radioContainer} value={currentTheme}>
+                <RadioInput.Item label="Sistemske nastavitve" value="system" />
+                <RadioInput.Item label="Svetel način" value="light" />
+                <RadioInput.Item label="Temen način" value="dark" />
+              </RadioInput>
+            }
+            title="Tema aplikacije"
+          >
+            Izberi temo aplikacije; izbirate lahko med sistemskimi nastavitvami, svetlim načinom in temnim načinom.
+          </Card.ActionRow>
         </Card>
         <Card title="Obvestila">
           <Card.ActionRow
