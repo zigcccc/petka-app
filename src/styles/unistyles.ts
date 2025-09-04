@@ -19,7 +19,6 @@ StyleSheet.configure({
   breakpoints,
   themes: { light: lightTheme, dark: darkTheme },
   settings: {
-    // initialTheme: () => (storage.getString('preferredtheme') as 'light' | 'dark') ?? UnistylesRuntime.colorScheme,
     ...(storage.getString('preferredtheme') === 'dark' || storage.getString('preferredtheme') === 'light'
       ? { initialTheme: storage.getString('preferredtheme') as 'light' | 'dark' }
       : { adaptiveThemes: true }),
