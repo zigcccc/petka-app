@@ -1,9 +1,10 @@
 import { useFocusEffect, useNavigation } from 'expo-router';
 import { useCallback } from 'react';
-import { ScrollView, View, Image } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Leaderboard } from '@/components/elements';
+import { NoLeaderboards } from '@/components/graphics';
 import { Button, Card, Text } from '@/components/ui';
 import { leaderboardRange, leaderboardType } from '@/convex/leaderboards/models';
 import { useLeaderboards } from '@/hooks/useLeaderboards';
@@ -44,7 +45,13 @@ export default function WeeklyLeaderboardScreen() {
         <>
           {isLoading ? null : (
             <View style={styles.noLeaderboardsContainer}>
-              <Image source={require('@/assets/images/no-leaderboards.png')} style={styles.image} />
+              <NoLeaderboards
+                accessibilityLabel="No leaderboards"
+                accessibilityRole="image"
+                accessible
+                height={200}
+                width={200}
+              />
               <Text align="center" color="grey70" size="sm">
                 Pridružen/a nisi še nobeni lestvici...
               </Text>
@@ -73,6 +80,7 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: theme.spacing[8],
+    paddingBottom: theme.spacing[4],
   },
   image: {
     aspectRatio: '1/1',

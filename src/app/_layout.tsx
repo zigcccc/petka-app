@@ -11,15 +11,16 @@ import { StatusBar } from 'expo-status-bar';
 import * as Tracking from 'expo-tracking-transparency';
 import { PostHogProvider, usePostHog } from 'posthog-react-native';
 import { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native';
+import { Appearance, SafeAreaView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { StyleSheet } from 'react-native-unistyles';
+import { StyleSheet, UnistylesRuntime, useUnistyles } from 'react-native-unistyles';
 
 import { ActionSheetProvider } from '@/context/ActionSheet';
 import { PromptProvider } from '@/context/Prompt';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useUser } from '@/hooks/useUser';
 import { registerForPushNotificationsAsync } from '@/utils/notifications';
+import { storage } from '@/utils/storage';
 
 import 'dayjs/locale/sl';
 import 'react-native-reanimated';
@@ -70,6 +71,7 @@ function RootLayout() {
   const { user } = useUser();
   const notifications = usePushNotifications(user?._id);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [themeLoaded, setThemeLoaded] = useState(false);
   const [fontsLoaded] = useFonts({
     SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
     'Inter-Bold': require('@/assets/fonts/inter/Inter-Bold.ttf'),
@@ -78,8 +80,9 @@ function RootLayout() {
     'Inter-Regular': require('@/assets/fonts/inter/Inter-Regular.ttf'),
     'Inter-SemiBold': require('@/assets/fonts/inter/Inter-SemiBold.ttf'),
   });
+  const { rt } = useUnistyles();
 
-  const isReady = fontsLoaded && imagesLoaded;
+  const isReady = fontsLoaded && imagesLoaded && themeLoaded;
 
   useEffect(() => {
     async function requestPushNotificationsPermissionsAsync() {
@@ -121,6 +124,25 @@ function RootLayout() {
   }, [imagesLoaded]);
 
   useEffect(() => {
+    const preferredTheme = storage.getString('preferredtheme');
+    if (preferredTheme === 'dark' || preferredTheme === 'light') {
+      UnistylesRuntime.setAdaptiveThemes(false);
+      UnistylesRuntime.setTheme(preferredTheme);
+      Appearance.setColorScheme(preferredTheme);
+    } else {
+      UnistylesRuntime.setAdaptiveThemes(true);
+      Appearance.setColorScheme(UnistylesRuntime.themeName);
+    }
+    setThemeLoaded(true);
+  }, [themeLoaded]);
+
+  useEffect(() => {
+    if (Appearance.getColorScheme() !== rt.themeName) {
+      Appearance.setColorScheme(rt.themeName);
+    }
+  }, [rt.themeName]);
+
+  useEffect(() => {
     posthog.screen(pathname, params);
   }, [pathname, params, posthog]);
 
@@ -150,7 +172,7 @@ function RootLayout() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.safeArea}>
       <Stack screenOptions={{ contentStyle: styles.content }}>
         <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
         <Stack.Screen
@@ -161,6 +183,7 @@ function RootLayout() {
             headerShadowVisible: false,
             gestureEnabled: false,
             headerBackVisible: false,
+            headerStyle: styles.header,
           }}
         />
         <Stack.Screen name="+not-found" />
@@ -193,8 +216,15 @@ function RootLayoutWithProviders() {
 }
 
 const styles = StyleSheet.create((theme) => ({
+  safeArea: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   content: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.background,
+  },
+  header: {
+    backgroundColor: theme.colors.background,
   },
 }));
 

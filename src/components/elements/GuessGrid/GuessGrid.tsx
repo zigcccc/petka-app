@@ -76,20 +76,22 @@ const styles = StyleSheet.create((theme, rt) => ({
     isInvalid: boolean;
     cellWidth?: number;
   }) {
+    const invalidColor = rt.themeName === 'dark' ? theme.colors.grey[5] : theme.colors.grey[70];
+
     return {
       backgroundColor: isCorrect
         ? theme.colors.petka.green
         : isMisplaced
           ? theme.colors.petka.yellow
           : isInvalid
-            ? theme.colors.grey[70]
+            ? invalidColor
             : theme.colors.grey[10],
       borderColor: isCorrect
         ? theme.colors.petka.green
         : isMisplaced
           ? theme.colors.petka.yellow
           : isInvalid
-            ? theme.colors.grey[70]
+            ? invalidColor
             : theme.colors.grey[20],
       borderWidth: 2,
       // screen width - 2*20 padding - 4*12 gap
@@ -104,5 +106,6 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   cellText: {
     textTransform: 'uppercase',
+    color: rt.themeName === 'dark' ? theme.colors.foreground : theme.colors.background,
   },
 }));

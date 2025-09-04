@@ -27,7 +27,7 @@ export function Card({ actionsIconName = 'pencil', children, title, onShowAction
             onPress={onShowActions}
             style={{
               paddingHorizontal: 8,
-              backgroundColor: 'white',
+              backgroundColor: theme.colors.background,
               transform: [{ translateX: 12 }],
             }}
             testID="card--actions-trigger"
@@ -85,7 +85,7 @@ const styles = StyleSheet.create((theme) => ({
     transform: [{ translateY: '-50%' }, { translateX: theme.spacing[2] * -1 }],
   },
   title: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.background,
     paddingHorizontal: theme.spacing[2],
   },
   content: {

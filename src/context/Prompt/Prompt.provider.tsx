@@ -112,7 +112,10 @@ export function PromptProvider({ children }: Readonly<PropsWithChildren>) {
 }
 
 const styles = StyleSheet.create((theme) => ({
-  container: {},
+  container: {
+    backgroundColor: theme.colors.background,
+    borderRadius: 4,
+  },
   contentContainer: {
     paddingHorizontal: theme.spacing[5],
     paddingVertical: theme.spacing[4],

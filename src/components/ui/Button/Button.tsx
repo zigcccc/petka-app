@@ -174,6 +174,7 @@ const styles = StyleSheet.create((theme) => ({
         terciary: {},
         danger: {},
         warning: {},
+        black: {},
         shaded: {},
       },
       variant: {
@@ -221,6 +222,13 @@ const styles = StyleSheet.create((theme) => ({
         variant: 'fill',
         intent: 'terciary',
         styles: {
+          backgroundColor: theme.colors.foreground,
+        },
+      },
+      {
+        variant: 'fill',
+        intent: 'black',
+        styles: {
           backgroundColor: theme.colors.petka.black,
         },
       },
@@ -263,7 +271,7 @@ const styles = StyleSheet.create((theme) => ({
         variant: 'outline',
         intent: 'terciary',
         styles: {
-          borderColor: theme.colors.petka.black,
+          borderColor: theme.colors.foreground,
         },
       },
       {
@@ -326,6 +334,7 @@ const styles = StyleSheet.create((theme) => ({
         secondary: {},
         terciary: {},
         danger: {},
+        black: {},
         shaded: {},
       },
       variant: {
@@ -337,6 +346,13 @@ const styles = StyleSheet.create((theme) => ({
       },
     },
     compoundVariants: [
+      {
+        variant: 'fill',
+        intent: 'terciary',
+        styles: {
+          color: theme.colors.background,
+        },
+      },
       {
         variant: 'outline',
         intent: 'primary',
@@ -355,7 +371,7 @@ const styles = StyleSheet.create((theme) => ({
         variant: 'outline',
         intent: 'terciary',
         styles: {
-          color: theme.colors.petka.black,
+          color: theme.colors.foreground,
         },
       },
       {
@@ -397,7 +413,7 @@ const styles = StyleSheet.create((theme) => ({
         variant: 'transparent',
         intent: 'terciary',
         styles: {
-          color: theme.colors.petka.black,
+          color: theme.colors.foreground,
         },
       },
       {

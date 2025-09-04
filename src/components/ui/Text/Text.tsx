@@ -57,7 +57,7 @@ const styles = StyleSheet.create((theme) => ({
       },
       color: {
         black: {
-          color: theme.colors.black,
+          color: theme.colors.foreground,
         },
         grey70: {
           color: theme.colors.grey[70],
@@ -75,7 +75,7 @@ const styles = StyleSheet.create((theme) => ({
           color: theme.colors.gold[40],
         },
         white: {
-          color: theme.colors.white,
+          color: theme.colors.background,
         },
         default: {
           color: theme.colors.black,

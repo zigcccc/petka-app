@@ -126,7 +126,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     flex: 1,
     alignItems: 'center',
     padding: theme.spacing[4],
-    backgroundColor: theme.colors.grey[5],
+    backgroundColor: rt.themeName === 'dark' ? theme.colors.grey[20] : theme.colors.grey[5],
     borderRadius: 4,
   },
 }));

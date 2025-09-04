@@ -40,28 +40,28 @@ export function Hint({ actions, children, intent = 'warning', title }: Props) {
         </Text>
       </View>
       <View style={styles.hintBody}>{children}</View>
-      {actions}
+      {!!actions && <View style={styles.actionsContainer}>{actions}</View>}
     </View>
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
   hint: {
     padding: theme.spacing[3],
     borderRadius: 8,
     variants: {
       intent: {
         info: {
-          backgroundColor: theme.colors.blue[5],
+          backgroundColor: rt.themeName === 'dark' ? theme.colors.grey[10] : theme.colors.blue[5],
         },
         danger: {
-          backgroundColor: theme.colors.red[0],
+          backgroundColor: rt.themeName === 'dark' ? theme.colors.grey[10] : theme.colors.red[0],
         },
         warning: {
-          backgroundColor: theme.colors.gold[5],
+          backgroundColor: rt.themeName === 'dark' ? theme.colors.grey[10] : theme.colors.gold[5],
         },
         success: {
-          backgroundColor: theme.colors.green[0],
+          backgroundColor: rt.themeName === 'dark' ? theme.colors.grey[10] : theme.colors.green[0],
         },
       },
     },
@@ -92,6 +92,9 @@ const styles = StyleSheet.create((theme) => ({
   },
   hintBody: {
     paddingTop: theme.spacing[2],
-    paddingBottom: theme.spacing[3],
+    paddingBottom: theme.spacing[1],
+  },
+  actionsContainer: {
+    paddingTop: theme.spacing[3],
   },
 }));

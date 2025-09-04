@@ -1,13 +1,15 @@
 import { Octicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { View, ActivityIndicator } from 'react-native';
-import { StyleSheet } from 'react-native-unistyles';
+import { StyleSheet, withUnistyles } from 'react-native-unistyles';
 
 import { AttemptsDistributionGraph } from '@/components/elements';
 import { Card, Button, Text } from '@/components/ui';
 import { puzzleType } from '@/convex/puzzles/models';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
 import { usePuzzleStatistics } from '@/hooks/usePuzzlesStatistics';
+
+const UniIcon = withUnistyles(Octicons);
 
 export default function DailyPuzzleSolvedScreen() {
   const router = useRouter();
@@ -74,7 +76,7 @@ export default function DailyPuzzleSolvedScreen() {
             </Card>
             <Button onPress={onShareResults} size="sm" variant="outline">
               <Button.Text>Deli</Button.Text>
-              <Octicons color="green" name="share" size={16} />
+              <UniIcon name="share" size={16} uniProps={(theme) => ({ color: theme.colors.petka.green })} />
             </Button>
           </>
         )}
@@ -117,7 +119,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     flex: 1,
     alignItems: 'center',
     padding: theme.spacing[4],
-    backgroundColor: theme.colors.grey[5],
+    backgroundColor: rt.themeName === 'dark' ? theme.colors.grey[20] : theme.colors.grey[5],
     borderRadius: 4,
   },
 }));
