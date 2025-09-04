@@ -134,7 +134,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   actionsContainer: {
     marginTop: theme.spacing[6],
     marginBottom: theme.spacing[4],
-    backgroundColor: theme.colors.grey[10],
+    backgroundColor: rt.themeName === 'dark' ? theme.colors.grey[5] : theme.colors.grey[10],
     borderRadius: 12,
   },
   actionButtonContainer: {
@@ -142,7 +142,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     borderTopColor: theme.colors.grey[50],
   },
   cancelButtonContainer: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.background,
     borderRadius: 12,
   },
 }));

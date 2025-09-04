@@ -12,6 +12,6 @@ export default function OnboardLayout() {
 
 const styles = StyleSheet.create((theme) => ({
   content: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.background,
   },
 }));

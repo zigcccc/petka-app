@@ -83,7 +83,7 @@ export function HistoryGrid({ puzzle, userId, style, cellWidth }: Readonly<Props
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
   container: {
     padding: theme.spacing[8],
   },
@@ -97,7 +97,7 @@ const styles = StyleSheet.create((theme) => ({
   gridRow: { flexDirection: 'row', gap: theme.spacing[3] },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: rt.themeName === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.45)',
     alignItems: 'center',
     justifyContent: 'center',
   },

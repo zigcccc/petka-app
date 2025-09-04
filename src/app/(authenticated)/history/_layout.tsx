@@ -8,7 +8,11 @@ export default function TabLayout() {
   return (
     <Tabs
       initialRouteName="daily-challenges"
-      screenOptions={{ tabBarActiveTintColor: theme.colors.petka.green, sceneStyle: styles.content }}
+      screenOptions={{
+        tabBarActiveTintColor: theme.colors.petka.green,
+        sceneStyle: styles.content,
+        tabBarStyle: styles.tabbar,
+      }}
     >
       <Tabs.Screen
         name="daily-challenges"
@@ -32,6 +36,9 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create((theme) => ({
   content: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.background,
+  },
+  tabbar: {
+    backgroundColor: theme.colors.background,
   },
 }));

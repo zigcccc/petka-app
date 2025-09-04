@@ -256,4 +256,14 @@ describe('Settings screen', () => {
 
     expect(screen.queryByText('Preprečil/a si pošiljanje potisnih obvestil')).not.toBeOnTheScreen();
   });
+
+  it('should render theme settings', () => {
+    render(<SettingsScreen />);
+
+    expect(screen.queryByText('Nastavitve prikaza')).toBeOnTheScreen();
+    expect(screen.queryByText('Tema aplikacije')).toBeOnTheScreen();
+    expect(screen.queryByRole('radio', { name: 'Sistemske nastavitve' })).toBeOnTheScreen();
+    expect(screen.queryByRole('radio', { name: 'Svetel način' })).toBeOnTheScreen();
+    expect(screen.queryByRole('radio', { name: 'Temen način' })).toBeOnTheScreen();
+  });
 });

@@ -1,8 +1,8 @@
-import { Octicons } from '@expo/vector-icons';
 import { Children, useMemo } from 'react';
 import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
+import { Icon } from '../Icon';
 import { Text } from '../Text';
 
 import { RadioInputContext, useRadioInputContext } from './RadioInput.context';
@@ -46,7 +46,14 @@ function RadioInputItem({ label, value }: Readonly<RadioInputItemProps>) {
       onPress={() => context.onChange(value)}
       style={radioItemStyles.container}
     >
-      {isSelected && <Octicons name="check" size={16} testID="radio-input--item--check-icon" />}
+      {isSelected && (
+        <Icon
+          name="check"
+          size={16}
+          testID="radio-input--item--check-icon"
+          uniProps={(theme) => ({ color: theme.colors.foreground })}
+        />
+      )}
       <Text size="sm" weight={isSelected ? 'semibold' : 'regular'}>
         {label}
       </Text>

@@ -18,7 +18,7 @@ export function GenericStackScreen({ backText = 'Nazaj', children, title }: Read
           title,
           headerBackTitle: backText,
           headerBackTitleStyle: styles.back,
-          headerTintColor: theme.colors.petka.black,
+          headerTintColor: theme.colors.foreground,
           headerLargeTitle: true,
         }}
       />

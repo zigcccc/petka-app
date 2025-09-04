@@ -65,21 +65,21 @@ export default function HomeScreen() {
           </View>
           <View style={styles.buttonRow}>
             <View style={styles.action}>
-              <Button intent="terciary" onPress={() => router.navigate('/app-info')} size="lg">
+              <Button intent="black" onPress={() => router.navigate('/app-info')} size="lg">
                 <Button.Icon>
                   <Octicons name="info" />
                 </Button.Icon>
               </Button>
             </View>
             <View style={styles.action}>
-              <Button intent="terciary" onPress={() => router.navigate('/history/daily-challenges')} size="lg">
+              <Button intent="black" onPress={() => router.navigate('/history/daily-challenges')} size="lg">
                 <Button.Icon>
                   <Octicons name="history" />
                 </Button.Icon>
               </Button>
             </View>
             <View style={styles.action}>
-              <Button intent="terciary" onPress={() => router.navigate('/settings')} size="lg">
+              <Button intent="black" onPress={() => router.navigate('/settings')} size="lg">
                 <Button.Icon>
                   <Octicons name="gear" />
                 </Button.Icon>

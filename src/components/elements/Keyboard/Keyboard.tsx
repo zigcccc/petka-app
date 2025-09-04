@@ -63,7 +63,7 @@ export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Readon
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
   keyboard: {
     flexDirection: 'column',
     gap: theme.spacing[2],
@@ -86,21 +86,25 @@ const styles = StyleSheet.create((theme) => ({
     isMisplaced: boolean;
     isCorrect: boolean;
     isSpecialCharacter: boolean;
-  }) => ({
-    backgroundColor: isCorrect
-      ? theme.colors.petka.green
-      : isMisplaced
-        ? theme.colors.petka.yellow
-        : isInvalid
-          ? theme.colors.grey[70]
-          : theme.colors.grey[20],
-    opacity: pressed ? 0.4 : 1,
-    flexGrow: isSpecialCharacter ? 4 : 1,
-    height: 64,
-    alignSelf: 'stretch',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }),
+  }) => {
+    const invalidColor = rt.themeName === 'dark' ? theme.colors.grey[10] : theme.colors.grey[70];
+
+    return {
+      backgroundColor: isCorrect
+        ? theme.colors.petka.green
+        : isMisplaced
+          ? theme.colors.petka.yellow
+          : isInvalid
+            ? invalidColor
+            : theme.colors.grey[20],
+      opacity: pressed ? 0.4 : 1,
+      flexGrow: isSpecialCharacter ? 4 : 1,
+      height: 64,
+      alignSelf: 'stretch',
+      alignItems: 'center',
+      justifyContent: 'center',
+    };
+  },
   keyText: ({
     isCorrect,
     isInvalid,
@@ -113,6 +117,6 @@ const styles = StyleSheet.create((theme) => ({
     textTransform: 'uppercase',
     width: 22,
     textAlign: 'center',
-    color: isInvalid || isMisplaced || isCorrect ? theme.colors.white : theme.colors.petka.black,
+    color: isInvalid || isMisplaced || isCorrect ? theme.colors.white : theme.colors.foreground,
   }),
 }));

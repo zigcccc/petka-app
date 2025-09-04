@@ -78,7 +78,7 @@ const styles = StyleSheet.create((theme) => ({
     transform: [{ translateX: -8 * idx }],
     zIndex: idx * -1,
     borderWidth: 2,
-    borderColor: theme.colors.white,
+    borderColor: theme.colors.background,
   }),
   badgeText: {
     textTransform: 'uppercase',

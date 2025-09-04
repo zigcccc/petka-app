@@ -40,7 +40,7 @@ export function TextInput({ error, ref, label, style, ...rest }: Readonly<Props>
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
   container: {
     gap: theme.spacing[3],
   },
@@ -49,13 +49,14 @@ const styles = StyleSheet.create((theme) => ({
     paddingHorizontal: theme.spacing[4],
     paddingVertical: theme.spacing[5],
     borderRadius: 4,
+    color: theme.colors.foreground,
     variants: {
       hasError: {
         true: {
           borderColor: theme.colors.red[40],
         },
         false: {
-          borderColor: theme.colors.grey[20],
+          borderColor: rt.themeName === 'dark' ? theme.colors.grey[30] : theme.colors.grey[20],
         },
       },
     },

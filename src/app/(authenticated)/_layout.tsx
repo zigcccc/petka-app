@@ -18,14 +18,14 @@ export default function AuthenticatedLayout() {
   );
 
   return (
-    <Stack initialRouteName="index" screenOptions={{ contentStyle: styles.content }}>
+    <Stack initialRouteName="index" screenOptions={{ contentStyle: styles.content, headerStyle: styles.header }}>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="app-info" />
       <Stack.Screen
         name="history"
         options={{
           title: 'Zgodovina',
-          headerTintColor: theme.colors.petka.black,
+          headerTintColor: theme.colors.foreground,
           headerBackTitle: 'Nazaj',
           headerBackTitleStyle: styles.back,
           headerLargeTitle: true,
@@ -35,22 +35,30 @@ export default function AuthenticatedLayout() {
         name="leaderboards"
         options={{
           title: 'Lestvica',
-          headerTintColor: theme.colors.petka.black,
+          headerTintColor: theme.colors.foreground,
           headerBackTitle: 'Nazaj',
           headerBackTitleStyle: styles.back,
           headerLargeTitle: true,
         }}
       />
       <Stack.Screen name="leaderboard" />
-      <Stack.Screen name="settings" />
-      <Stack.Screen name="update-nickname" options={{ presentation: 'modal', title: '', headerShadowVisible: false }} />
+      <Stack.Screen name="settings" options={{ headerTintColor: theme.colors.foreground }} />
+      <Stack.Screen
+        name="update-nickname"
+        options={{
+          presentation: 'modal',
+          title: '',
+          headerShadowVisible: false,
+          headerTintColor: theme.colors.foreground,
+        }}
+      />
       <Stack.Screen
         name="play/daily-puzzle"
         options={{
           headerBackTitle: 'Nazaj',
           headerBackTitleStyle: styles.back,
           headerShadowVisible: false,
-          headerTintColor: theme.colors.petka.black,
+          headerTintColor: theme.colors.foreground,
           title: '',
         }}
       />
@@ -64,7 +72,7 @@ export default function AuthenticatedLayout() {
           headerBackTitle: 'Nazaj',
           headerBackTitleStyle: styles.back,
           headerShadowVisible: false,
-          headerTintColor: theme.colors.petka.black,
+          headerTintColor: theme.colors.foreground,
           title: '',
         }}
       />
@@ -81,6 +89,9 @@ const styles = StyleSheet.create((theme) => ({
     fontFamily: theme.fonts.sans.medium,
   },
   content: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: theme.colors.background,
+  },
+  header: {
+    backgroundColor: theme.colors.background,
   },
 }));
