@@ -4,6 +4,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   lint-test:
     name: Lint, test
@@ -118,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-      contents: read
+      contents: write
     
     steps:
       - name: Check for EXPO_TOKEN
@@ -182,18 +185,15 @@ jobs:
           name: version
           path: version.txt
 
-      - name: Push EAS Update to Production
-        run: eas update --channel production --message "v${{steps.version.outputs.version}}"
-
-      - name: Upload source maps to Sentry
-        run: pnpx sentry-expo-upload-sourcemaps dist
-        env:
-          SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
-
       - name: Create git tag
-        uses: thejeff77/action-push-tag@v1.0.0
-        with:
-          tag: v${{ steps.version.outputs.version }}
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -203,4 +203,12 @@ jobs:
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Push EAS Update to Production
+        run: eas update --channel production --message "v${{steps.version.outputs.version}}"
+
+      - name: Upload source maps to Sentry
+        run: pnpx sentry-expo-upload-sourcemaps dist
+        env:
+          SENTRY_AUTH_TOKEN: ${{secrets.SENTRY_AUTH_TOKEN}}
       
