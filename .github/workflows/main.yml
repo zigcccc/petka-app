@@ -4,6 +4,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   lint-test:
     name: Lint, test
@@ -118,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-      contents: read
+      contents: write
     
     steps:
       - name: Check for EXPO_TOKEN
@@ -181,6 +184,25 @@ jobs:
         with:
           name: version
           path: version.txt
+
+      - name: Create git tag
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{steps.version.outputs.version}}
+          name: Release v${{steps.version.outputs.version}}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Push EAS Update to Production
         run: eas update --channel production --message "v${{steps.version.outputs.version}}"
