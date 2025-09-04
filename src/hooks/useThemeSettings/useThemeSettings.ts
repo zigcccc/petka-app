@@ -10,7 +10,7 @@ export function useThemeSettings() {
   const handleThemeChange = useCallback((newThemeSetting: 'system' | keyof UnistylesThemes) => {
     if (newThemeSetting === 'system') {
       UnistylesRuntime.setAdaptiveThemes(true);
-      Appearance.setColorScheme(UnistylesRuntime.themeName);
+      Appearance.setColorScheme(null);
       storage.delete('preferredtheme');
     } else {
       UnistylesRuntime.setAdaptiveThemes(false);

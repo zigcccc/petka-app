@@ -134,7 +134,7 @@ function RootLayout() {
       Appearance.setColorScheme(UnistylesRuntime.themeName);
     }
     setThemeLoaded(true);
-  }, [themeLoaded]);
+  }, []);
 
   useEffect(() => {
     if (Appearance.getColorScheme() !== rt.themeName) {

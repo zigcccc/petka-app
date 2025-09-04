@@ -106,6 +106,5 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   cellText: {
     textTransform: 'uppercase',
-    color: rt.themeName === 'dark' ? theme.colors.foreground : theme.colors.background,
   },
 }));
