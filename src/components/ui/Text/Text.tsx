@@ -1,5 +1,5 @@
 import { type PropsWithChildren } from 'react';
-import { Text as RNText, type StyleProp, type TextStyle } from 'react-native';
+import { type AccessibilityRole, Text as RNText, type StyleProp, type TextStyle } from 'react-native';
 import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
 
 type Props = PropsWithChildren<{
@@ -7,10 +7,12 @@ type Props = PropsWithChildren<{
   style?: StyleProp<TextStyle>;
   numberOfLines?: number;
   onPress?: () => void;
+  accessibilityRole?: AccessibilityRole;
 }> &
   UnistylesVariants<typeof styles>;
 
 export function Text({
+  accessibilityRole,
   align = 'auto',
   allowFontScaling,
   children,
@@ -25,6 +27,7 @@ export function Text({
 
   return (
     <RNText
+      accessibilityRole={accessibilityRole}
       allowFontScaling={allowFontScaling}
       numberOfLines={numberOfLines}
       onPress={onPress}
