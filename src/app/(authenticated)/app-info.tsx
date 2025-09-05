@@ -1,11 +1,12 @@
 import * as Clipboard from 'expo-clipboard';
 import Constants from 'expo-constants';
-import { Linking, View } from 'react-native';
+import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { GenericStackScreen } from '@/components/navigation';
 import { Button, Card, Text } from '@/components/ui';
 import { useToaster } from '@/hooks/useToaster';
+import { LinkingUtils } from '@/utils/linking';
 
 export default function AppInfoScreen() {
   const toaster = useToaster();
@@ -23,7 +24,11 @@ export default function AppInfoScreen() {
         <Card title="O aplikaciji">
           <Text size="sm">
             Aplikacija Petka je slovenska različica popularne miselne igre{' '}
-            <Text onPress={() => Linking.openURL('https://en.wikipedia.org/wiki/Wordle')} size="sm">
+            <Text
+              accessibilityRole="link"
+              onPress={() => LinkingUtils.safeOpenURL('https://en.wikipedia.org/wiki/Wordle')}
+              size="sm"
+            >
               &quot;Wordle&quot;
             </Text>
             . Je besedna igra, kjer moraš v šestih poskusih uganiti petčrkovno besedo. Po vsakem poskusu dobiš namige o
@@ -38,15 +43,15 @@ export default function AppInfoScreen() {
           <View style={styles.cardActions}>
             <Button
               intent="terciary"
-              onPress={() => Linking.openURL('https://github.com/zigcccc/')}
+              onPress={() => LinkingUtils.safeOpenURL('https://github.com/zigcccc/')}
               size="sm"
               variant="outline"
             >
-              Najdi me ne GitHub-u
+              Najdi me na GitHub-u
             </Button>
             <Button
               intent="terciary"
-              onPress={() => Linking.openURL('https://www.linkedin.com/in/zigakrasovec/')}
+              onPress={() => LinkingUtils.safeOpenURL('https://www.linkedin.com/in/zigakrasovec/')}
               size="sm"
               variant="outline"
             >
