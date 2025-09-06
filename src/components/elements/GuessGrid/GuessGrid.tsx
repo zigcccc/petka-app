@@ -16,13 +16,7 @@ function GuessGridCell({ testID, value, idx, checkedLetters = [], cellWidth }: R
 
   return (
     <View style={styles.cell({ isCorrect, isInvalid, isMisplaced, cellWidth })} testID={testID}>
-      <Text
-        allowFontScaling={false}
-        color={checkedLetters.length ? 'white' : 'black'}
-        size="xl"
-        style={styles.cellText}
-        weight="bold"
-      >
+      <Text allowFontScaling={false} size="xl" style={styles.cellText(!!checkedLetters.length)} weight="bold">
         {value}
       </Text>
     </View>
@@ -104,7 +98,12 @@ const styles = StyleSheet.create((theme, rt) => ({
       justifyContent: 'center',
     };
   },
-  cellText: {
-    textTransform: 'uppercase',
+  cellText(hasCheckedLetters: boolean) {
+    const inferredColor = hasCheckedLetters ? theme.colors.white : theme.colors.black;
+
+    return {
+      color: rt.themeName === 'dark' ? theme.colors.white : inferredColor,
+      textTransform: 'uppercase',
+    };
   },
 }));
