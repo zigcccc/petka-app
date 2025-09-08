@@ -19,6 +19,15 @@ const testPuzzle = {
   attempts: [],
 };
 
+const failedPuzzleAttempts = [
+  { _id: 'attempt1', checkedLetters: [] },
+  { _id: 'attempt2', checkedLetters: [] },
+  { _id: 'attempt3', checkedLetters: [] },
+  { _id: 'attempt4', checkedLetters: [] },
+  { _id: 'attempt5', checkedLetters: [] },
+  { _id: 'attempt6', checkedLetters: [] },
+];
+
 const today = dayjs();
 const yesterday = today.subtract(1, 'day');
 
@@ -55,6 +64,14 @@ describe('<HistoryGrid />', () => {
     expect(screen.getByText(puzzle.solution)).toBeOnTheScreen();
   });
 
+  it('shows solution for (active) unsolved puzzle if it is failed (attempts.length = 6 and puzzle.solvedBy does not include userId)', () => {
+    const puzzle = getPuzzleWithDate(today, { attempts: failedPuzzleAttempts, solvedBy: [] });
+    render(<HistoryGrid puzzle={puzzle} userId="user1" />);
+
+    expect(screen.getByText(/Rešitev:/)).toBeOnTheScreen();
+    expect(screen.getByText(puzzle.solution)).toBeOnTheScreen();
+  });
+
   it('shows overlay for unsolved daily puzzle', () => {
     const puzzle = getPuzzleWithDate(today, { solvedBy: [] });
     render(<HistoryGrid puzzle={puzzle} userId="user1" />);
@@ -67,6 +84,14 @@ describe('<HistoryGrid />', () => {
     render(<HistoryGrid puzzle={puzzle} userId="user1" />);
 
     expect(screen.getByText(/Izziv je ostal ne rešen/)).toBeOnTheScreen();
+  });
+
+  it('does not show an overlay for a failed daily puzzle', () => {
+    const puzzle = getPuzzleWithDate(today, { attempts: failedPuzzleAttempts, solvedBy: [] });
+    render(<HistoryGrid puzzle={puzzle} userId="user1" />);
+
+    expect(screen.queryByText(/Dnevnega izziva še nisi rešil/)).not.toBeOnTheScreen();
+    expect(screen.queryByText(/Izziv je ostal ne rešen/)).not.toBeOnTheScreen();
   });
 
   it('renders 6 rows and 5 cells per row', () => {
