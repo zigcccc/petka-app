@@ -21,8 +21,8 @@ export function HistoryGrid({ puzzle, userId, style, cellWidth }: Readonly<Props
   const puzzleCreatedDate = getDateObjectFromPuzzle(puzzle);
 
   const isInPast = puzzleCreatedDate.isBefore(dayjs(), 'day');
-  const isSolvedByUser = userId && puzzle.solvedBy.includes(userId);
-  const isFailedByUser = puzzle.attempts?.length === 6 && !isSolvedByUser;
+  const isSolvedByUser = !!userId && puzzle.solvedBy.includes(userId);
+  const isFailedByUser = !!userId && puzzle.attempts?.length === 6 && !isSolvedByUser;
   const isSolvedOrFailedByUser = isSolvedByUser || isFailedByUser;
   const shouldShowSolution =
     puzzle.type === puzzleType.Enum.daily ? isInPast || isSolvedOrFailedByUser : isSolvedOrFailedByUser;
