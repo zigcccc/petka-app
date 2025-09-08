@@ -21,9 +21,12 @@ export function HistoryGrid({ puzzle, userId, style, cellWidth }: Readonly<Props
   const puzzleCreatedDate = getDateObjectFromPuzzle(puzzle);
 
   const isInPast = puzzleCreatedDate.isBefore(dayjs(), 'day');
-  const isSolvedByUser = userId && puzzle.solvedBy.includes(userId);
-  const shouldShowSolution = puzzle.type === puzzleType.Enum.daily ? isInPast || isSolvedByUser : isSolvedByUser;
-  const shouldShowOverlay = !isSolvedByUser && puzzle.type === puzzleType.Enum.daily;
+  const isSolvedByUser = !!userId && puzzle.solvedBy.includes(userId);
+  const isFailedByUser = !!userId && puzzle.attempts?.length === 6 && !isSolvedByUser;
+  const isSolvedOrFailedByUser = isSolvedByUser || isFailedByUser;
+  const shouldShowSolution =
+    puzzle.type === puzzleType.Enum.daily ? isInPast || isSolvedOrFailedByUser : isSolvedOrFailedByUser;
+  const shouldShowOverlay = !isSolvedOrFailedByUser && puzzle.type === puzzleType.Enum.daily;
 
   const paddedAttempts = useMemo(() => {
     const padded: PuzzleGuessAttempt[] = new Array(6)
@@ -97,7 +100,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   gridRow: { flexDirection: 'row', gap: theme.spacing[3] },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: rt.themeName === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.45)',
+    backgroundColor: rt.themeName === 'dark' ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.45)',
     alignItems: 'center',
     justifyContent: 'center',
   },
