@@ -150,7 +150,7 @@ const styles = StyleSheet.create((theme, rt) => ({
       md: 400,
     },
     height: 'auto',
-    marginTop: 128,
+    marginTop: Platform.select({ ios: 128, android: 128 + rt.insets.top }),
     alignSelf: 'center',
   },
   actions: {
