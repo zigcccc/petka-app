@@ -28,8 +28,10 @@ describe('useGameplaySettings', () => {
       expect(result.current.autosubmitPuzzleAttempt).toBe(true);
     });
 
+    await waitFor(() => {
+      expect(result.current.isUninitialised).toBe(true);
+    });
     expect(result.current.keyboardType).toBe(gameplayKeyboardType.Enum.qwerty);
-    expect(result.current.isUninitialised).toBe(true);
   });
 
   it('should load saved settings from storage', async () => {

@@ -6,6 +6,7 @@ const isProd = process.env.APP_ENV === 'production';
 const name = isProd ? 'Petka' : 'Petka (DEV)';
 const identifier = isProd ? 'com.expo.app.petkaapp' : 'com.expo.app.dev.petkaapp';
 const iconPath = isProd ? './src/assets/images/petka-app-icon.png' : './src/assets/images/petka-app-icon-dev.png';
+const iosIconPath = isProd ? './src/assets/petka-app-icon.icon' : './src/assets/petka-app-icon-dev.icon';
 
 const [major, minor] = appPackage.version.split('.');
 const runtimeVersion = `${major}.${minor}`;
@@ -21,6 +22,7 @@ const config: ExpoConfig = {
   userInterfaceStyle: 'automatic',
   newArchEnabled: true,
   ios: {
+    icon: iosIconPath,
     supportsTablet: false,
     bundleIdentifier: identifier,
     infoPlist: {

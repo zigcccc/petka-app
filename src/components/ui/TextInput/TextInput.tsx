@@ -1,6 +1,6 @@
 import { type ComponentProps, type Ref } from 'react';
 import { TextInput as RNTextInput, View } from 'react-native';
-import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { StyleSheet, withUnistyles } from 'react-native-unistyles';
 
 import { Text } from '../Text';
 
@@ -10,8 +10,13 @@ type Props = ComponentProps<typeof RNTextInput> & {
   label?: string;
 };
 
+const UniTextInput = withUnistyles(RNTextInput, (theme) => ({
+  cursorColor: theme.colors.petka.green,
+  selectionColor: theme.colors.petka.green,
+  underlineColorAndroid: 'transparent',
+}));
+
 export function TextInput({ error, ref, label, style, ...rest }: Readonly<Props>) {
-  const { theme } = useUnistyles();
   const hasError = !!error;
 
   styles.useVariants({ hasError });
@@ -23,14 +28,7 @@ export function TextInput({ error, ref, label, style, ...rest }: Readonly<Props>
           {label}
         </Text>
       )}
-      <RNTextInput
-        {...rest}
-        ref={ref}
-        accessibilityLabel={label ?? rest.placeholder}
-        cursorColor={theme.colors.petka.green}
-        selectionColor={theme.colors.petka.green}
-        style={[styles.input, style]}
-      />
+      <UniTextInput {...rest} ref={ref} accessibilityLabel={label ?? rest.placeholder} style={[styles.input, style]} />
       {hasError && (
         <Text color="red40" size="xs" weight="medium">
           {error}

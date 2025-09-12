@@ -2,7 +2,7 @@ import { Octicons } from '@expo/vector-icons';
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { type Href, useFocusEffect, useRouter } from 'expo-router';
 import { type ComponentRef, useCallback, useRef } from 'react';
-import { Image, InteractionManager, Platform, View } from 'react-native';
+import { Image, Platform, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { DailyPuzzleUsersPresence } from '@/components/elements';
@@ -25,13 +25,13 @@ export default function HomeScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      const task = InteractionManager.runAfterInteractions(() => {
+      const id = setImmediate(() => {
         if (isUninitialised) {
           sheetRef.current?.present();
         }
       });
 
-      return () => task.cancel();
+      return () => clearImmediate(id);
     }, [isUninitialised])
   );
 
@@ -150,7 +150,7 @@ const styles = StyleSheet.create((theme, rt) => ({
       md: 400,
     },
     height: 'auto',
-    marginTop: 128,
+    marginTop: Platform.select({ ios: 128, android: 128 + rt.insets.top }),
     alignSelf: 'center',
   },
   actions: {

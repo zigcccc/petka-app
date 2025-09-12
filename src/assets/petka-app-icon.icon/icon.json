@@ -1,0 +1,35 @@
+{
+  "fill": {
+    "automatic-gradient": "srgb:1.00000,1.00000,1.00000,1.00000"
+  },
+  "groups": [
+    {
+      "blur-material": 0.5,
+      "layers": [
+        {
+          "hidden": false,
+          "image-name": "petka-icon-glass.png",
+          "name": "petka-icon-glass",
+          "position": {
+            "scale": 2.1,
+            "translation-in-points": [0, 0]
+          }
+        }
+      ],
+      "lighting": "individual",
+      "shadow": {
+        "kind": "layer-color",
+        "opacity": 0.5
+      },
+      "specular": true,
+      "translucency": {
+        "enabled": true,
+        "value": 0.1
+      }
+    }
+  ],
+  "supported-platforms": {
+    "circles": ["watchOS"],
+    "squares": "shared"
+  }
+}
