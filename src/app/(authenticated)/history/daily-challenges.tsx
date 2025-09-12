@@ -20,7 +20,6 @@ export default function DailyChallengesHistoryScreen() {
   );
 
   const cellWidth = width > breakpoints.md ? 100 : (width - 96) / 5;
-  const estimatedItemSize = cellWidth * 6 + 24;
 
   const handleEndReached = useCallback(() => {
     if (status === 'CanLoadMore') {
@@ -32,7 +31,6 @@ export default function DailyChallengesHistoryScreen() {
     <FlashList
       contentInsetAdjustmentBehavior="automatic"
       data={results}
-      estimatedItemSize={estimatedItemSize}
       extraData={{ user }}
       keyExtractor={(item) => item._id}
       onEndReached={handleEndReached}

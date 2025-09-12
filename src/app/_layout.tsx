@@ -11,8 +11,9 @@ import { StatusBar } from 'expo-status-bar';
 import * as Tracking from 'expo-tracking-transparency';
 import { PostHogProvider, usePostHog } from 'posthog-react-native';
 import { useEffect, useState } from 'react';
-import { Appearance, SafeAreaView } from 'react-native';
+import { Appearance, Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet, UnistylesRuntime, useUnistyles } from 'react-native-unistyles';
 
 import { ActionSheetProvider } from '@/context/ActionSheet';
@@ -171,7 +172,7 @@ function RootLayout() {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <Stack screenOptions={{ contentStyle: styles.content }}>
         <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
         <Stack.Screen
@@ -188,7 +189,7 @@ function RootLayout() {
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -200,24 +201,28 @@ function RootLayoutWithProviders() {
       options={{ host: 'https://eu.i.posthog.com', disabled: __DEV__, defaultOptIn: false }}
     >
       <ConvexProvider client={convex}>
-        <GestureHandlerRootView>
-          <BottomSheetModalProvider>
-            <ActionSheetProvider>
-              <PromptProvider>
-                <RootLayout />
-              </PromptProvider>
-            </ActionSheetProvider>
-          </BottomSheetModalProvider>
-        </GestureHandlerRootView>
+        <SafeAreaProvider style={styles.content}>
+          <GestureHandlerRootView>
+            <BottomSheetModalProvider>
+              <ActionSheetProvider>
+                <PromptProvider>
+                  <RootLayout />
+                </PromptProvider>
+              </ActionSheetProvider>
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
+        </SafeAreaProvider>
       </ConvexProvider>
     </PostHogProvider>
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
   safeArea: {
     flex: 1,
     backgroundColor: theme.colors.background,
+    marginTop: Platform.select({ ios: rt.insets.top, android: 0 }),
+    marginBottom: rt.insets.bottom,
   },
   content: {
     backgroundColor: theme.colors.background,

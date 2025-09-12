@@ -1,3 +1,4 @@
+import { useMappingHelper } from '@shopify/flash-list';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { type StyleProp, View, type ViewStyle } from 'react-native';
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export function HistoryGrid({ puzzle, userId, style, cellWidth }: Readonly<Props>) {
+  const { getMappingKey } = useMappingHelper();
   const puzzleCreatedDate = getDateObjectFromPuzzle(puzzle);
 
   const isInPast = puzzleCreatedDate.isBefore(dayjs(), 'day');
@@ -60,11 +62,11 @@ export function HistoryGrid({ puzzle, userId, style, cellWidth }: Readonly<Props
         )}
       </View>
       <View style={styles.grid}>
-        {paddedAttempts.map((attempt) => (
-          <View key={attempt._id} style={styles.gridRow}>
+        {paddedAttempts.map((attempt, rowIdx) => (
+          <View key={getMappingKey(attempt._id, rowIdx)} style={styles.gridRow}>
             {attempt.checkedLetters.map((letter, idx) => (
               <GuessGrid.Cell
-                key={idx}
+                key={getMappingKey(`cell-${idx}`, idx)}
                 cellWidth={cellWidth}
                 checkedLetters={attempt.checkedLetters}
                 idx={idx}

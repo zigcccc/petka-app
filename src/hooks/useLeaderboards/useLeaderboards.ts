@@ -113,7 +113,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
       {
         text: 'Posodobi',
         isPreferred: true,
-        onPress(leaderboardName) {
+        onPress(leaderboardName?: string) {
           if (!leaderboardName) {
             return;
           }
@@ -147,7 +147,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
       {
         text: 'Pridruži se',
         isPreferred: true,
-        onPress(inviteCode) {
+        onPress(inviteCode?: string) {
           if (!inviteCode) {
             return;
           }
@@ -192,7 +192,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
       {
         text: 'Ustvari',
         isPreferred: true,
-        onPress(leaderboardName) {
+        onPress(leaderboardName?: string) {
           if (!leaderboardName) {
             return;
           }
