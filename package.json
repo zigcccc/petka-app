@@ -24,8 +24,7 @@
       "reactNativeDirectoryCheck": {
         "listUnknownPackages": false,
         "exclude": [
-          "posthog-react-native",
-          "metro-core"
+          "posthog-react-native"
         ]
       }
     }
@@ -38,7 +37,7 @@
     "@expo/metro-runtime": "~6.1.2",
     "@expo/vector-icons": "^15.0.2",
     "@gorhom/bottom-sheet": "^5.2.6",
-    "@hookform/resolvers": "^5.2.1",
+    "@hookform/resolvers": "^5.2.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.6.4",
@@ -49,7 +48,7 @@
     "convex": "^1.27.0",
     "convex-helpers": "^0.1.104",
     "dayjs": "^1.11.18",
-    "expo": "~54.0.6",
+    "expo": "~54.0.7",
     "expo-application": "~7.0.7",
     "expo-asset": "~12.0.8",
     "expo-blur": "~15.0.7",
@@ -65,7 +64,7 @@
     "expo-linking": "~8.0.8",
     "expo-localization": "~17.0.7",
     "expo-notifications": "~0.32.11",
-    "expo-router": "~6.0.3",
+    "expo-router": "~6.0.4",
     "expo-splash-screen": "~31.0.10",
     "expo-status-bar": "~3.0.8",
     "expo-symbols": "~1.0.7",
