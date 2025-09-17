@@ -1,11 +1,40 @@
-import { useNavigation, useRouter } from 'expo-router';
+import { Link, useNavigation, useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { ActivityIndicator, Platform, View } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { GuessGrid, Keyboard, useGuessGrid } from '@/components/elements';
 import { Button, Text } from '@/components/ui';
 import { useTrainingPuzzle } from '@/hooks/useTrainingPuzzle';
+import { getOsMajorVersion } from '@/utils/platform';
+
+function HeaderRightAction() {
+  const actionNode = Platform.select({
+    ios:
+      getOsMajorVersion() > 18 ? (
+        <Pressable>
+          <Text style={{ paddingHorizontal: 12 }} weight="medium">
+            Statistika
+          </Text>
+        </Pressable>
+      ) : (
+        <Button intent="terciary" size="sm">
+          Statistika
+        </Button>
+      ),
+    default: (
+      <Button intent="terciary" size="sm">
+        Statistika
+      </Button>
+    ),
+  });
+
+  return (
+    <Link asChild href="/play/training-puzzle-solved">
+      {actionNode}
+    </Link>
+  );
+}
 
 export default function TrainingPuzzleScreen() {
   const { theme } = useUnistyles();
@@ -17,13 +46,7 @@ export default function TrainingPuzzleScreen() {
   useEffect(() => {
     if (isDone) {
       router.navigate('/play/training-puzzle-solved');
-      navigation.setOptions({
-        headerRight: () => (
-          <Button intent="terciary" onPress={() => router.navigate('/play/training-puzzle-solved')} size="sm">
-            Statistika
-          </Button>
-        ),
-      });
+      navigation.setOptions({ headerRight: HeaderRightAction });
     } else {
       navigation.setOptions({ headerRight: null });
     }

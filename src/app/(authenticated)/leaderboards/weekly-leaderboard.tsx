@@ -73,6 +73,7 @@ export default function WeeklyLeaderboardScreen() {
 
 const styles = StyleSheet.create((theme) => ({
   container: {
+    flex: 1,
     paddingTop: theme.spacing[6],
     paddingHorizontal: theme.spacing[6],
   },

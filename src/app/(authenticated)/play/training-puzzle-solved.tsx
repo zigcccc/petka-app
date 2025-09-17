@@ -1,6 +1,6 @@
 import { Octicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Platform, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { AttemptsDistributionGraph } from '@/components/elements';
@@ -101,7 +101,7 @@ export default function TrainingPuzzleSolvedScreen() {
 const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
-    paddingTop: theme.spacing[2],
+    paddingTop: Platform.select({ ios: theme.spacing[8], android: theme.spacing[2] }),
     paddingHorizontal: theme.spacing[6],
     paddingBottom: rt.insets.bottom + rt.insets.ime,
   },

@@ -1,19 +1,18 @@
-import { Octicons } from '@expo/vector-icons';
+import Octicons from '@expo/vector-icons/Octicons';
 import { Tabs } from 'expo-router';
-import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { withUnistyles } from 'react-native-unistyles';
 
-export default function TabLayout() {
-  const { theme } = useUnistyles();
+const StyledTabs = withUnistyles(Tabs, (theme) => ({
+  screenOptions: {
+    tabBarActiveTintColor: theme.colors.petka.green,
+    sceneStyle: { flex: 1, backgroundColor: theme.colors.background },
+    tabBarStyle: { backgroundColor: theme.colors.background },
+  },
+}));
 
+export default function LeaderboardsTabsLayout() {
   return (
-    <Tabs
-      initialRouteName="weekly-leaderboard"
-      screenOptions={{
-        tabBarActiveTintColor: theme.colors.petka.green,
-        sceneStyle: styles.content,
-        tabBarStyle: styles.tabbar,
-      }}
-    >
+    <StyledTabs initialRouteName="weekly-leaderboard">
       <Tabs.Screen
         name="weekly-leaderboard"
         options={{
@@ -30,15 +29,6 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
-    </Tabs>
+    </StyledTabs>
   );
 }
-
-const styles = StyleSheet.create((theme) => ({
-  content: {
-    backgroundColor: theme.colors.background,
-  },
-  tabbar: {
-    backgroundColor: theme.colors.background,
-  },
-}));

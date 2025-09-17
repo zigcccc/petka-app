@@ -1,5 +1,6 @@
 import { Stack, useFocusEffect, useRouter } from 'expo-router';
 import { useCallback } from 'react';
+import { Platform } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { useUser } from '@/hooks/useUser';
@@ -41,7 +42,6 @@ export default function AuthenticatedLayout() {
           headerLargeTitle: true,
         }}
       />
-      <Stack.Screen name="leaderboard" />
       <Stack.Screen name="settings" options={{ headerTintColor: theme.colors.foreground }} />
       <Stack.Screen
         name="update-nickname"
@@ -64,7 +64,12 @@ export default function AuthenticatedLayout() {
       />
       <Stack.Screen
         name="play/daily-puzzle-solved"
-        options={{ gestureEnabled: false, headerShadowVisible: false, title: '', presentation: 'modal' }}
+        options={{
+          headerShadowVisible: false,
+          headerShown: Platform.select({ ios: false, android: true }),
+          title: '',
+          presentation: 'modal',
+        }}
       />
       <Stack.Screen
         name="play/training-puzzle"
@@ -78,7 +83,12 @@ export default function AuthenticatedLayout() {
       />
       <Stack.Screen
         name="play/training-puzzle-solved"
-        options={{ gestureEnabled: false, headerShadowVisible: false, title: '', presentation: 'modal' }}
+        options={{
+          headerShadowVisible: false,
+          title: '',
+          headerShown: Platform.select({ ios: false, android: true }),
+          presentation: 'modal',
+        }}
       />
     </Stack>
   );
@@ -89,6 +99,7 @@ const styles = StyleSheet.create((theme) => ({
     fontFamily: theme.fonts.sans.medium,
   },
   content: {
+    flex: 1,
     backgroundColor: theme.colors.background,
   },
   header: {
