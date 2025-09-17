@@ -6,7 +6,7 @@ import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
 import { defaultTheme } from '@/styles/themes';
 
 type Props = PropsWithChildren<{
-  onPress: () => void;
+  onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
   loading?: boolean;

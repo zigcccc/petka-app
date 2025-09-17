@@ -225,6 +225,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     marginBottom: rt.insets.bottom,
   },
   content: {
+    flex: 1,
     backgroundColor: theme.colors.background,
   },
   header: {

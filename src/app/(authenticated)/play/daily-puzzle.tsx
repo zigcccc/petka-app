@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/react-native';
-import { useRouter, useNavigation, type ErrorBoundaryProps } from 'expo-router';
+import { useRouter, useNavigation, type ErrorBoundaryProps, Link } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
 import { useEffect } from 'react';
-import { ActivityIndicator, Image, Platform, View } from 'react-native';
+import { ActivityIndicator, Image, Platform, Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { GuessGrid, Keyboard, useGuessGrid } from '@/components/elements';
@@ -11,6 +11,7 @@ import { api } from '@/convex/_generated/api';
 import { usePresence } from '@/hooks/presence';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
 import { useUser } from '@/hooks/useUser';
+import { getOsMajorVersion } from '@/utils/platform';
 
 export function ErrorBoundary({ retry }: ErrorBoundaryProps) {
   return (
@@ -29,6 +30,34 @@ export function ErrorBoundary({ retry }: ErrorBoundaryProps) {
   );
 }
 
+function HeaderRightAction() {
+  const actionNode = Platform.select({
+    ios:
+      getOsMajorVersion() > 18 ? (
+        <Pressable>
+          <Text style={{ paddingHorizontal: 12 }} weight="medium">
+            Statistika
+          </Text>
+        </Pressable>
+      ) : (
+        <Button intent="terciary" size="sm">
+          Statistika
+        </Button>
+      ),
+    default: (
+      <Button intent="terciary" size="sm">
+        Statistika
+      </Button>
+    ),
+  });
+
+  return (
+    <Link asChild href="/play/daily-puzzle-solved">
+      {actionNode}
+    </Link>
+  );
+}
+
 export default function DailyPuzzleScreen() {
   const { theme } = useUnistyles();
   const router = useRouter();
@@ -43,13 +72,7 @@ export default function DailyPuzzleScreen() {
   useEffect(() => {
     if (isDone) {
       router.navigate('/play/daily-puzzle-solved');
-      navigation.setOptions({
-        headerRight: () => (
-          <Button intent="terciary" onPress={() => router.navigate('/play/daily-puzzle-solved')} size="sm">
-            Statistika
-          </Button>
-        ),
-      });
+      navigation.setOptions({ headerRight: HeaderRightAction });
     } else {
       navigation.setOptions({ headerRight: null });
     }
