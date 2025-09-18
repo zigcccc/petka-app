@@ -72,7 +72,7 @@
     "expo-tracking-transparency": "^6.0.7",
     "expo-updates": "~29.0.10",
     "expo-web-browser": "~15.0.7",
-    "posthog-react-native": "^4.5.1",
+    "posthog-react-native": "^4.6.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.62.0",
@@ -114,7 +114,7 @@
     "prettier": "^3.6.2",
     "prettier-eslint": "^16.4.2",
     "react-native-svg-transformer": "^1.5.1",
-    "ts-jest": "^29.4.2",
+    "ts-jest": "^29.4.3",
     "typescript": "~5.9.2"
   },
   "private": true,

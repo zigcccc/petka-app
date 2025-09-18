@@ -88,7 +88,10 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   container: {
     flex: 1,
-    paddingBottom: Platform.select({ android: rt.insets.bottom + theme.spacing[3], ios: 0 }),
+    paddingBottom: Platform.select({
+      android: rt.insets.bottom + theme.spacing[3],
+      ios: getOsMajorVersion() > 18 ? theme.spacing[3] : 0,
+    }),
   },
   content: {
     paddingTop: theme.spacing[6],
