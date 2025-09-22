@@ -10,16 +10,16 @@ importers:
     dependencies:
       '@convex-dev/crons':
         specifier: ^0.1.9
-        version: 0.1.9(convex@1.27.0(react@19.1.0))
+        version: 0.1.9(convex@1.27.1(react@19.1.0))
       '@convex-dev/expo-push-notifications':
         specifier: 0.2.6
-        version: 0.2.6(convex@1.27.0(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)
+        version: 0.2.6(convex@1.27.1(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)
       '@convex-dev/migrations':
         specifier: ^0.2.9
-        version: 0.2.9(convex@1.27.0(react@19.1.0))
+        version: 0.2.9(convex@1.27.1(react@19.1.0))
       '@convex-dev/presence':
         specifier: ^0.2.1
-        version: 0.2.1(convex@1.27.0(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.8))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
+        version: 0.2.1(convex@1.27.1(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.8))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       '@expo/metro-runtime':
         specifier: ~6.1.2
         version: 6.1.2(expo@54.0.8)(react-dom@19.1.0(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
@@ -54,11 +54,11 @@ importers:
         specifier: ^0.13.0
         version: 0.13.0(expo@54.0.8)(react-dom@19.1.0(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       convex:
-        specifier: ^1.27.0
-        version: 1.27.0(react@19.1.0)
+        specifier: ^1.27.1
+        version: 1.27.1(react@19.1.0)
       convex-helpers:
         specifier: ^0.1.104
-        version: 0.1.104(convex@1.27.0(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)
+        version: 0.1.104(convex@1.27.1(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)
       dayjs:
         specifier: ^1.11.18
         version: 1.11.18
@@ -2890,8 +2890,8 @@ packages:
       zod:
         optional: true
 
-  convex@1.27.0:
-    resolution: {integrity: sha512-IHkqZX3GtY4nKFPTAR4mvWHHhDiQX9PM7EjpEv0pJWoMoq0On6oOL3iZ7Xz4Ls96dF7WJd4AjfitJsg2hUnLSQ==}
+  convex@1.27.1:
+    resolution: {integrity: sha512-kep7JFn5Bil9/OUZUsL1bgoo0G9DmEf7stkBW67+NqP2FrzBt2TX8yz4V6oKLygzepGy90Ura2FtqXawYKXYIg==}
     engines: {node: '>=18.0.0', npm: '>=7.0.0'}
     hasBin: true
     peerDependencies:
@@ -7182,15 +7182,15 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@convex-dev/crons@0.1.9(convex@1.27.0(react@19.1.0))':
+  '@convex-dev/crons@0.1.9(convex@1.27.1(react@19.1.0))':
     dependencies:
-      convex: 1.27.0(react@19.1.0)
+      convex: 1.27.1(react@19.1.0)
       cron-parser: 4.9.0
 
-  '@convex-dev/expo-push-notifications@0.2.6(convex@1.27.0(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)':
+  '@convex-dev/expo-push-notifications@0.2.6(convex@1.27.1(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)':
     dependencies:
-      convex: 1.27.0(react@19.1.0)
-      convex-helpers: 0.1.104(convex@1.27.0(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)
+      convex: 1.27.1(react@19.1.0)
+      convex-helpers: 0.1.104(convex@1.27.1(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)
     transitivePeerDependencies:
       - '@standard-schema/spec'
       - hono
@@ -7198,13 +7198,13 @@ snapshots:
       - typescript
       - zod
 
-  '@convex-dev/migrations@0.2.9(convex@1.27.0(react@19.1.0))':
+  '@convex-dev/migrations@0.2.9(convex@1.27.1(react@19.1.0))':
     dependencies:
-      convex: 1.27.0(react@19.1.0)
+      convex: 1.27.1(react@19.1.0)
 
-  '@convex-dev/presence@0.2.1(convex@1.27.0(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.8))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)':
+  '@convex-dev/presence@0.2.1(convex@1.27.1(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.8))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)':
     dependencies:
-      convex: 1.27.0(react@19.1.0)
+      convex: 1.27.1(react@19.1.0)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
     optionalDependencies:
@@ -9658,15 +9658,15 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  convex-helpers@0.1.104(convex@1.27.0(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76):
+  convex-helpers@0.1.104(convex@1.27.1(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76):
     dependencies:
-      convex: 1.27.0(react@19.1.0)
+      convex: 1.27.1(react@19.1.0)
     optionalDependencies:
       react: 19.1.0
       typescript: 5.9.2
       zod: 3.25.76
 
-  convex@1.27.0(react@19.1.0):
+  convex@1.27.1(react@19.1.0):
     dependencies:
       esbuild: 0.25.4
       jwt-decode: 4.0.0
