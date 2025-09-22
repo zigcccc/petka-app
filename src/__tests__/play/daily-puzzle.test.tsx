@@ -1,3 +1,4 @@
+import { usePresence } from '@convex-dev/presence/react-native';
 import { captureException } from '@sentry/react-native';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { useNavigation, useRouter } from 'expo-router';
@@ -5,7 +6,6 @@ import { usePostHog } from 'posthog-react-native';
 
 import DailyPuzzleScreen, { ErrorBoundary } from '@/app/(authenticated)/play/daily-puzzle';
 import { api } from '@/convex/_generated/api';
-import { usePresence } from '@/hooks/presence';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
 import { useUser } from '@/hooks/useUser';
 import { testDailyPuzzle1 } from '@/tests/fixtures/puzzles';
@@ -27,8 +27,8 @@ jest.mock('@/hooks/useDailyPuzzle', () => ({
   useDailyPuzzle: jest.fn().mockReturnValue({}),
 }));
 
-jest.mock('@/hooks/presence', () => ({
-  ...jest.requireActual('@/hooks/presence'),
+jest.mock('@convex-dev/presence/react-native', () => ({
+  ...jest.requireActual('@convex-dev/presence/react-native'),
   usePresence: jest.fn().mockReturnValue({}),
 }));
 

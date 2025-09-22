@@ -1,3 +1,4 @@
+import { usePresence } from '@convex-dev/presence/react-native';
 import * as Sentry from '@sentry/react-native';
 import { useRouter, useNavigation, type ErrorBoundaryProps, Link } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
@@ -8,7 +9,6 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { GuessGrid, Keyboard, useGuessGrid } from '@/components/elements';
 import { Button, Text } from '@/components/ui';
 import { api } from '@/convex/_generated/api';
-import { usePresence } from '@/hooks/presence';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
 import { useUser } from '@/hooks/useUser';
 import { getOsMajorVersion } from '@/utils/platform';

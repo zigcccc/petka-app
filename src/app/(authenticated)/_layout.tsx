@@ -4,6 +4,7 @@ import { Platform } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { useUser } from '@/hooks/useUser';
+import { getOsMajorVersion } from '@/utils/platform';
 
 export default function AuthenticatedLayout() {
   const { theme } = useUnistyles();
@@ -103,6 +104,9 @@ const styles = StyleSheet.create((theme) => ({
     backgroundColor: theme.colors.background,
   },
   header: {
-    backgroundColor: theme.colors.background,
+    backgroundColor: Platform.select({
+      ios: getOsMajorVersion() > 18 ? 'transparent' : theme.colors.background,
+      android: theme.colors.background,
+    }),
   },
 }));

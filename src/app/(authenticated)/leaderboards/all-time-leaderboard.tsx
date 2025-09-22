@@ -68,7 +68,7 @@ export default function AllTimeLeaderboardScreen() {
 
 const styles = StyleSheet.create((theme) => ({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingTop: theme.spacing[6],
     paddingHorizontal: theme.spacing[6],
   },

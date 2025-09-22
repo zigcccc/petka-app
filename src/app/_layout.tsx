@@ -21,6 +21,7 @@ import { PromptProvider } from '@/context/Prompt';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useUser } from '@/hooks/useUser';
 import { registerForPushNotificationsAsync } from '@/utils/notifications';
+import { getOsMajorVersion } from '@/utils/platform';
 import { storage } from '@/utils/storage';
 
 import 'dayjs/locale/sl';
@@ -172,7 +173,7 @@ function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider style={styles.content}>
+    <SafeAreaProvider style={styles.safeAreaProvider}>
       <View style={styles.safeArea}>
         <Stack screenOptions={{ contentStyle: styles.content }}>
           <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
@@ -218,6 +219,10 @@ function RootLayoutWithProviders() {
 }
 
 const styles = StyleSheet.create((theme, rt) => ({
+  safeAreaProvider: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   safeArea: {
     flex: 1,
     backgroundColor: theme.colors.background,
@@ -226,10 +231,16 @@ const styles = StyleSheet.create((theme, rt) => ({
   },
   content: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: Platform.select({
+      ios: getOsMajorVersion() > 18 ? 'transparent' : theme.colors.background,
+      android: theme.colors.background,
+    }),
   },
   header: {
-    backgroundColor: theme.colors.background,
+    backgroundColor: Platform.select({
+      ios: getOsMajorVersion() > 18 ? 'transparent' : theme.colors.background,
+      android: theme.colors.background,
+    }),
   },
 }));
 

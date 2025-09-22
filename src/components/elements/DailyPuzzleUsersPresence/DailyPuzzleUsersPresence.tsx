@@ -1,9 +1,9 @@
+import { type PresenceState } from '@convex-dev/presence/react-native';
 import { useMemo } from 'react';
 import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Text } from '@/components/ui';
-import { type PresenceState } from '@/hooks/presence';
 import { usePlural } from '@/hooks/usePlural';
 
 type Props = {
