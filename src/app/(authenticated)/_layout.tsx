@@ -61,6 +61,7 @@ export default function AuthenticatedLayout() {
           headerShadowVisible: false,
           headerTintColor: theme.colors.foreground,
           title: '',
+          headerStyle: { backgroundColor: theme.colors.background },
         }}
       />
       <Stack.Screen
@@ -80,6 +81,7 @@ export default function AuthenticatedLayout() {
           headerShadowVisible: false,
           headerTintColor: theme.colors.foreground,
           title: '',
+          headerStyle: { backgroundColor: theme.colors.background },
         }}
       />
       <Stack.Screen

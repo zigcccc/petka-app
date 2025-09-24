@@ -10,6 +10,7 @@ import { Button, Text } from '@/components/ui';
 import { useDailyPuzzlePresenceList } from '@/hooks/presence';
 import { useGameplaySettings } from '@/hooks/useGameplaySettings';
 import { useUser } from '@/hooks/useUser';
+import { getOsMajorVersion } from '@/utils/platform';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -136,7 +137,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
     paddingHorizontal: theme.spacing[7],
-    paddingBottom: Platform.select({ android: rt.insets.bottom, ios: 0 }),
+    paddingBottom: Platform.select({ android: rt.insets.bottom, ios: getOsMajorVersion() > 18 ? rt.insets.bottom : 0 }),
     justifyContent: 'center',
   },
   spacer: {
@@ -150,7 +151,10 @@ const styles = StyleSheet.create((theme, rt) => ({
       md: 400,
     },
     height: 'auto',
-    marginTop: Platform.select({ ios: 128, android: 128 + rt.insets.top }),
+    marginTop: Platform.select({
+      ios: getOsMajorVersion() > 18 ? rt.insets.top + 128 : 128,
+      android: 128 + rt.insets.top,
+    }),
     alignSelf: 'center',
   },
   actions: {

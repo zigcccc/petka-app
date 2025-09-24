@@ -10,16 +10,16 @@ importers:
     dependencies:
       '@convex-dev/crons':
         specifier: ^0.1.9
-        version: 0.1.9(convex@1.27.1(react@19.1.0))
+        version: 0.1.9(convex@1.27.3(react@19.1.0))
       '@convex-dev/expo-push-notifications':
         specifier: 0.2.6
-        version: 0.2.6(convex@1.27.1(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)
+        version: 0.2.6(convex@1.27.3(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)
       '@convex-dev/migrations':
         specifier: ^0.2.9
-        version: 0.2.9(convex@1.27.1(react@19.1.0))
+        version: 0.2.9(convex@1.27.3(react@19.1.0))
       '@convex-dev/presence':
         specifier: ^0.2.1
-        version: 0.2.1(convex@1.27.1(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.10))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
+        version: 0.2.1(convex@1.27.3(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.10))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       '@expo/metro-runtime':
         specifier: ~6.1.2
         version: 6.1.2(expo@54.0.10)(react-dom@19.1.0(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
@@ -31,7 +31,7 @@ importers:
         version: 5.2.6(@types/react@19.1.12)(react-native-gesture-handler@2.28.0(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-reanimated@4.1.0(@babel/core@7.28.3)(react-native-worklets@0.5.1(@babel/core@7.28.3)(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       '@hookform/resolvers':
         specifier: ^5.2.2
-        version: 5.2.2(react-hook-form@7.62.0(react@19.1.0))
+        version: 5.2.2(react-hook-form@7.63.0(react@19.1.0))
       '@react-native-async-storage/async-storage':
         specifier: 2.2.0
         version: 2.2.0(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))
@@ -54,11 +54,11 @@ importers:
         specifier: ^0.13.0
         version: 0.13.0(expo@54.0.10)(react-dom@19.1.0(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       convex:
-        specifier: ^1.27.1
-        version: 1.27.1(react@19.1.0)
+        specifier: ^1.27.3
+        version: 1.27.3(react@19.1.0)
       convex-helpers:
         specifier: ^0.1.104
-        version: 0.1.104(convex@1.27.1(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)
+        version: 0.1.104(convex@1.27.3(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)
       dayjs:
         specifier: ^1.11.18
         version: 1.11.18
@@ -144,8 +144,8 @@ importers:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
       react-hook-form:
-        specifier: ^7.62.0
-        version: 7.62.0(react@19.1.0)
+        specifier: ^7.63.0
+        version: 7.63.0(react@19.1.0)
       react-native:
         specifier: 0.81.4
         version: 0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)
@@ -156,11 +156,11 @@ importers:
         specifier: ~2.28.0
         version: 2.28.0(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       react-native-mmkv:
-        specifier: ^3.3.1
-        version: 3.3.1(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
+        specifier: ^3.3.3
+        version: 3.3.3(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       react-native-nitro-modules:
-        specifier: ^0.29.4
-        version: 0.29.4(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
+        specifier: ^0.29.6
+        version: 0.29.6(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       react-native-reanimated:
         specifier: ~4.1.0
         version: 4.1.0(@babel/core@7.28.3)(react-native-worklets@0.5.1(@babel/core@7.28.3)(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
@@ -174,8 +174,8 @@ importers:
         specifier: 15.12.1
         version: 15.12.1(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       react-native-unistyles:
-        specifier: 3.0.12
-        version: 3.0.12(@react-native/normalize-colors@0.81.4)(react-native-edge-to-edge@1.6.0(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-nitro-modules@0.29.4(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-reanimated@4.1.0(@babel/core@7.28.3)(react-native-worklets@0.5.1(@babel/core@7.28.3)(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
+        specifier: 3.0.13
+        version: 3.0.13(@react-native/normalize-colors@0.81.4)(react-native-edge-to-edge@1.6.0(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-nitro-modules@0.29.6(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-reanimated@4.1.0(@babel/core@7.28.3)(react-native-worklets@0.5.1(@babel/core@7.28.3)(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       react-native-web:
         specifier: ~0.21.1
         version: 0.21.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -2890,8 +2890,8 @@ packages:
       zod:
         optional: true
 
-  convex@1.27.1:
-    resolution: {integrity: sha512-kep7JFn5Bil9/OUZUsL1bgoo0G9DmEf7stkBW67+NqP2FrzBt2TX8yz4V6oKLygzepGy90Ura2FtqXawYKXYIg==}
+  convex@1.27.3:
+    resolution: {integrity: sha512-Ebr9lPgXkL7JO5IFr3bG+gYvHskyJjc96Fx0BBNkJUDXrR/bd9/uI4q8QszbglK75XfDu068vR0d/HK2T7tB9Q==}
     engines: {node: '>=18.0.0', npm: '>=7.0.0'}
     hasBin: true
     peerDependencies:
@@ -5334,8 +5334,8 @@ packages:
     peerDependencies:
       react: '>=17.0.0'
 
-  react-hook-form@7.62.0:
-    resolution: {integrity: sha512-7KWFejc98xqG/F4bAxpL41NB3o1nnvQO1RWZT3TqRZYL8RryQETGfEdVnJN2fy1crCiBLLjkRBVK05j24FxJGA==}
+  react-hook-form@7.63.0:
+    resolution: {integrity: sha512-ZwueDMvUeucovM2VjkCf7zIHcs1aAlDimZu2Hvel5C5907gUzMpm4xCrQXtRzCvsBqFjonB4m3x4LzCFI1ZKWA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -5367,14 +5367,14 @@ packages:
       react: '*'
       react-native: '*'
 
-  react-native-mmkv@3.3.1:
-    resolution: {integrity: sha512-LYamDWQirPTUJZ9Re+BkCD+zLRGNr+EVJDeIeblvoJXGatWy9PXnChtajDSLqwjX3EXVeUyjgrembs7wlBw9ug==}
+  react-native-mmkv@3.3.3:
+    resolution: {integrity: sha512-GMsfOmNzx0p5+CtrCFRVtpOOMYNJXuksBVARSQrCFaZwjUyHJdQzcN900GGaFFNTxw2fs8s5Xje//RDKj9+PZA==}
     peerDependencies:
       react: '*'
       react-native: '*'
 
-  react-native-nitro-modules@0.29.4:
-    resolution: {integrity: sha512-AfUMcwFtj9FuEDwDLN5eIVo0lBYTQqDaV7meiFzuoZyRmc8ywykFTKfyZwRN2t8Z/WtTlfCj9Y9yaET33IImsg==}
+  react-native-nitro-modules@0.29.6:
+    resolution: {integrity: sha512-Zm7x7DPx2bYc/eMfJ4lg2CCyXRCEm6as1ZyVU/2vCqMskiQxQquL3INqjne+tEJw+/h+mrnKrb7z7PiUitzEQw==}
     peerDependencies:
       react: '*'
       react-native: '*'
@@ -5411,8 +5411,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  react-native-unistyles@3.0.12:
-    resolution: {integrity: sha512-1M+m5I/tyOyPGA3Wa6ewTvwovwyd/azxizTGeHo5aWbx6oynlqH8WXSwy9GaOKYg+A1mFASaTvBW/jqPVZ2DfQ==}
+  react-native-unistyles@3.0.13:
+    resolution: {integrity: sha512-7MqP3uX80fnsmYMvoL0LwrHQLy2jG0CaYN/nm93An6H4b6W5UeuD0Q0LMbIS+asw/nqMguIKUXSPUW3GjyQJGg==}
     engines: {node: '>= 18.0.0'}
     peerDependencies:
       '@react-native/normalize-colors': '*'
@@ -7170,15 +7170,15 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@convex-dev/crons@0.1.9(convex@1.27.1(react@19.1.0))':
+  '@convex-dev/crons@0.1.9(convex@1.27.3(react@19.1.0))':
     dependencies:
-      convex: 1.27.1(react@19.1.0)
+      convex: 1.27.3(react@19.1.0)
       cron-parser: 4.9.0
 
-  '@convex-dev/expo-push-notifications@0.2.6(convex@1.27.1(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)':
+  '@convex-dev/expo-push-notifications@0.2.6(convex@1.27.3(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)':
     dependencies:
-      convex: 1.27.1(react@19.1.0)
-      convex-helpers: 0.1.104(convex@1.27.1(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)
+      convex: 1.27.3(react@19.1.0)
+      convex-helpers: 0.1.104(convex@1.27.3(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76)
     transitivePeerDependencies:
       - '@standard-schema/spec'
       - hono
@@ -7186,13 +7186,13 @@ snapshots:
       - typescript
       - zod
 
-  '@convex-dev/migrations@0.2.9(convex@1.27.1(react@19.1.0))':
+  '@convex-dev/migrations@0.2.9(convex@1.27.3(react@19.1.0))':
     dependencies:
-      convex: 1.27.1(react@19.1.0)
+      convex: 1.27.3(react@19.1.0)
 
-  '@convex-dev/presence@0.2.1(convex@1.27.1(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.10))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)':
+  '@convex-dev/presence@0.2.1(convex@1.27.3(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.10))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)':
     dependencies:
-      convex: 1.27.1(react@19.1.0)
+      convex: 1.27.3(react@19.1.0)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
     optionalDependencies:
@@ -7694,10 +7694,10 @@ snapshots:
       react: 19.1.0
       react-native: 0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)
 
-  '@hookform/resolvers@5.2.2(react-hook-form@7.62.0(react@19.1.0))':
+  '@hookform/resolvers@5.2.2(react-hook-form@7.63.0(react@19.1.0))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.62.0(react@19.1.0)
+      react-hook-form: 7.63.0(react@19.1.0)
 
   '@humanfs/core@0.19.1': {}
 
@@ -9646,15 +9646,15 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  convex-helpers@0.1.104(convex@1.27.1(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76):
+  convex-helpers@0.1.104(convex@1.27.3(react@19.1.0))(react@19.1.0)(typescript@5.9.2)(zod@3.25.76):
     dependencies:
-      convex: 1.27.1(react@19.1.0)
+      convex: 1.27.3(react@19.1.0)
     optionalDependencies:
       react: 19.1.0
       typescript: 5.9.2
       zod: 3.25.76
 
-  convex@1.27.1(react@19.1.0):
+  convex@1.27.3(react@19.1.0):
     dependencies:
       esbuild: 0.25.4
       jwt-decode: 4.0.0
@@ -12652,7 +12652,7 @@ snapshots:
     dependencies:
       react: 19.1.0
 
-  react-hook-form@7.62.0(react@19.1.0):
+  react-hook-form@7.63.0(react@19.1.0):
     dependencies:
       react: 19.1.0
 
@@ -12680,12 +12680,12 @@ snapshots:
       react: 19.1.0
       react-native: 0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)
 
-  react-native-mmkv@3.3.1(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0):
+  react-native-mmkv@3.3.3(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0):
     dependencies:
       react: 19.1.0
       react-native: 0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)
 
-  react-native-nitro-modules@0.29.4(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0):
+  react-native-nitro-modules@0.29.6(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0):
     dependencies:
       react: 19.1.0
       react-native: 0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)
@@ -12732,13 +12732,13 @@ snapshots:
       react-native: 0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)
       warn-once: 0.1.1
 
-  react-native-unistyles@3.0.12(@react-native/normalize-colors@0.81.4)(react-native-edge-to-edge@1.6.0(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-nitro-modules@0.29.4(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-reanimated@4.1.0(@babel/core@7.28.3)(react-native-worklets@0.5.1(@babel/core@7.28.3)(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0):
+  react-native-unistyles@3.0.13(@react-native/normalize-colors@0.81.4)(react-native-edge-to-edge@1.6.0(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-nitro-modules@0.29.6(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-reanimated@4.1.0(@babel/core@7.28.3)(react-native-worklets@0.5.1(@babel/core@7.28.3)(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0):
     dependencies:
       '@react-native/normalize-colors': 0.81.4
       react: 19.1.0
       react-native: 0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)
       react-native-edge-to-edge: 1.6.0(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
-      react-native-nitro-modules: 0.29.4(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
+      react-native-nitro-modules: 0.29.6(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
     optionalDependencies:
       react-native-reanimated: 4.1.0(@babel/core@7.28.3)(react-native-worklets@0.5.1(@babel/core@7.28.3)(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.4(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
 

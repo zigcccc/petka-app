@@ -226,8 +226,11 @@ const styles = StyleSheet.create((theme, rt) => ({
   safeArea: {
     flex: 1,
     backgroundColor: theme.colors.background,
-    marginTop: Platform.select({ ios: rt.insets.top, android: 0 }),
-    marginBottom: rt.insets.bottom,
+    marginTop: Platform.select({ ios: getOsMajorVersion() > 18 ? 0 : rt.insets.top, android: 0 }),
+    marginBottom: Platform.select({
+      ios: getOsMajorVersion() > 18 ? 0 : rt.insets.bottom,
+      android: rt.insets.bottom,
+    }),
   },
   content: {
     flex: 1,
