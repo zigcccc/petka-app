@@ -32,7 +32,7 @@
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.4",
     "@react-navigation/native": "^7.1.8",
-    "@sentry/react-native": "^6.20.0",
+    "@sentry/react-native": "^7.1.0",
     "@shopify/flash-list": "2.0.2",
     "burnt": "^0.13.0",
     "convex": "^1.27.3",
