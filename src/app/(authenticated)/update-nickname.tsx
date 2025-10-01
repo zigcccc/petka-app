@@ -5,7 +5,7 @@ import { ConvexError } from 'convex/values';
 import { useRouter } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
 import { useForm, type SubmitHandler, type SubmitErrorHandler, Controller } from 'react-hook-form';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Text, TextInput, Button } from '@/components/ui';
@@ -95,7 +95,7 @@ export default function UpdateNicknameScreen() {
 const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
-    paddingTop: theme.spacing[2],
+    paddingTop: Platform.select({ android: theme.spacing[2], ios: theme.spacing[8] }),
     paddingHorizontal: theme.spacing[6],
     paddingBottom: {
       xs: rt.insets.bottom + rt.insets.ime,

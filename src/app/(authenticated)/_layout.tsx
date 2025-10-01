@@ -50,7 +50,9 @@ export default function AuthenticatedLayout() {
           presentation: 'modal',
           title: '',
           headerShadowVisible: false,
+          headerShown: Platform.select({ android: true, ios: false }),
           headerTintColor: theme.colors.foreground,
+          headerStyle: { backgroundColor: theme.colors.background },
         }}
       />
       <Stack.Screen
