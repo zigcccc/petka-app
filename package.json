@@ -35,7 +35,7 @@
     "@sentry/react-native": "^7.2.0",
     "@shopify/flash-list": "2.0.2",
     "burnt": "^0.13.0",
-    "convex": "^1.27.3",
+    "convex": "^1.27.4",
     "convex-helpers": "^0.1.104",
     "dayjs": "^1.11.18",
     "expo": "~54.0.12",
@@ -50,7 +50,7 @@
     "expo-file-system": "~19.0.16",
     "expo-font": "~14.0.8",
     "expo-haptics": "~15.0.7",
-    "expo-image": "~3.0.8",
+    "expo-image": "~3.0.9",
     "expo-linking": "~8.0.8",
     "expo-localization": "~17.0.7",
     "expo-notifications": "~0.32.12",
@@ -62,7 +62,7 @@
     "expo-tracking-transparency": "^6.0.7",
     "expo-updates": "~29.0.12",
     "expo-web-browser": "~15.0.8",
-    "posthog-react-native": "^4.7.1",
+    "posthog-react-native": "^4.8.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.64.0",
@@ -105,7 +105,7 @@
     "prettier-eslint": "^16.4.2",
     "react-native-svg-transformer": "^1.5.1",
     "ts-jest": "^29.4.4",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.3"
   },
   "private": true,
   "packageManager": "pnpm@10.18.0+sha512.e804f889f1cecc40d572db084eec3e4881739f8dec69c0ff10d2d1beff9a4e309383ba27b5b750059d7f4c149535b6cd0d2cb1ed3aeb739239a4284a68f40cfa"
