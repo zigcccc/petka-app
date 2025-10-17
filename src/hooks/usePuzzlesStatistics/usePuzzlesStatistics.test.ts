@@ -40,7 +40,10 @@ describe('usePuzzleStatistics', () => {
 
     renderHook(() => usePuzzleStatistics(puzzleType.Enum.daily));
 
-    expect(usePuzzlesStatisticsQuerySpy).toHaveBeenCalledWith({ userId: testUser1._id, type: puzzleType.Enum.daily });
+    expect(usePuzzlesStatisticsQuerySpy).toHaveBeenCalledWith({
+      userId: testUser1._id,
+      puzzleType: puzzleType.Enum.daily,
+    });
   });
 
   it.each([
