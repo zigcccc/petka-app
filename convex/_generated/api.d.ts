@@ -27,6 +27,7 @@ import type * as puzzles_queries from "../puzzles/queries.js";
 import type * as shared_helpers from "../shared/helpers.js";
 import type * as shared_models from "../shared/models.js";
 import type * as shared_queries from "../shared/queries.js";
+import type * as userPuzzleStatistics_internal from "../userPuzzleStatistics/internal.js";
 import type * as userPuzzleStatistics_models from "../userPuzzleStatistics/models.js";
 import type * as userPuzzleStatistics_queries from "../userPuzzleStatistics/queries.js";
 import type * as users_models from "../users/models.js";
@@ -66,6 +67,7 @@ declare const fullApi: ApiFromModules<{
   "shared/helpers": typeof shared_helpers;
   "shared/models": typeof shared_models;
   "shared/queries": typeof shared_queries;
+  "userPuzzleStatistics/internal": typeof userPuzzleStatistics_internal;
   "userPuzzleStatistics/models": typeof userPuzzleStatistics_models;
   "userPuzzleStatistics/queries": typeof userPuzzleStatistics_queries;
   "users/models": typeof users_models;
