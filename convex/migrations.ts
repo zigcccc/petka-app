@@ -41,7 +41,7 @@ export const backfillUserPuzzleStatistics = migrations.define({
         .withIndex('by_user_puzzle_type', (q) => q.eq('userId', doc._id).eq('puzzleType', type))
         .first();
       if (existingUserStatistics) {
-        return;
+        continue;
       }
 
       const basePuzzlesQuery =

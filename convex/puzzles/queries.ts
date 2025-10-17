@@ -259,10 +259,12 @@ export const markAsSolved = mutation({
           : newCurrentStreak > userPuzzleStatistics.maxStreak
             ? newCurrentStreak
             : userPuzzleStatistics.maxStreak,
-        distribution: {
-          ...userPuzzleStatistics.distribution,
-          [distributionScoreKey]: userPuzzleStatistics.distribution[distributionScoreKey] + 1,
-        },
+        distribution: isFailed
+          ? userPuzzleStatistics.distribution
+          : {
+              ...userPuzzleStatistics.distribution,
+              [distributionScoreKey]: userPuzzleStatistics.distribution[distributionScoreKey] + 1,
+            },
         puzzleType: puzzle.type,
         totalFailed: isFailed ? userPuzzleStatistics.totalFailed + 1 : userPuzzleStatistics.totalFailed,
         totalPlayed: userPuzzleStatistics.totalPlayed + 1,
