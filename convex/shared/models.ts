@@ -1,7 +1,7 @@
 import { zid } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 
-export const getBaseDbModel = <T extends string>(tablename: T) =>
+export const getBaseDbModel = <const T extends string>(tablename: T) =>
   z.object({
     _id: zid(tablename),
     _creationTime: z.number(),

@@ -284,7 +284,7 @@ describe('useTrainingPuzzle', () => {
     const { result } = renderHook(() => useTrainingPuzzle());
 
     act(() => {
-      result.current.onSubmitAttempt('shake');
+      result.current.onSubmitAttempt('shake', 1);
     });
 
     await waitFor(() => {
@@ -315,7 +315,7 @@ describe('useTrainingPuzzle', () => {
     const { result } = renderHook(() => useTrainingPuzzle());
 
     act(() => {
-      result.current.onSubmitAttempt('shake');
+      result.current.onSubmitAttempt('shake', 1);
     });
 
     await waitFor(() => {
@@ -346,7 +346,7 @@ describe('useTrainingPuzzle', () => {
     const { result } = renderHook(() => useTrainingPuzzle());
 
     act(() => {
-      result.current.onSubmitAttempt('shake');
+      result.current.onSubmitAttempt('shake', 1);
     });
 
     await waitFor(() => {

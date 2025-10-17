@@ -19,12 +19,13 @@ export function AttemptsDistributionGraph({
   return (
     <View style={styles.distrubitionsContainer}>
       {Object.entries(distribtions).map(([k, v]) => {
-        const isCurrent = numberOfCurrentAttempts === parseInt(k) && !isPuzzleFailed;
+        const score = k.replace('_', '');
+        const isCurrent = numberOfCurrentAttempts === parseInt(score) && !isPuzzleFailed;
 
         return (
           <View key={k} style={styles.distrubitionsEntry}>
             <Text size="sm" style={{ width: '5%', textAlign: 'left' }}>
-              {k}
+              {score}
             </Text>
             <View style={styles.ditributionsEntryLine({ percentage: (v / numberOfAllPuzzles) * 95, isCurrent })}>
               <Text color={isCurrent ? 'white' : 'grey70'} size="sm">

@@ -5,6 +5,7 @@ import { leaderboardEntriesTable } from './leaderboardEntries/model';
 import { leaderboardsTable } from './leaderboards/models';
 import { puzzleGuessAttemptsTable } from './puzzleGuessAttempts/models';
 import { puzzlesTable } from './puzzles/models';
+import { userPuzzleStatisticsTable } from './userPuzzleStatistics/models';
 import { usersTable } from './users/models';
 
 export default defineSchema({
@@ -25,5 +26,6 @@ export default defineSchema({
   puzzleGuessAttempts: puzzleGuessAttemptsTable
     .index('by_user', ['userId'])
     .index('by_user_puzzle', ['userId', 'puzzleId']),
+  userPuzzleStatistics: userPuzzleStatisticsTable.index('by_user_puzzle_type', ['userId', 'puzzleType']),
   users: usersTable.index('users_nickname', ['nickname']),
 });

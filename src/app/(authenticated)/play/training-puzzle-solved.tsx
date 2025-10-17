@@ -11,14 +11,15 @@ import { useTrainingPuzzle } from '@/hooks/useTrainingPuzzle';
 
 export default function TrainingPuzzleSolvedScreen() {
   const router = useRouter();
-  const { attempts, onMarkAsSolved, isMarkingAsSolved, isFailed, onShareResults } = useTrainingPuzzle();
+  const { attempts, onCreateTrainingPuzzle, isCreating, isMarkingAsSolved, isFailed, onShareResults } =
+    useTrainingPuzzle();
   const { isLoading, data } = usePuzzleStatistics(puzzleType.Enum.training);
 
   const title = isFailed ? 'O joj... 🙄' : 'Čestitke 🥳';
   const subtitle = isFailed ? 'Tokrat ti ni uspelo rešiti izziva.' : 'Uspešno si opravil/a trening izziv.';
 
   const handleCreateNewChallenge = async () => {
-    onMarkAsSolved();
+    await onCreateTrainingPuzzle();
     router.back();
   };
 
@@ -49,7 +50,7 @@ export default function TrainingPuzzleSolvedScreen() {
                   Odigranih
                 </Text>
                 <Text color="grey70" size="lg">
-                  {data.numberOfAllPuzzles}
+                  {data.totalPlayed}
                 </Text>
               </View>
               <View style={styles.gameStatsEntry} testID="percentage-solved-games">
@@ -57,7 +58,7 @@ export default function TrainingPuzzleSolvedScreen() {
                   % rešenih
                 </Text>
                 <Text color="grey70" size="lg">
-                  {data.solvedPercentage}%
+                  {data.totalPlayed > 0 ? Math.ceil((data.totalWon / data.totalPlayed) * 100) : 100}%
                 </Text>
               </View>
               <View style={styles.gameStatsEntry} testID="current-streak">
@@ -65,15 +66,15 @@ export default function TrainingPuzzleSolvedScreen() {
                   Niz rešenih
                 </Text>
                 <Text color="grey70" size="lg">
-                  {data.streak}
+                  {data.currentStreak}
                 </Text>
               </View>
             </View>
             <Card title="Distribucija poskusov">
               <AttemptsDistributionGraph
-                distribtions={data.attemptsDistribution}
+                distribtions={data.distribution}
                 isPuzzleFailed={isFailed}
-                numberOfAllPuzzles={data.numberOfSolvedPuzzles}
+                numberOfAllPuzzles={data.totalWon}
                 numberOfCurrentAttempts={attempts?.length}
               />
             </Card>
@@ -90,7 +91,7 @@ export default function TrainingPuzzleSolvedScreen() {
         <Button onPress={() => router.back()} variant="outline">
           Nazaj
         </Button>
-        <Button loading={isMarkingAsSolved} onPress={handleCreateNewChallenge}>
+        <Button loading={isMarkingAsSolved || isCreating} onPress={handleCreateNewChallenge}>
           Začni nov izziv
         </Button>
       </View>

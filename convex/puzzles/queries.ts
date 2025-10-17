@@ -74,17 +74,13 @@ export const readUserActiveTrainingPuzzle = query({
       throw new ConvexError({ message: 'Invalid user id provided.', code: 400 });
     }
 
-    const userTrainingPuzzlesQuery = ctx.db
+    const userTrainingPuzzle = await ctx.db
       .query('puzzles')
-      .withIndex('by_type_creator', (q) => q.eq('type', puzzleType.Enum.training).eq('creatorId', normalizedUserId));
+      .withIndex('by_type_creator', (q) => q.eq('type', puzzleType.Enum.training).eq('creatorId', normalizedUserId))
+      .order('desc')
+      .first();
 
-    for await (const puzzle of userTrainingPuzzlesQuery) {
-      if (!puzzle.solvedBy.includes(userId)) {
-        return puzzle;
-      }
-    }
-
-    return null;
+    return userTrainingPuzzle;
   },
 });
 
@@ -227,6 +223,55 @@ export const markAsSolved = mutation({
 
     await ctx.db.patch(normalizedPuzzleId, { solvedBy: [...puzzle.solvedBy, userId] });
 
+    let userPuzzleStatistics = await ctx.db
+      .query('userPuzzleStatistics')
+      .withIndex('by_user_puzzle_type', (q) => q.eq('userId', normalizedUserId).eq('puzzleType', puzzle.type))
+      .first();
+
+    if (!userPuzzleStatistics) {
+      const userPuzzleStatisticsId = await ctx.db.insert('userPuzzleStatistics', {
+        userId: normalizedUserId,
+        currentStreak: 0,
+        maxStreak: 0,
+        distribution: { _1: 0, _2: 0, _3: 0, _4: 0, _5: 0, _6: 0 },
+        puzzleType: puzzle.type,
+        totalFailed: 0,
+        totalPlayed: 0,
+        totalWon: 0,
+      });
+      userPuzzleStatistics = await ctx.db.get(userPuzzleStatisticsId);
+    }
+
+    const puzzleAttempts = await ctx.db
+      .query('puzzleGuessAttempts')
+      .withIndex('by_user_puzzle', (q) => q.eq('userId', normalizedUserId).eq('puzzleId', normalizedPuzzleId))
+      .collect();
+    const isFailed = !isAttemptCorrect(puzzleAttempts.at(-1));
+
+    if (userPuzzleStatistics) {
+      const newCurrentStreak = userPuzzleStatistics.currentStreak + 1;
+      const distributionScoreKey = `_${puzzleAttempts.length}` as '_1' | '_2' | '_3' | '_4' | '_5' | '_6';
+
+      await ctx.db.patch(userPuzzleStatistics._id, {
+        currentStreak: isFailed ? 0 : newCurrentStreak,
+        maxStreak: isFailed
+          ? userPuzzleStatistics.maxStreak
+          : newCurrentStreak > userPuzzleStatistics.maxStreak
+            ? newCurrentStreak
+            : userPuzzleStatistics.maxStreak,
+        distribution: isFailed
+          ? userPuzzleStatistics.distribution
+          : {
+              ...userPuzzleStatistics.distribution,
+              [distributionScoreKey]: userPuzzleStatistics.distribution[distributionScoreKey] + 1,
+            },
+        puzzleType: puzzle.type,
+        totalFailed: isFailed ? userPuzzleStatistics.totalFailed + 1 : userPuzzleStatistics.totalFailed,
+        totalPlayed: userPuzzleStatistics.totalPlayed + 1,
+        totalWon: isFailed ? userPuzzleStatistics.totalWon : userPuzzleStatistics.totalWon + 1,
+      });
+    }
+
     if (puzzle.type === puzzleType.Enum.daily) {
       const globalLeaderboard = await ctx.db
         .query('leaderboards')
@@ -239,12 +284,7 @@ export const markAsSolved = mutation({
       const userLeaderboards = privateLeaderboards.filter((leaderboard) =>
         leaderboard.users?.includes(normalizedUserId)
       );
-
       const leaderboardsToUpdate = globalLeaderboard ? [globalLeaderboard, ...userLeaderboards] : userLeaderboards;
-      const puzzleAttempts = await ctx.db
-        .query('puzzleGuessAttempts')
-        .withIndex('by_user_puzzle', (q) => q.eq('userId', normalizedUserId).eq('puzzleId', normalizedPuzzleId))
-        .collect();
       const puzzleScore = 7 - puzzleAttempts.length;
 
       for (const leaderboard of leaderboardsToUpdate) {

@@ -27,7 +27,7 @@ export function useDailyPuzzle() {
   const isFailed = attempts?.length === 6 && !isSolved;
   const isDone = isSolved || isFailed;
 
-  const handleCreatePuzzleGuessAttempt = async (attempt: string) => {
+  const handleCreatePuzzleGuessAttempt = async (attempt: string, attemptIdx: number) => {
     try {
       const { isCorrect } = await createPuzzleGuessAttempt({
         data: { userId: user?._id!, puzzleId: puzzle?._id!, attempt },
@@ -37,6 +37,9 @@ export function useDailyPuzzle() {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         markPuzzleAsSolved({ puzzleId: puzzle?._id!, userId: user?._id! });
         posthog.capture('puzzle:solved', { puzzleId: puzzle?._id!, userId: user?._id!, type: puzzleType.Enum.daily });
+      } else if (attemptIdx === 5) {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        markPuzzleAsSolved({ puzzleId: puzzle?._id!, userId: user?._id! });
       } else {
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       }
