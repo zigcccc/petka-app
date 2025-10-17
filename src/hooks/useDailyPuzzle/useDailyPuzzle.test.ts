@@ -186,7 +186,7 @@ describe('useDailyPuzzle', () => {
     const { result } = renderHook(() => useDailyPuzzle());
 
     act(() => {
-      result.current.onSubmitAttempt('spawn');
+      result.current.onSubmitAttempt('spawn', 1);
     });
 
     await waitFor(() => {
@@ -217,7 +217,7 @@ describe('useDailyPuzzle', () => {
     const { result } = renderHook(() => useDailyPuzzle());
 
     act(() => {
-      result.current.onSubmitAttempt('spawn');
+      result.current.onSubmitAttempt('spawn', 1);
     });
 
     await waitFor(() => {
@@ -256,7 +256,7 @@ describe('useDailyPuzzle', () => {
     const { result } = renderHook(() => useDailyPuzzle());
 
     act(() => {
-      result.current.onSubmitAttempt('spawn');
+      result.current.onSubmitAttempt('spawn', 1);
     });
 
     await waitFor(() => {
@@ -290,7 +290,7 @@ describe('useDailyPuzzle', () => {
     const { result } = renderHook(() => useDailyPuzzle());
 
     act(() => {
-      result.current.onSubmitAttempt('spawn');
+      result.current.onSubmitAttempt('spawn', 1);
     });
 
     await waitFor(() => {
@@ -323,7 +323,7 @@ describe('useDailyPuzzle', () => {
     const { result } = renderHook(() => useDailyPuzzle());
 
     act(() => {
-      result.current.onSubmitAttempt('spawn');
+      result.current.onSubmitAttempt('spawn', 1);
     });
 
     await waitFor(() => {

@@ -46,7 +46,7 @@ export default function DailyPuzzleSolvedScreen() {
                   Odigranih
                 </Text>
                 <Text color="grey70" size="lg">
-                  {data.numberOfAllPuzzles}
+                  {data.totalPlayed}
                 </Text>
               </View>
               <View style={styles.gameStatsEntry} testID="percentage-solved-games">
@@ -54,7 +54,7 @@ export default function DailyPuzzleSolvedScreen() {
                   % rešenih
                 </Text>
                 <Text color="grey70" size="lg">
-                  {data.solvedPercentage}%
+                  {data.totalPlayed > 0 ? Math.ceil((data.totalWon / data.totalPlayed) * 100) : 100}%
                 </Text>
               </View>
               <View style={styles.gameStatsEntry} testID="current-streak">
@@ -62,15 +62,15 @@ export default function DailyPuzzleSolvedScreen() {
                   Niz rešenih
                 </Text>
                 <Text color="grey70" size="lg">
-                  {data.streak}
+                  {data.currentStreak}
                 </Text>
               </View>
             </View>
             <Card title="Distribucija poskusov">
               <AttemptsDistributionGraph
-                distribtions={data.attemptsDistribution}
+                distribtions={data.distribution}
                 isPuzzleFailed={isFailed}
-                numberOfAllPuzzles={data.numberOfSolvedPuzzles}
+                numberOfAllPuzzles={data.totalPlayed}
                 numberOfCurrentAttempts={attempts?.length}
               />
             </Card>

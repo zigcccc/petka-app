@@ -1,17 +1,25 @@
-import { type PuzzleStatistics } from '@/convex/puzzles/models';
+import { type Id } from '@/convex/_generated/dataModel';
+import { puzzleType } from '@/convex/puzzles/models';
+import { type UserPuzzleStatistics } from '@/convex/userPuzzleStatistics/models';
 
-export const testPuzzleStatistics1: PuzzleStatistics = {
-  attemptsDistribution: {
-    1: 0,
-    2: 2,
-    3: 1,
-    4: 2,
-    5: 0,
-    6: 0,
+import { testUser1 } from './users';
+
+export const testPuzzleStatistics1: UserPuzzleStatistics = {
+  _id: 'testPuzzleStatistics1' as Id<'userPuzzleStatistics'>,
+  _creationTime: 1751414400000, // 2025-07-02
+  distribution: {
+    _1: 0,
+    _2: 2,
+    _3: 1,
+    _4: 2,
+    _5: 0,
+    _6: 0,
   },
-  numberOfAllPuzzles: 5,
-  numberOfSolvedPuzzles: 4,
-  solvedPercentage: 80,
-  streak: 2,
+  totalPlayed: 5,
+  totalWon: 4,
+  totalFailed: 1,
+  currentStreak: 2,
   maxStreak: 3,
+  puzzleType: puzzleType.Enum.daily,
+  userId: testUser1._id,
 };

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { useRouter } from 'expo-router';
 
 import TrainingPuzzleSolvedScreen from '@/app/(authenticated)/play/training-puzzle-solved';
@@ -39,7 +39,7 @@ describe('Training puzzle solved screen', () => {
     isFailed: false,
     isDone: true,
     onShareResults: jest.fn(),
-    onMarkAsSolved: jest.fn(),
+    onCreateTrainingPuzzle: jest.fn(),
   };
 
   beforeEach(() => {
@@ -116,12 +116,15 @@ describe('Training puzzle solved screen', () => {
     expect(mockBack).toHaveBeenCalled();
   });
 
-  it('should trigger router back and mark as solved actions on "Začni nov izziv" button press', () => {
+  it('should trigger router back and mark as solved actions on "Začni nov izziv" button press', async () => {
+    defaultTrainingPuzzleOptions.onCreateTrainingPuzzle.mockResolvedValue(null);
     render(<TrainingPuzzleSolvedScreen />);
 
     fireEvent.press(screen.getByRole('button', { name: /Začni nov izziv/ }));
 
-    expect(mockBack).toHaveBeenCalled();
-    expect(defaultTrainingPuzzleOptions.onMarkAsSolved).toHaveBeenCalled();
+    expect(defaultTrainingPuzzleOptions.onCreateTrainingPuzzle).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockBack).toHaveBeenCalled();
+    });
   });
 });

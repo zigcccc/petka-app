@@ -15,7 +15,7 @@ const initialGuesses = new Array(6).fill(new Array(5).fill(null));
 
 type Options = {
   attempts?: PuzzleGuessAttempt[];
-  onSubmitAttempt: (attempt: string) => Promise<void>;
+  onSubmitAttempt: (attempt: string, attemptIdx: number) => Promise<void>;
 };
 
 export function useGuessGrid({ attempts, onSubmitAttempt }: Options) {
@@ -73,7 +73,7 @@ export function useGuessGrid({ attempts, onSubmitAttempt }: Options) {
           setGuesses(getUpdatedGrid(guesses, rowIdx, '{Backspace}'));
         } else {
           // Logic to check if the word is the correct word
-          await onSubmitAttempt(validatedTerm.word);
+          await onSubmitAttempt(validatedTerm.word, rowIdx);
         }
       } catch {
         toaster.toast('Prišlo je do napake', { intent: 'error' });
