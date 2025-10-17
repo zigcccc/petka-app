@@ -32,7 +32,7 @@ export function useTrainingPuzzle() {
   const isFailed = attempts?.length === 6 && !isSolved;
   const isDone = isSolved || isFailed;
 
-  const handleCreatePuzzleGuessAttempt = async (attempt: string) => {
+  const handleCreatePuzzleGuessAttempt = async (attempt: string, attemptIdx: number) => {
     try {
       const { isCorrect } = await createPuzzleGuessAttempt({
         data: { userId: user?._id!, puzzleId: puzzle?._id!, attempt },
@@ -40,6 +40,10 @@ export function useTrainingPuzzle() {
 
       if (isCorrect) {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        markPuzzleAsSolved({ userId: user?._id!, puzzleId: puzzle?._id! });
+      } else if (attemptIdx === 5) {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        markPuzzleAsSolved({ userId: user?._id!, puzzleId: puzzle?._id! });
       } else {
         await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       }
@@ -91,6 +95,7 @@ export function useTrainingPuzzle() {
     isFailed,
     isDone,
     isMarkingAsSolved,
+    onCreateTrainingPuzzle: handleCreateTrainingPuzzle,
     onSubmitAttempt: handleCreatePuzzleGuessAttempt,
     onMarkAsSolved: handleMarkPuzzleAsSolved,
     onShareResults: handleSharePuzzleResults,
