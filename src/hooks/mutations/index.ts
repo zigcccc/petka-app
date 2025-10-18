@@ -11,3 +11,4 @@ export * from './usePatchUserMutation';
 export * from './useRegisterUserForPushNotificationsMutation';
 export * from './useToggleUserPushNotificationsMutation';
 export * from './useUpdateLeaderboardNameMutation';
+export * from './useValidateUserAccount';
