@@ -1,14 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ConvexError } from 'convex/values';
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { useForm, Controller, type SubmitHandler, type SubmitErrorHandler } from 'react-hook-form';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Button, Text, TextInput } from '@/components/ui';
 import { type CreateUser, createUserModel } from '@/convex/users/models';
 import { useToaster } from '@/hooks/useToaster';
 import { useUser } from '@/hooks/useUser';
+import { getOsMajorVersion } from '@/utils/platform';
 
 export default function CreateAccountScreen() {
   const router = useRouter();
@@ -86,6 +87,16 @@ export default function CreateAccountScreen() {
       >
         Ustvari profil
       </Button>
+      <View style={styles.restoreAccountContainer}>
+        <Text size="xs">
+          Si profil ustvaril na drugi napravi?{' '}
+          <Link href="/onboard/restore-account">
+            <Text size="xs" weight="bold">
+              Klikni tukaj.
+            </Text>
+          </Link>
+        </Text>
+      </View>
     </View>
   );
 }
@@ -93,15 +104,24 @@ export default function CreateAccountScreen() {
 const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
-    paddingTop: theme.spacing[2],
+    paddingTop: Platform.select({
+      ios: getOsMajorVersion() > 18 ? theme.spacing[8] : theme.spacing[2],
+      android: theme.spacing[2],
+    }),
     paddingHorizontal: theme.spacing[6],
     paddingBottom: {
-      xs: rt.insets.bottom + rt.insets.ime,
+      xs: Platform.select({
+        ios: getOsMajorVersion() > 18 ? rt.insets.ime : rt.insets.bottom + rt.insets.ime,
+        android: rt.insets.bottom + rt.insets.ime,
+      }),
       md: rt.insets.bottom + theme.spacing[6],
     },
   },
   content: {
     paddingTop: theme.spacing[8],
     gap: theme.spacing[6],
+  },
+  restoreAccountContainer: {
+    paddingVertical: theme.spacing[5],
   },
 }));

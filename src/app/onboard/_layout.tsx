@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native-unistyles';
 
 export default function OnboardLayout() {
   return (
-    <Stack screenOptions={{ contentStyle: styles.content, headerShown: false }}>
+    <Stack screenOptions={{ contentStyle: styles.content, headerShown: false, headerStyle: styles.header }}>
       <Stack.Screen name="create-account" />
       <Stack.Screen name="gameplay-settings" />
     </Stack>
@@ -12,6 +12,9 @@ export default function OnboardLayout() {
 
 const styles = StyleSheet.create((theme) => ({
   content: {
+    backgroundColor: theme.colors.background,
+  },
+  header: {
     backgroundColor: theme.colors.background,
   },
 }));

@@ -108,6 +108,29 @@ export const cleanupUserData = internalMutation({
   },
 });
 
+export const validateExistingAccount = mutation({
+  args: { id: z.string(), nickname: z.string() },
+  async handler(ctx, { id, nickname }) {
+    const userId = ctx.db.normalizeId('users', id);
+
+    if (!userId) {
+      throw new ConvexError({ code: 400, message: 'Unable to validate account. Please check your credentials.' });
+    }
+
+    const user = await ctx.db.get(userId);
+
+    if (!user) {
+      throw new ConvexError({ code: 400, message: 'Unable to validate account. Please check your credentials.' });
+    }
+
+    if (user.lowercaseNickname !== nickname.toLowerCase()) {
+      throw new ConvexError({ code: 400, message: 'Unable to validate account. Please check your credentials.' });
+    }
+
+    return user;
+  },
+});
+
 export const destroy = mutation({
   args: { id: zid('users') },
   async handler(ctx, { id }) {
