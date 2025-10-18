@@ -1,62 +1,80 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ConvexError } from 'convex/values';
 import { Link, useRouter } from 'expo-router';
-import { useForm, Controller, type SubmitHandler, type SubmitErrorHandler } from 'react-hook-form';
+import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
 import { Platform, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
+import { z } from 'zod';
 
 import { Button, Text, TextInput } from '@/components/ui';
-import { type CreateUser, createUserModel } from '@/convex/users/models';
+import { useValidateUserAccount } from '@/hooks/mutations';
 import { useToaster } from '@/hooks/useToaster';
 import { useUser } from '@/hooks/useUser';
 import { getOsMajorVersion } from '@/utils/platform';
 
-export default function CreateAccountScreen() {
+const restoreAccountModel = z.object({
+  id: z.string().trim().min(1, { message: 'Polje je obvezno.' }),
+  nickname: z.string().trim().min(1, { message: 'Polje je obvezno.' }),
+});
+type RestoreAccount = z.infer<typeof restoreAccountModel>;
+
+export default function RestoreAccountScreen() {
   const router = useRouter();
-  const { createUser } = useUser();
+  const { setUserId } = useUser();
   const toaster = useToaster();
   const {
     control,
     handleSubmit,
     formState: { isSubmitting, isSubmitted, isValid },
-    setError,
+    setFocus,
   } = useForm({
-    resolver: zodResolver(createUserModel),
-    defaultValues: { nickname: '' },
+    resolver: zodResolver(restoreAccountModel),
+    defaultValues: { id: '', nickname: '' },
   });
 
-  const onSubmit: SubmitHandler<CreateUser> = async (data) => {
+  const { mutate: validateAccountInfo } = useValidateUserAccount();
+
+  const onSubmit: SubmitHandler<RestoreAccount> = async (data) => {
     try {
-      await createUser(data);
-      router.navigate('/onboard/gameplay-settings');
-    } catch (err) {
-      const isConflictError = err instanceof ConvexError && err.data.code === 409;
-      const errMsg = isConflictError ? 'Ta vzdevek je zaseden' : 'Nekaj je šlo narobe';
-
-      await toaster.toast(errMsg, { intent: 'error' });
-
-      if (isConflictError) {
-        setError('nickname', { message: `Vzdevek "${data.nickname}" je zaseden.`, type: 'value' });
+      const validatedUserInfo = await validateAccountInfo(data);
+      if (validatedUserInfo?._id) {
+        setUserId(validatedUserInfo._id);
+        router.navigate('/onboard/gameplay-settings');
+      } else {
+        throw new Error('Invalid');
       }
+    } catch {
+      await toaster.toast('Napačni podatki', { intent: 'error' });
     }
   };
-
-  const onValidationError: SubmitErrorHandler<CreateUser> = async (errors) => {
-    const errMessage = errors.nickname?.message || errors.root?.message ? 'Popravite napake' : 'Nekaj je šlo narobe';
-    await toaster.toast(errMessage, { intent: 'error' });
-  };
-
   return (
     <View style={styles.container}>
       <Text size="2xl" weight="bold">
-        Hej 👋
+        Obnovi svoj profil
       </Text>
-      <Text size="lg">Dobrodošel/a v Petki!</Text>
+      <Text size="lg">Vnesi podatke obstoječega profila.</Text>
       <View style={styles.content}>
         <Text color="grey70" size="sm">
-          Želim ti obilico uspeha in zabave pri reševanju izzivov! Vnesi svoj vzdevek, da se boš s svojimi izjemnimi
-          rezultati lahko povalil/a na različnih lestvicah.
+          ID in uporabniško ime profila lahko najdeš na obstoječi napravi, v razdelku &quot;Nastavitve&quot;.
         </Text>
+        <Controller
+          control={control}
+          name="id"
+          render={({ field, fieldState }) => (
+            <TextInput
+              ref={field.ref}
+              autoCapitalize="none"
+              autoFocus
+              error={fieldState.error?.message}
+              label="ID"
+              onBlur={field.onBlur}
+              onChangeText={field.onChange}
+              onSubmitEditing={() => setFocus('nickname')}
+              placeholder="ID profila"
+              returnKeyType="next"
+              value={field.value}
+            />
+          )}
+        />
         <Controller
           control={control}
           name="nickname"
@@ -64,13 +82,12 @@ export default function CreateAccountScreen() {
             <TextInput
               ref={field.ref}
               autoCapitalize="none"
-              autoFocus
               error={fieldState.error?.message}
               label="Vzdevek"
               onBlur={field.onBlur}
               onChangeText={field.onChange}
-              onSubmitEditing={handleSubmit(onSubmit, onValidationError)}
-              placeholder="Tvoj vzdevek"
+              onSubmitEditing={handleSubmit(onSubmit)}
+              placeholder="Vzdevek profila"
               returnKeyType="go"
               submitBehavior="submit"
               value={field.value}
@@ -79,18 +96,13 @@ export default function CreateAccountScreen() {
         />
       </View>
       <View style={{ flex: 1 }} />
-      <Button
-        disabled={isSubmitted && !isValid}
-        loading={isSubmitting}
-        onPress={handleSubmit(onSubmit, onValidationError)}
-        size="lg"
-      >
-        Ustvari profil
+      <Button disabled={isSubmitted && !isValid} loading={isSubmitting} onPress={handleSubmit(onSubmit)} size="lg">
+        Obnovi profil
       </Button>
       <View style={{ paddingVertical: 16 }}>
         <Text size="xs">
-          Si profil ustvaril na drugi napravi?{' '}
-          <Link href="/onboard/restore-account">
+          Bi raje ustvaril/a nov profil?{' '}
+          <Link href="..">
             <Text size="xs" weight="bold">
               Klikni tukaj.
             </Text>

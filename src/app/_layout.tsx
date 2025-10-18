@@ -186,6 +186,10 @@ function RootLayout() {
               gestureEnabled: false,
               headerBackVisible: false,
               headerStyle: styles.header,
+              headerShown: Platform.select({
+                ios: getOsMajorVersion() > 18 ? false : true,
+                android: true,
+              }),
             }}
           />
           <Stack.Screen name="+not-found" />
@@ -240,10 +244,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     }),
   },
   header: {
-    backgroundColor: Platform.select({
-      ios: getOsMajorVersion() > 18 ? 'transparent' : theme.colors.background,
-      android: theme.colors.background,
-    }),
+    backgroundColor: theme.colors.background,
   },
 }));
 
