@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 0
 
       # 2️⃣  Install PNPM (no auto‑install yet)
-      - uses: pnpm/action-setup@v4     #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
+      - uses: pnpm/action-setup@v4 #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
         with:
           run_install: false
 
@@ -73,7 +73,7 @@ jobs:
           path: ./coverage
 
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: sonarsource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -99,7 +99,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4     #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
+      - uses: pnpm/action-setup@v4 #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
         with:
           run_install: false
 
