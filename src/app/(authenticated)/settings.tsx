@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import dayjs from 'dayjs';
 import * as Clipboard from 'expo-clipboard';
 import * as Device from 'expo-device';
@@ -151,6 +152,11 @@ export default function SettingsScreen() {
           >
             Izbriši uporabniški račun
           </Button>
+          {__DEV__ && (
+            <Button intent="terciary" onPress={() => AsyncStorage.clear()} size="sm" variant="outline">
+              Počisti shrambo aplikacije
+            </Button>
+          )}
         </Card>
       </View>
     </GenericStackScreen>
