@@ -87,7 +87,7 @@ export default function CreateAccountScreen() {
       >
         Ustvari profil
       </Button>
-      <View style={{ paddingVertical: 16 }}>
+      <View style={styles.restoreAccountContainer}>
         <Text size="xs">
           Si profil ustvaril na drugi napravi?{' '}
           <Link href="/onboard/restore-account">
@@ -120,5 +120,8 @@ const styles = StyleSheet.create((theme, rt) => ({
   content: {
     paddingTop: theme.spacing[8],
     gap: theme.spacing[6],
+  },
+  restoreAccountContainer: {
+    paddingVertical: theme.spacing[5],
   },
 }));

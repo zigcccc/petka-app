@@ -99,7 +99,7 @@ export default function RestoreAccountScreen() {
       <Button disabled={isSubmitted && !isValid} loading={isSubmitting} onPress={handleSubmit(onSubmit)} size="lg">
         Obnovi profil
       </Button>
-      <View style={{ paddingVertical: 16 }}>
+      <View style={styles.createAccountContainer}>
         <Text size="xs">
           Bi raje ustvaril/a nov profil?{' '}
           <Link href="..">
@@ -132,5 +132,8 @@ const styles = StyleSheet.create((theme, rt) => ({
   content: {
     paddingTop: theme.spacing[8],
     gap: theme.spacing[6],
+  },
+  createAccountContainer: {
+    paddingVertical: theme.spacing[5],
   },
 }));

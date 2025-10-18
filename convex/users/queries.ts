@@ -114,17 +114,17 @@ export const validateExistingAccount = mutation({
     const userId = ctx.db.normalizeId('users', id);
 
     if (!userId) {
-      throw new ConvexError({ code: 400, message: 'Invalid user id provided' });
+      throw new ConvexError({ code: 400, message: 'Unable to validate account. Please check your credentials.' });
     }
 
     const user = await ctx.db.get(userId);
 
     if (!user) {
-      throw new ConvexError({ code: 400, message: 'User profile not found' });
+      throw new ConvexError({ code: 400, message: 'Unable to validate account. Please check your credentials.' });
     }
 
     if (user.lowercaseNickname !== nickname.toLowerCase()) {
-      throw new ConvexError({ code: 400, message: 'ID and nickname mismatch' });
+      throw new ConvexError({ code: 400, message: 'Unable to validate account. Please check your credentials.' });
     }
 
     return user;
