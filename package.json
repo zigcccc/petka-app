@@ -1,7 +1,7 @@
 {
   "name": "petka-app",
   "main": "index.ts",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "type": "module",
   "scripts": {
     "start": "expo start",
