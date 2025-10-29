@@ -11,7 +11,7 @@ export function useThemeSettings() {
     if (newThemeSetting === 'system') {
       UnistylesRuntime.setAdaptiveThemes(true);
       Appearance.setColorScheme(null);
-      storage.delete('preferredtheme');
+      storage.remove('preferredtheme');
     } else {
       UnistylesRuntime.setAdaptiveThemes(false);
       UnistylesRuntime.setTheme(newThemeSetting);
