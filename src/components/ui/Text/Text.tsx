@@ -111,6 +111,9 @@ const styles = StyleSheet.create((theme) => ({
         regular: {
           fontFamily: theme.fonts.sans.regular,
         },
+        italic: {
+          fontFamily: theme.fonts.sans.italic,
+        },
         medium: {
           fontFamily: theme.fonts.sans.medium,
         },

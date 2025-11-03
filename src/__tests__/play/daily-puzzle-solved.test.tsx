@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 
 import DailyPuzzleSolvedScreen from '@/app/(authenticated)/play/daily-puzzle-solved';
 import { puzzleType } from '@/convex/puzzles/models';
+import { useDictionaryEntry } from '@/hooks/queries';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
 import { usePuzzleStatistics } from '@/hooks/usePuzzlesStatistics';
 import { testDailyPuzzle1 } from '@/tests/fixtures/puzzles';
@@ -23,8 +24,14 @@ jest.mock('@/hooks/usePuzzlesStatistics', () => ({
   usePuzzleStatistics: jest.fn().mockReturnValue({}),
 }));
 
+jest.mock('@/hooks/queries', () => ({
+  ...jest.requireActual('@/hooks/queries'),
+  useDictionaryEntry: jest.fn().mockReturnValue({}),
+}));
+
 describe('Daily puzzle solved screen', () => {
   const useDailyPuzzleSpy = useDailyPuzzle as jest.Mock;
+  const useDictionaryEntrySpy = useDictionaryEntry as jest.Mock;
   const usePuzzleStatisticsSpy = usePuzzleStatistics as jest.Mock;
   const useRouterSpy = useRouter as jest.Mock;
 
@@ -42,6 +49,7 @@ describe('Daily puzzle solved screen', () => {
   };
 
   beforeEach(() => {
+    useDictionaryEntrySpy.mockReturnValue({ isLoading: false, data: { explanation: 'test solution explanation' } });
     useRouterSpy.mockReturnValue({ navigate: mockNavigate, back: mockBack });
     useDailyPuzzleSpy.mockReturnValue(defaultDailyPuzzleOptions);
     usePuzzleStatisticsSpy.mockReturnValue({ isLoading: false, data: testPuzzleStatistics1 });
@@ -84,6 +92,33 @@ describe('Daily puzzle solved screen', () => {
 
     expect(screen.queryByRole('spinbutton', { name: 'Nalagam statistiko dnevnih izzivov...' })).toBeOnTheScreen();
     expect(screen.queryByText('Statistika dnevnih izzivov')).not.toBeOnTheScreen();
+  });
+
+  it('should render puzzle solution and explanation when explanation is available', () => {
+    render(<DailyPuzzleSolvedScreen />);
+
+    expect(screen.queryByText('Rešitev: "CLOTH"')).toBeOnTheScreen();
+    expect(screen.queryByText(/Test solution explanation/)).toBeOnTheScreen();
+    expect(screen.queryByRole('link', { name: /SSKJ/ })).toBeOnTheScreen();
+  });
+
+  it('should render puzzle solution and link to official dictionary explanation when explanation is not available', () => {
+    useDictionaryEntrySpy.mockReturnValue({ explanation: null });
+    render(<DailyPuzzleSolvedScreen />);
+
+    expect(screen.queryByText('Rešitev: "CLOTH"')).toBeOnTheScreen();
+    expect(screen.queryByText(/Razlaga besede na voljo v Fran slovarju/)).toBeOnTheScreen();
+    expect(screen.queryByRole('link', { name: /SSKJ/ })).toBeOnTheScreen();
+  });
+
+  it('should render puzzle solution without explanation when explanation data is loading', () => {
+    useDictionaryEntrySpy.mockReturnValue({ isLoading: true });
+    render(<DailyPuzzleSolvedScreen />);
+
+    expect(screen.queryByText('Rešitev: "CLOTH"')).toBeOnTheScreen();
+    expect(screen.queryByText(/Test solution explanation/)).not.toBeOnTheScreen();
+    expect(screen.queryByText(/Razlaga besede na voljo v Fran slovarju/)).not.toBeOnTheScreen();
+    expect(screen.queryByRole('link', { name: /SSKJ/ })).not.toBeOnTheScreen();
   });
 
   it('should render daily puzzle statistics when data is not loading', () => {
