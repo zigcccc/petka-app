@@ -1,20 +1,25 @@
 import { Octicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { View, ActivityIndicator, Platform } from 'react-native';
+import { Link, useRouter } from 'expo-router';
+import { View, ActivityIndicator, Platform, ScrollView } from 'react-native';
 import { StyleSheet, withUnistyles } from 'react-native-unistyles';
 
 import { AttemptsDistributionGraph } from '@/components/elements';
 import { Card, Button, Text } from '@/components/ui';
 import { puzzleType } from '@/convex/puzzles/models';
+import { useDictionaryEntry } from '@/hooks/queries';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
 import { usePuzzleStatistics } from '@/hooks/usePuzzlesStatistics';
+import { capitalize } from '@/utils/strings';
 
 const UniIcon = withUnistyles(Octicons);
 
 export default function DailyPuzzleSolvedScreen() {
   const router = useRouter();
-  const { attempts, isFailed, onShareResults } = useDailyPuzzle();
+  const { attempts, isFailed, onShareResults, puzzle } = useDailyPuzzle();
   const { isLoading, data } = usePuzzleStatistics(puzzleType.Enum.daily);
+  const { isLoading: isLoadingDictionaryEntry, data: dictionaryEntry } = useDictionaryEntry(
+    puzzle ? { term: puzzle.solution } : 'skip'
+  );
 
   const title = isFailed ? 'O joj... 🙄' : 'Čestitke 🥳';
   const subtitle = isFailed ? 'Tokrat ti ni uspelo rešiti izziva.' : 'Uspešno si opravil/a dnevni izziv.';
@@ -36,7 +41,26 @@ export default function DailyPuzzleSolvedScreen() {
             />
           </View>
         ) : (
-          <>
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            <View style={styles.solution}>
+              <Text weight="medium">Rešitev: &quot;{puzzle?.solution.toUpperCase()}&quot;</Text>
+              {!isLoadingDictionaryEntry && (
+                <Text size="xs" weight="italic">
+                  {capitalize(dictionaryEntry?.explanation) || 'Razlaga besede na voljo v Fran slovarju'}
+                  {'. '}
+                  <Link
+                    accessibilityRole="link"
+                    accessible
+                    asChild
+                    href={`https://www.fran.si/iskanje?View=1&Query=${puzzle?.solution}`}
+                  >
+                    <Text size="xs" weight="medium">
+                      SSKJ <Octicons name="arrow-up-right" />
+                    </Text>
+                  </Link>
+                </Text>
+              )}
+            </View>
             <Text size="lg" weight="medium">
               Statistika dnevnih izzivov
             </Text>
@@ -78,7 +102,7 @@ export default function DailyPuzzleSolvedScreen() {
               <Button.Text>Deli</Button.Text>
               <UniIcon name="share" size={16} uniProps={(theme) => ({ color: theme.colors.petka.green })} />
             </Button>
-          </>
+          </ScrollView>
         )}
       </View>
       <View style={styles.actions}>
@@ -99,7 +123,8 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingBottom: rt.insets.bottom + rt.insets.ime,
   },
   content: {
-    paddingVertical: theme.spacing[8],
+    paddingTop: theme.spacing[6],
+    paddingBottom: theme.spacing[8],
     gap: theme.spacing[6],
     flex: 1,
   },
@@ -107,6 +132,12 @@ const styles = StyleSheet.create((theme, rt) => ({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  scrollContent: {
+    gap: theme.spacing[6],
+  },
+  solution: {
+    gap: theme.spacing[2],
   },
   actions: {
     gap: theme.spacing[4],

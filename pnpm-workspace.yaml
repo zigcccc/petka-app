@@ -9,4 +9,5 @@ nodeLinker: hoisted
 onlyBuiltDependencies:
   - '@sentry/cli'
   - esbuild
+  - react-native-mmkv
   - react-native-nitro-modules

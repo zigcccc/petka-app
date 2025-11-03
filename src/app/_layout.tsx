@@ -13,7 +13,6 @@ import { PostHogProvider, usePostHog } from 'posthog-react-native';
 import { useEffect, useState } from 'react';
 import { Appearance, Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StyleSheet, UnistylesRuntime, useUnistyles } from 'react-native-unistyles';
 
 import { ActionSheetProvider } from '@/context/ActionSheet';
@@ -81,6 +80,7 @@ function RootLayout() {
     'Inter-Medium': require('@/assets/fonts/inter/Inter-Medium.ttf'),
     'Inter-Regular': require('@/assets/fonts/inter/Inter-Regular.ttf'),
     'Inter-SemiBold': require('@/assets/fonts/inter/Inter-SemiBold.ttf'),
+    'Inter-Italic': require('@/assets/fonts/inter/Inter-Italic.ttf'),
   });
   const { rt } = useUnistyles();
 
@@ -173,30 +173,28 @@ function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider style={styles.safeAreaProvider}>
-      <View style={styles.safeArea}>
-        <Stack screenOptions={{ contentStyle: styles.content }}>
-          <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="onboard"
-            options={{
-              presentation: 'modal',
-              title: '',
-              headerShadowVisible: false,
-              gestureEnabled: false,
-              headerBackVisible: false,
-              headerStyle: styles.header,
-              headerShown: Platform.select({
-                ios: getOsMajorVersion() > 18 ? false : true,
-                android: true,
-              }),
-            }}
-          />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </View>
-    </SafeAreaProvider>
+    <View style={styles.safeArea}>
+      <Stack screenOptions={{ contentStyle: styles.content }}>
+        <Stack.Screen name="(authenticated)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="onboard"
+          options={{
+            presentation: 'modal',
+            title: '',
+            headerShadowVisible: false,
+            gestureEnabled: false,
+            headerBackVisible: false,
+            headerStyle: styles.header,
+            headerShown: Platform.select({
+              ios: getOsMajorVersion() > 18 ? false : true,
+              android: true,
+            }),
+          }}
+        />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style="auto" />
+    </View>
   );
 }
 
@@ -223,10 +221,6 @@ function RootLayoutWithProviders() {
 }
 
 const styles = StyleSheet.create((theme, rt) => ({
-  safeAreaProvider: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
   safeArea: {
     flex: 1,
     backgroundColor: theme.colors.background,

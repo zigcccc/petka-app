@@ -45,6 +45,7 @@ ios/
 
 # Seeders
 db/seeders/**/*.jsonl
+db/seeders/**/*.json
 
 .env.local
 google-*.json
