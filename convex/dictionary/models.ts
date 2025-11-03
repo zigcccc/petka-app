@@ -8,6 +8,7 @@ export const dictionaryEntryModel = getBaseDbModel('dictionaryEntries').extend({
   frequency: z.number(),
   word: z.string(),
   numOfTimesUsed: z.number(),
+  explanation: z.string().optional(),
 });
 export type DictionaryEntry = z.infer<typeof dictionaryEntryModel>;
 
