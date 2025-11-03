@@ -80,6 +80,7 @@ function RootLayout() {
     'Inter-Medium': require('@/assets/fonts/inter/Inter-Medium.ttf'),
     'Inter-Regular': require('@/assets/fonts/inter/Inter-Regular.ttf'),
     'Inter-SemiBold': require('@/assets/fonts/inter/Inter-SemiBold.ttf'),
+    'Inter-Italic': require('@/assets/fonts/inter/Inter-Italic.ttf'),
   });
   const { rt } = useUnistyles();
 

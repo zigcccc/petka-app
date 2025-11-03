@@ -84,6 +84,7 @@ export const defaultTheme = {
       medium: 'Inter-Medium',
       semiBold: 'Inter-SemiBold',
       bold: 'Inter-Bold',
+      italic: 'Inter-Italic',
     },
   },
   spacing: {
