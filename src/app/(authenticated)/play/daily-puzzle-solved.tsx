@@ -46,7 +46,8 @@ export default function DailyPuzzleSolvedScreen() {
               <Text weight="medium">Rešitev: &quot;{puzzle?.solution.toUpperCase()}&quot;</Text>
               {!isLoadingDictionaryEntry && (
                 <Text size="xs" weight="italic">
-                  {capitalize(dictionaryEntry?.explanation) || 'Razlaga besede na voljo v Fran slovarju:'}{' '}
+                  {capitalize(dictionaryEntry?.explanation) || 'Razlaga besede na voljo v Fran slovarju'}
+                  {'. '}
                   <Link
                     accessibilityRole="link"
                     accessible
