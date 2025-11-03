@@ -1,5 +1,6 @@
 export * from './useActiveDailyPuzzleQuery';
 export * from './useActiveTrainingPuzzleQuery';
+export * from './useDictionaryEntry';
 export * from './useLeaderboardsQuery';
 export * from './usePuzzleAttemptsQuery';
 export * from './usePuzzleStatisticsQuery';
