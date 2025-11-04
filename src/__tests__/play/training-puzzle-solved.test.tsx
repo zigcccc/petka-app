@@ -117,9 +117,9 @@ describe('Training puzzle solved screen', () => {
     render(<TrainingPuzzleSolvedScreen />);
 
     expect(screen.queryByText('Rešitev: "STEAK"')).toBeOnTheScreen();
+    expect(screen.queryByRole('link', { name: /SSKJ/ })).toBeOnTheScreen();
     expect(screen.queryByText(/Test solution explanation/)).not.toBeOnTheScreen();
     expect(screen.queryByText(/Razlaga besede na voljo v Fran slovarju/)).not.toBeOnTheScreen();
-    expect(screen.queryByRole('link', { name: /SSKJ/ })).not.toBeOnTheScreen();
   });
 
   it('should render daily puzzle statistics when data is not loading', () => {

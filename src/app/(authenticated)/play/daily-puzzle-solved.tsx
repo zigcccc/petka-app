@@ -43,23 +43,23 @@ export default function DailyPuzzleSolvedScreen() {
         ) : (
           <ScrollView contentContainerStyle={styles.scrollContent}>
             <View style={styles.solution}>
-              <Text weight="medium">Rešitev: &quot;{puzzle?.solution.toUpperCase()}&quot;</Text>
-              {!isLoadingDictionaryEntry && (
-                <Text size="xs" weight="italic">
-                  <Text numberOfLines={2} size="xs" weight="italic">
-                    {capitalize(dictionaryEntry?.explanation) || 'Razlaga besede na voljo v Fran slovarju'}
-                    {'. '}
+              <View style={styles.solutionHeader}>
+                <Text weight="medium">Rešitev: &quot;{puzzle?.solution.toUpperCase()}&quot;</Text>
+                <Link
+                  accessibilityRole="link"
+                  accessible
+                  asChild
+                  href={`https://www.fran.si/iskanje?View=1&Query=${puzzle?.solution}`}
+                >
+                  <Text size="xs" weight="medium">
+                    SSKJ <Octicons name="arrow-up-right" />
                   </Text>
-                  <Link
-                    accessibilityRole="link"
-                    accessible
-                    asChild
-                    href={`https://www.fran.si/iskanje?View=1&Query=${puzzle?.solution}`}
-                  >
-                    <Text size="xs" weight="medium">
-                      SSKJ <Octicons name="arrow-up-right" />
-                    </Text>
-                  </Link>
+                </Link>
+              </View>
+              {!isLoadingDictionaryEntry && (
+                <Text numberOfLines={2} size="xs" weight="italic">
+                  {capitalize(dictionaryEntry?.explanation) || 'Razlaga besede na voljo v Fran slovarju'}
+                  {'. '}
                 </Text>
               )}
             </View>
@@ -125,8 +125,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     paddingBottom: rt.insets.bottom + rt.insets.ime,
   },
   content: {
-    paddingTop: theme.spacing[6],
-    paddingBottom: theme.spacing[8],
+    paddingVertical: theme.spacing[6],
     gap: theme.spacing[6],
     flex: 1,
   },
@@ -141,6 +140,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   solution: {
     gap: theme.spacing[2],
   },
+  solutionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   actions: {
     gap: theme.spacing[4],
   },
