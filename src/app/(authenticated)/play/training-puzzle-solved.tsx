@@ -50,8 +50,10 @@ export default function TrainingPuzzleSolvedScreen() {
               <Text weight="medium">Rešitev: &quot;{puzzle?.solution.toUpperCase()}&quot;</Text>
               {!isLoadingDictionaryEntry && (
                 <Text size="xs" weight="italic">
-                  {capitalize(dictionaryEntry?.explanation) || 'Razlaga besede na voljo v Fran slovarju'}
-                  {'. '}
+                  <Text numberOfLines={2} size="xs" weight="italic">
+                    {capitalize(dictionaryEntry?.explanation) || 'Razlaga besede na voljo v Fran slovarju'}
+                    {'. '}
+                  </Text>
                   <Link
                     accessibilityRole="link"
                     accessible
