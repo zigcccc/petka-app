@@ -20,7 +20,7 @@
     "*.{js,ts,tsx,jsx}": "eslint --fix"
   },
   "dependencies": {
-    "@convex-dev/crons": "^0.1.9",
+    "@convex-dev/crons": "^0.2.0",
     "@convex-dev/expo-push-notifications": "0.2.6",
     "@convex-dev/migrations": "^0.2.9",
     "@convex-dev/presence": "^0.2.1",
@@ -35,7 +35,7 @@
     "@sentry/react-native": "^7.2.0",
     "@shopify/flash-list": "2.0.2",
     "burnt": "^0.13.0",
-    "convex": "^1.28.2",
+    "convex": "^1.29.0",
     "convex-helpers": "^0.1.104",
     "dayjs": "^1.11.19",
     "expo": "~54.0.23",
