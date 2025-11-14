@@ -235,7 +235,7 @@ export declare const components: {
         "mutation",
         "internal",
         { logLevel: "DEBUG" | "INFO" | "WARN" | "ERROR"; userId: string },
-        any
+        null
       >;
       getNotification: FunctionReference<
         "query",
@@ -375,6 +375,38 @@ export declare const components: {
           userId: string;
         },
         string | null
+      >;
+      sendPushNotificationBatch: FunctionReference<
+        "mutation",
+        "internal",
+        {
+          allowUnregisteredTokens?: boolean;
+          logLevel: "DEBUG" | "INFO" | "WARN" | "ERROR";
+          notifications: Array<{
+            notification: {
+              _contentAvailable?: boolean;
+              badge?: number;
+              body?: string;
+              categoryId?: string;
+              channelId?: string;
+              data?: any;
+              expiration?: number;
+              interruptionLevel?:
+                | "active"
+                | "critical"
+                | "passive"
+                | "time-sensitive";
+              mutableContent?: boolean;
+              priority?: "default" | "normal" | "high";
+              sound?: string | null;
+              subtitle?: string;
+              title?: string;
+              ttl?: number;
+            };
+            userId: string;
+          }>;
+        },
+        Array<string | null>
       >;
       shutdown: FunctionReference<
         "mutation",

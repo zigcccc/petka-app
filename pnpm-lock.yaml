@@ -10,16 +10,16 @@ importers:
     dependencies:
       '@convex-dev/crons':
         specifier: ^0.2.0
-        version: 0.2.0(convex@1.29.0(react@19.1.0))
+        version: 0.2.0(convex@1.29.1(react@19.1.0))
       '@convex-dev/expo-push-notifications':
-        specifier: 0.2.6
-        version: 0.2.6(convex@1.29.0(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)
+        specifier: 0.3.0
+        version: 0.3.0(convex@1.29.1(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)
       '@convex-dev/migrations':
-        specifier: ^0.2.9
-        version: 0.2.9(convex@1.29.0(react@19.1.0))
+        specifier: ^0.3.0
+        version: 0.3.0(convex@1.29.1(react@19.1.0))
       '@convex-dev/presence':
-        specifier: ^0.2.1
-        version: 0.2.1(convex@1.29.0(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.23))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
+        specifier: ^0.3.0
+        version: 0.3.0(convex@1.29.1(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.23))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       '@expo/metro-runtime':
         specifier: ~6.1.2
         version: 6.1.2(expo@54.0.23)(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
@@ -54,11 +54,11 @@ importers:
         specifier: ^0.13.0
         version: 0.13.0(expo@54.0.23)(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       convex:
-        specifier: ^1.29.0
-        version: 1.29.0(react@19.1.0)
+        specifier: ^1.29.1
+        version: 1.29.1(react@19.1.0)
       convex-helpers:
         specifier: ^0.1.104
-        version: 0.1.104(convex@1.29.0(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)
+        version: 0.1.104(convex@1.29.1(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)
       dayjs:
         specifier: ^1.11.19
         version: 1.11.19
@@ -135,8 +135,8 @@ importers:
         specifier: ~15.0.9
         version: 15.0.9(expo@54.0.23)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))
       posthog-react-native:
-        specifier: ^4.10.8
-        version: 4.10.8(@react-native-async-storage/async-storage@2.2.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(@react-navigation/native@7.1.17(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(expo-application@7.0.7(expo@54.0.23))(expo-device@8.0.9(expo@54.0.23))(expo-file-system@19.0.17(expo@54.0.23)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(expo-localization@17.0.7(expo@54.0.23)(react@19.1.0))(react-native-safe-area-context@5.6.2(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))
+        specifier: ^4.11.0
+        version: 4.11.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(@react-navigation/native@7.1.17(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(expo-application@7.0.7(expo@54.0.23))(expo-device@8.0.9(expo@54.0.23))(expo-file-system@19.0.17(expo@54.0.23)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(expo-localization@17.0.7(expo@54.0.23)(react@19.1.0))(react-native-safe-area-context@5.6.2(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -791,20 +791,20 @@ packages:
     peerDependencies:
       convex: ^1.24.8
 
-  '@convex-dev/expo-push-notifications@0.2.6':
-    resolution: {integrity: sha512-m0R5FcP7GabbYbm7E6PVVEm++VxLyVu3ejywOiFg1QPmVojSo5BWEDjzoVYJNZ8/a93jN/0NM03+oDseohOxLQ==}
+  '@convex-dev/expo-push-notifications@0.3.0':
+    resolution: {integrity: sha512-xEsZ342k9LIYjpOf0kTjY36rjcCn8wuGl6HH3+yoW9Lrkjt9sQhWV053nfxUbfwrK3gsCu4AR32At+LYNTQs1g==}
     peerDependencies:
-      convex: '>=1.23.0 <1.35.0'
+      convex: ^1.24.8
 
-  '@convex-dev/migrations@0.2.9':
-    resolution: {integrity: sha512-HfIv6/F8VbtJ1NVT2bQRTumJGdaqROl/+s5IOnubHm7vvgie0RjcfO6YiB7JoLFWwS19vjDQDKl63ihoA08zOA==}
+  '@convex-dev/migrations@0.3.0':
+    resolution: {integrity: sha512-2xoulFOSo7Fz+Zp2gsGxtExmyO4AauvMg+kTazhSIXwkE1lkJngo5asZCcNPr7IQ6/KC1GJI6ekNxlo8sTSXWA==}
     peerDependencies:
-      convex: ~1.16.5 || >=1.17.0 <1.35.0
+      convex: ^1.24.8
 
-  '@convex-dev/presence@0.2.1':
-    resolution: {integrity: sha512-XBcEzb1qxV4yq3UNe+UpZbTb1ecgg14vYZWDZMA2XPh2D/x2yCxTfWyQ/vdMeX2HYiGzj2be5aRu8CK3cogQnA==}
+  '@convex-dev/presence@0.3.0':
+    resolution: {integrity: sha512-adV+ao1L77u+egobyJabNwuai/0y/VgzMbqZiy+Q49JmX6fbSaiYg6FpFVACqPaq3giOfjrN2k+5mK2jTAUG0g==}
     peerDependencies:
-      convex: '>=1.24.8 <1.35.0'
+      convex: ^1.24.8
       expo-crypto: '>=14.1.0'
       react: ~18.3.1 || ^19.0.0
       react-dom: ~18.3.1 || ^19.0.0
@@ -2845,8 +2845,8 @@ packages:
       zod:
         optional: true
 
-  convex@1.29.0:
-    resolution: {integrity: sha512-uoIPXRKIp2eLCkkR9WJ2vc9NtgQtx8Pml59WPUahwbrd5EuW2WLI/cf2E7XrUzOSifdQC3kJZepisk4wJNTJaA==}
+  convex@1.29.1:
+    resolution: {integrity: sha512-0+1/0QjOKJw5pk480HVMfhSKjYOM5dM67Ql5yF6FzrC/09WCXm5UVWd/MU8/OCB0YRgFUhrRsrWFSnW0w7iBSA==}
     engines: {node: '>=18.0.0', npm: '>=7.0.0'}
     hasBin: true
     peerDependencies:
@@ -5101,8 +5101,8 @@ packages:
     resolution: {integrity: sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-react-native@4.10.8:
-    resolution: {integrity: sha512-dJ9e2vLPUN5InhKZplPhJTC2UKlK0J/s6sqbXY0b8hCDAP1VXdN8Gbcm49HJk2E0mWZHDwEb59i6mcVCddFdcQ==}
+  posthog-react-native@4.11.0:
+    resolution: {integrity: sha512-f/QCyUrW0qWTfiH78IHpDOf5KQVX/p0POa2Pad4THBM0gfkHXd7jTNoz7sVoRLbfBRyTFFjsXlZKqXUt1mfKtg==}
     peerDependencies:
       '@react-native-async-storage/async-storage': '>=1.0.0'
       '@react-navigation/native': '>= 5.0.0'
@@ -7081,15 +7081,15 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@convex-dev/crons@0.2.0(convex@1.29.0(react@19.1.0))':
+  '@convex-dev/crons@0.2.0(convex@1.29.1(react@19.1.0))':
     dependencies:
-      convex: 1.29.0(react@19.1.0)
+      convex: 1.29.1(react@19.1.0)
       cron-parser: 4.9.0
 
-  '@convex-dev/expo-push-notifications@0.2.6(convex@1.29.0(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)':
+  '@convex-dev/expo-push-notifications@0.3.0(convex@1.29.1(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)':
     dependencies:
-      convex: 1.29.0(react@19.1.0)
-      convex-helpers: 0.1.104(convex@1.29.0(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)
+      convex: 1.29.1(react@19.1.0)
+      convex-helpers: 0.1.104(convex@1.29.1(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)
     transitivePeerDependencies:
       - '@standard-schema/spec'
       - hono
@@ -7097,13 +7097,13 @@ snapshots:
       - typescript
       - zod
 
-  '@convex-dev/migrations@0.2.9(convex@1.29.0(react@19.1.0))':
+  '@convex-dev/migrations@0.3.0(convex@1.29.1(react@19.1.0))':
     dependencies:
-      convex: 1.29.0(react@19.1.0)
+      convex: 1.29.1(react@19.1.0)
 
-  '@convex-dev/presence@0.2.1(convex@1.29.0(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.23))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)':
+  '@convex-dev/presence@0.3.0(convex@1.29.1(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.23))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)':
     dependencies:
-      convex: 1.29.0(react@19.1.0)
+      convex: 1.29.1(react@19.1.0)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
     optionalDependencies:
@@ -9551,15 +9551,15 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  convex-helpers@0.1.104(convex@1.29.0(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76):
+  convex-helpers@0.1.104(convex@1.29.1(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76):
     dependencies:
-      convex: 1.29.0(react@19.1.0)
+      convex: 1.29.1(react@19.1.0)
     optionalDependencies:
       react: 19.1.0
       typescript: 5.9.3
       zod: 3.25.76
 
-  convex@1.29.0(react@19.1.0):
+  convex@1.29.1(react@19.1.0):
     dependencies:
       esbuild: 0.25.4
       prettier: 3.6.2
@@ -12362,7 +12362,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-react-native@4.10.8(@react-native-async-storage/async-storage@2.2.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(@react-navigation/native@7.1.17(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(expo-application@7.0.7(expo@54.0.23))(expo-device@8.0.9(expo@54.0.23))(expo-file-system@19.0.17(expo@54.0.23)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(expo-localization@17.0.7(expo@54.0.23)(react@19.1.0))(react-native-safe-area-context@5.6.2(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)):
+  posthog-react-native@4.11.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(@react-navigation/native@7.1.17(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(expo-application@7.0.7(expo@54.0.23))(expo-device@8.0.9(expo@54.0.23))(expo-file-system@19.0.17(expo@54.0.23)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(expo-localization@17.0.7(expo@54.0.23)(react@19.1.0))(react-native-safe-area-context@5.6.2(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)):
     dependencies:
       '@posthog/core': 1.5.2
       react-native-svg: 15.12.1(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
