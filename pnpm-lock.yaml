@@ -10,16 +10,16 @@ importers:
     dependencies:
       '@convex-dev/crons':
         specifier: ^0.2.0
-        version: 0.2.0(convex@1.29.3(react@19.1.0))
+        version: 0.2.0(convex@1.30.0(react@19.1.0))
       '@convex-dev/expo-push-notifications':
         specifier: 0.3.0
-        version: 0.3.0(convex@1.29.3(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)
+        version: 0.3.0(convex@1.30.0(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)
       '@convex-dev/migrations':
-        specifier: ^0.3.0
-        version: 0.3.0(convex@1.29.3(react@19.1.0))
+        specifier: ^0.3.1
+        version: 0.3.1(convex@1.30.0(react@19.1.0))
       '@convex-dev/presence':
         specifier: ^0.3.0
-        version: 0.3.0(convex@1.29.3(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.25))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
+        version: 0.3.0(convex@1.30.0(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.25))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       '@expo/metro-runtime':
         specifier: ~6.1.2
         version: 6.1.2(expo@54.0.25)(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
@@ -27,11 +27,11 @@ importers:
         specifier: ^15.0.3
         version: 15.0.3(expo-font@14.0.9(expo@54.0.25)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       '@gorhom/bottom-sheet':
-        specifier: ^5.2.6
-        version: 5.2.6(@types/react@19.1.12)(react-native-gesture-handler@2.28.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-reanimated@4.1.2(@babel/core@7.28.3)(react-native-worklets@0.5.1(@babel/core@7.28.3)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
+        specifier: ^5.2.7
+        version: 5.2.7(@types/react@19.1.12)(react-native-gesture-handler@2.28.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-reanimated@4.1.2(@babel/core@7.28.3)(react-native-worklets@0.5.1(@babel/core@7.28.3)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       '@hookform/resolvers':
         specifier: ^5.2.2
-        version: 5.2.2(react-hook-form@7.66.1(react@19.1.0))
+        version: 5.2.2(react-hook-form@7.67.0(react@19.1.0))
       '@react-native-async-storage/async-storage':
         specifier: 2.2.0
         version: 2.2.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))
@@ -54,11 +54,11 @@ importers:
         specifier: ^0.13.0
         version: 0.13.0(expo@54.0.25)(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       convex:
-        specifier: ^1.29.3
-        version: 1.29.3(react@19.1.0)
+        specifier: ^1.30.0
+        version: 1.30.0(react@19.1.0)
       convex-helpers:
-        specifier: ^0.1.105
-        version: 0.1.105(convex@1.29.3(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)
+        specifier: ^0.1.106
+        version: 0.1.106(convex@1.30.0(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)
       dayjs:
         specifier: ^1.11.19
         version: 1.11.19
@@ -135,8 +135,8 @@ importers:
         specifier: ~15.0.9
         version: 15.0.9(expo@54.0.25)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))
       posthog-react-native:
-        specifier: ^4.12.4
-        version: 4.12.5(@react-native-async-storage/async-storage@2.2.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(@react-navigation/native@7.1.17(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(expo-application@7.0.7(expo@54.0.25))(expo-device@8.0.9(expo@54.0.25))(expo-file-system@19.0.19(expo@54.0.25)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(expo-localization@17.0.7(expo@54.0.25)(react@19.1.0))(react-native-safe-area-context@5.6.2(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))
+        specifier: ^4.14.0
+        version: 4.14.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(@react-navigation/native@7.1.17(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(expo-application@7.0.7(expo@54.0.25))(expo-device@8.0.9(expo@54.0.25))(expo-file-system@19.0.19(expo@54.0.25)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(expo-localization@17.0.7(expo@54.0.25)(react@19.1.0))(react-native-safe-area-context@5.6.2(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -144,8 +144,8 @@ importers:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
       react-hook-form:
-        specifier: ^7.66.1
-        version: 7.66.1(react@19.1.0)
+        specifier: ^7.67.0
+        version: 7.67.0(react@19.1.0)
       react-native:
         specifier: 0.81.5
         version: 0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)
@@ -224,7 +224,7 @@ importers:
         version: 2.32.0(@typescript-eslint/parser@8.33.1(eslint@9.39.1)(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.1)
       eslint-plugin-prettier:
         specifier: ^5.5.4
-        version: 5.5.4(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@9.39.1))(eslint@9.39.1)(prettier@3.6.2)
+        version: 5.5.4(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@9.39.1))(eslint@9.39.1)(prettier@3.7.4)
       eslint-plugin-unused-imports:
         specifier: ^4.3.0
         version: 4.3.0(@typescript-eslint/eslint-plugin@8.33.1(@typescript-eslint/parser@8.33.1(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)
@@ -247,8 +247,8 @@ importers:
         specifier: ^0.83.1
         version: 0.83.1
       prettier:
-        specifier: ^3.6.2
-        version: 3.6.2
+        specifier: ^3.7.4
+        version: 3.7.4
       prettier-eslint:
         specifier: ^16.4.2
         version: 16.4.2(typescript@5.9.3)
@@ -256,8 +256,8 @@ importers:
         specifier: ^1.5.1
         version: 1.5.1(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(typescript@5.9.3)
       ts-jest:
-        specifier: ^29.4.5
-        version: 29.4.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@30.0.0)(babel-jest@29.7.0(@babel/core@7.28.3))(jest-util@30.0.0)(jest@29.7.0(@types/node@22.15.29))(typescript@5.9.3)
+        specifier: ^29.4.6
+        version: 29.4.6(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@30.0.0)(babel-jest@29.7.0(@babel/core@7.28.3))(jest-util@30.0.0)(jest@29.7.0(@types/node@22.15.29))(typescript@5.9.3)
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -796,8 +796,8 @@ packages:
     peerDependencies:
       convex: ^1.24.8
 
-  '@convex-dev/migrations@0.3.0':
-    resolution: {integrity: sha512-2xoulFOSo7Fz+Zp2gsGxtExmyO4AauvMg+kTazhSIXwkE1lkJngo5asZCcNPr7IQ6/KC1GJI6ekNxlo8sTSXWA==}
+  '@convex-dev/migrations@0.3.1':
+    resolution: {integrity: sha512-dGiN82vWMN415/AGMcVooDOJk8iTousZahBBs27uA03pL74Uo3ksucUW3CiCfPx75rv+x9UnenEakimQYYNIrA==}
     peerDependencies:
       convex: ^1.24.8
 
@@ -1148,8 +1148,8 @@ packages:
     resolution: {integrity: sha512-ReZxZ8pdnoI3tP/dNnJdnmAk7uLT4FjsKDGW7YeDdvdOMz2XCQSmSCM9IWlrXuWtMF9zeSB6WJtEhCQ41gQOfw==}
     hasBin: true
 
-  '@gorhom/bottom-sheet@5.2.6':
-    resolution: {integrity: sha512-vmruJxdiUGDg+ZYcDmS30XDhq/h/+QkINOI5LY/uGjx8cPGwgJW0H6AB902gNTKtccbiKe/rr94EwdmIEz+LAQ==}
+  '@gorhom/bottom-sheet@5.2.7':
+    resolution: {integrity: sha512-nczswZTZ8hwFRQI2eLrC5kdLRh2JzJYb+xe3C/RIMFzEC4+q5KqxDsZqYqh54JgrViCx78euM1hE91x4uxg5VA==}
     peerDependencies:
       '@types/react': '*'
       '@types/react-native': '*'
@@ -1374,8 +1374,8 @@ packages:
     resolution: {integrity: sha512-YLT9Zo3oNPJoBjBc4q8G2mjU4tqIbf5CEOORbUUr48dCD9q3umJ3IPlVqOqDakPfd2HuwccBaqlGhN4Gmr5OWg==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@posthog/core@1.5.5':
-    resolution: {integrity: sha512-m7G1EQTgo9xrr3lZxCp9C2egP99MSRpIDD95wYzwUPxMesKxI0xEQ+TC5LS/XOXIdmsNvsx4UcxwmzhSwD2GWA==}
+  '@posthog/core@1.6.0':
+    resolution: {integrity: sha512-Tbh8UACwbb7jFdDC7wwXHtfNzO+4wKh3VbyMHmp2UBe6w1jliJixexTJNfkqdGZm+ht3M10mcKvGGPnoZ2zLBg==}
 
   '@radix-ui/primitive@1.1.3':
     resolution: {integrity: sha512-JTF99U/6XIjCBo0wqkU5sK10glYe27MRRsfwoiq5zzOEZLHU3A3KCMa5X/azekYRCJ0HlwI0crAXS/5dEHTzDg==}
@@ -2815,12 +2815,12 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
-  convex-helpers@0.1.105:
-    resolution: {integrity: sha512-B6EUQsBpLFcXpa1g/9Zsc7EaFHdaeMlPLCa/snSD+4hRBFMWKJjT589dZ/0Z40taBOQWC2tb81ciTNr4ctJb2w==}
+  convex-helpers@0.1.106:
+    resolution: {integrity: sha512-hWRe3yDaAVHMe4CUYw1YoQLiPZ1KIx6Kbf0w6UcRDx1BXpJgMCl3GVIMiSeYiA0PkbwjnIwGWIvoUVKloG5Tyw==}
     hasBin: true
     peerDependencies:
       '@standard-schema/spec': ^1.0.0
-      convex: ^1.24.0
+      convex: ^1.25.4
       hono: ^4.0.5
       react: ^17.0.2 || ^18.0.0 || ^19.0.0
       typescript: ^5.5
@@ -2837,8 +2837,8 @@ packages:
       zod:
         optional: true
 
-  convex@1.29.3:
-    resolution: {integrity: sha512-tg5TXzMjpNk9m50YRtdp6US+t7ckxE4E+7DNKUCjJ2MupQs2RBSPF/z5SNN4GUmQLSfg0eMILDySzdAvjTrhnw==}
+  convex@1.30.0:
+    resolution: {integrity: sha512-YvFFxLg3bICP7u5hSVxW6BUYgI4LkWJHdim+9XrXUkdyOziloiQ21EbSCq6NNG2ycba2x7hsgxUKCGAhJmkv1g==}
     engines: {node: '>=18.0.0', npm: '>=7.0.0'}
     hasBin: true
     peerDependencies:
@@ -5089,8 +5089,8 @@ packages:
     resolution: {integrity: sha512-OCVPnIObs4N29kxTjzLfUryOkvZEq+pf8jTF0lg8E7uETuWHA+v7j3c/xJmiqpX450191LlmZfUKkXxkTry7nA==}
     engines: {node: ^10 || ^12 || >=14}
 
-  posthog-react-native@4.12.5:
-    resolution: {integrity: sha512-B0uKuckYkPbzK3ZfmjOEdCXzzpBSn96C9G9ZJWSFAb3b/+1Yx3soj+mzdrw9kKwyMxgYbmqIvLVMLL15RUumNw==}
+  posthog-react-native@4.14.0:
+    resolution: {integrity: sha512-MdupQpK2CprB/Y0ST33VOps9ajil/g0eW2lvinQtescrwdSPc8+gyckYqcMG1EFcV6ql3iU4pBUBZvtanH6cuA==}
     peerDependencies:
       '@react-native-async-storage/async-storage': '>=1.0.0'
       '@react-navigation/native': '>= 5.0.0'
@@ -5148,8 +5148,8 @@ packages:
     resolution: {integrity: sha512-GbK2cP9nraSSUF9N2XwUwqfzlAFlMNYYl+ShE/V+H8a9uNl/oUqB1w2EL54Jh0OlyRSd8RfWYJ3coVS4TROP2w==}
     engines: {node: '>=6.0.0'}
 
-  prettier@3.6.2:
-    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
+  prettier@3.7.4:
+    resolution: {integrity: sha512-v6UNi1+3hSlVvv8fSaoUbggEM5VErKmmpGA7Pl3HF8V6uKY7rvClBOJlH6yNwQtfTueNkGVpOv/mtWL9L4bgRA==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -5244,8 +5244,8 @@ packages:
     peerDependencies:
       react: '>=17.0.0'
 
-  react-hook-form@7.66.1:
-    resolution: {integrity: sha512-2KnjpgG2Rhbi+CIiIBQQ9Df6sMGH5ExNyFl4Hw9qO7pIqMBR8Bvu9RQyjl3JM4vehzCh9soiNUM/xYMswb2EiA==}
+  react-hook-form@7.67.0:
+    resolution: {integrity: sha512-E55EOwKJHHIT/I6J9DmQbCWToAYSw9nN5R57MZw9rMtjh+YQreMDxRLfdjfxQbiJ3/qbg3Z02wGzBX4M+5fMtQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -6010,8 +6010,8 @@ packages:
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
 
-  ts-jest@29.4.5:
-    resolution: {integrity: sha512-HO3GyiWn2qvTQA4kTgjDcXiMwYQt68a1Y8+JuLRVpdIzm+UOLSHgl/XqR4c6nzJkq5rOkjc02O2I7P7l/Yof0Q==}
+  ts-jest@29.4.6:
+    resolution: {integrity: sha512-fSpWtOO/1AjSNQguk43hb/JCo16oJDnMJf3CdEGNkqsEX3t0KX96xvyX1D7PfLCpVoKu4MfVrqUkFyblYoY4lA==}
     engines: {node: ^14.15.0 || ^16.10.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -7069,15 +7069,15 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@convex-dev/crons@0.2.0(convex@1.29.3(react@19.1.0))':
+  '@convex-dev/crons@0.2.0(convex@1.30.0(react@19.1.0))':
     dependencies:
-      convex: 1.29.3(react@19.1.0)
+      convex: 1.30.0(react@19.1.0)
       cron-parser: 4.9.0
 
-  '@convex-dev/expo-push-notifications@0.3.0(convex@1.29.3(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)':
+  '@convex-dev/expo-push-notifications@0.3.0(convex@1.30.0(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)':
     dependencies:
-      convex: 1.29.3(react@19.1.0)
-      convex-helpers: 0.1.105(convex@1.29.3(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)
+      convex: 1.30.0(react@19.1.0)
+      convex-helpers: 0.1.106(convex@1.30.0(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76)
     transitivePeerDependencies:
       - '@standard-schema/spec'
       - hono
@@ -7085,13 +7085,13 @@ snapshots:
       - typescript
       - zod
 
-  '@convex-dev/migrations@0.3.0(convex@1.29.3(react@19.1.0))':
+  '@convex-dev/migrations@0.3.1(convex@1.30.0(react@19.1.0))':
     dependencies:
-      convex: 1.29.3(react@19.1.0)
+      convex: 1.30.0(react@19.1.0)
 
-  '@convex-dev/presence@0.3.0(convex@1.29.3(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.25))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)':
+  '@convex-dev/presence@0.3.0(convex@1.30.0(react@19.1.0))(expo-crypto@15.0.7(expo@54.0.25))(react-dom@19.1.0(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)':
     dependencies:
-      convex: 1.29.3(react@19.1.0)
+      convex: 1.30.0(react@19.1.0)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
     optionalDependencies:
@@ -7571,7 +7571,7 @@ snapshots:
       find-up: 5.0.0
       js-yaml: 4.1.0
 
-  '@gorhom/bottom-sheet@5.2.6(@types/react@19.1.12)(react-native-gesture-handler@2.28.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-reanimated@4.1.2(@babel/core@7.28.3)(react-native-worklets@0.5.1(@babel/core@7.28.3)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)':
+  '@gorhom/bottom-sheet@5.2.7(@types/react@19.1.12)(react-native-gesture-handler@2.28.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-reanimated@4.1.2(@babel/core@7.28.3)(react-native-worklets@0.5.1(@babel/core@7.28.3)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@gorhom/portal': 1.0.14(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
       invariant: 2.2.4
@@ -7588,10 +7588,10 @@ snapshots:
       react: 19.1.0
       react-native: 0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)
 
-  '@hookform/resolvers@5.2.2(react-hook-form@7.66.1(react@19.1.0))':
+  '@hookform/resolvers@5.2.2(react-hook-form@7.67.0(react@19.1.0))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.66.1(react@19.1.0)
+      react-hook-form: 7.67.0(react@19.1.0)
 
   '@humanfs/core@0.19.1': {}
 
@@ -7897,7 +7897,7 @@ snapshots:
 
   '@pkgr/core@0.2.7': {}
 
-  '@posthog/core@1.5.5':
+  '@posthog/core@1.6.0':
     dependencies:
       cross-spawn: 7.0.6
 
@@ -9521,18 +9521,18 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  convex-helpers@0.1.105(convex@1.29.3(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76):
+  convex-helpers@0.1.106(convex@1.30.0(react@19.1.0))(react@19.1.0)(typescript@5.9.3)(zod@3.25.76):
     dependencies:
-      convex: 1.29.3(react@19.1.0)
+      convex: 1.30.0(react@19.1.0)
     optionalDependencies:
       react: 19.1.0
       typescript: 5.9.3
       zod: 3.25.76
 
-  convex@1.29.3(react@19.1.0):
+  convex@1.30.0(react@19.1.0):
     dependencies:
       esbuild: 0.25.4
-      prettier: 3.6.2
+      prettier: 3.7.4
     optionalDependencies:
       react: 19.1.0
 
@@ -10046,10 +10046,10 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-plugin-prettier@5.5.4(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@9.39.1))(eslint@9.39.1)(prettier@3.6.2):
+  eslint-plugin-prettier@5.5.4(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@9.39.1))(eslint@9.39.1)(prettier@3.7.4):
     dependencies:
       eslint: 9.39.1
-      prettier: 3.6.2
+      prettier: 3.7.4
       prettier-linter-helpers: 1.0.0
       synckit: 0.11.8
     optionalDependencies:
@@ -12330,9 +12330,9 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  posthog-react-native@4.12.5(@react-native-async-storage/async-storage@2.2.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(@react-navigation/native@7.1.17(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(expo-application@7.0.7(expo@54.0.25))(expo-device@8.0.9(expo@54.0.25))(expo-file-system@19.0.19(expo@54.0.25)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(expo-localization@17.0.7(expo@54.0.25)(react@19.1.0))(react-native-safe-area-context@5.6.2(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)):
+  posthog-react-native@4.14.0(@react-native-async-storage/async-storage@2.2.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(@react-navigation/native@7.1.17(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(expo-application@7.0.7(expo@54.0.25))(expo-device@8.0.9(expo@54.0.25))(expo-file-system@19.0.19(expo@54.0.25)(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0)))(expo-localization@17.0.7(expo@54.0.25)(react@19.1.0))(react-native-safe-area-context@5.6.2(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0))(react-native-svg@15.12.1(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)):
     dependencies:
-      '@posthog/core': 1.5.5
+      '@posthog/core': 1.6.0
       react-native-svg: 15.12.1(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))(react@19.1.0)
     optionalDependencies:
       '@react-native-async-storage/async-storage': 2.2.0(react-native@0.81.5(@babel/core@7.28.3)(@types/react@19.1.12)(react@19.1.0))
@@ -12354,7 +12354,7 @@ snapshots:
       indent-string: 4.0.0
       lodash.merge: 4.6.2
       loglevel-colored-level-prefix: 1.0.0
-      prettier: 3.6.2
+      prettier: 3.7.4
       pretty-format: 29.7.0
       require-relative: 0.8.7
       tslib: 2.8.1
@@ -12367,7 +12367,7 @@ snapshots:
     dependencies:
       fast-diff: 1.3.0
 
-  prettier@3.6.2: {}
+  prettier@3.7.4: {}
 
   pretty-bytes@5.6.0: {}
 
@@ -12465,7 +12465,7 @@ snapshots:
     dependencies:
       react: 19.1.0
 
-  react-hook-form@7.66.1(react@19.1.0):
+  react-hook-form@7.67.0(react@19.1.0):
     dependencies:
       react: 19.1.0
 
@@ -13328,7 +13328,7 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
-  ts-jest@29.4.5(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@30.0.0)(babel-jest@29.7.0(@babel/core@7.28.3))(jest-util@30.0.0)(jest@29.7.0(@types/node@22.15.29))(typescript@5.9.3):
+  ts-jest@29.4.6(@babel/core@7.28.3)(@jest/transform@29.7.0)(@jest/types@30.0.0)(babel-jest@29.7.0(@babel/core@7.28.3))(jest-util@30.0.0)(jest@29.7.0(@types/node@22.15.29))(typescript@5.9.3):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
