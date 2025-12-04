@@ -18,12 +18,12 @@ jobs:
             --branch=main \
             --json databaseId,conclusion \
             --jq '[.[] | select(.conclusion=="success")][0].databaseId')
-          
+
           if [ -z "$RUN_ID" ]; then
             echo "No successful main-deploy.yml runs found on main."
             exit 1
           fi
-          
+
           echo "Latest run ID: $RUN_ID"
           echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
         env:
@@ -85,7 +85,7 @@ jobs:
           run_install: false
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
       - name: Setup EAS
         uses: expo/expo-github-action@v8
