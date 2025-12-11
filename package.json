@@ -35,7 +35,7 @@
     "@sentry/react-native": "^7.2.0",
     "@shopify/flash-list": "2.0.2",
     "burnt": "^0.13.0",
-    "convex": "^1.30.0",
+    "convex": "^1.31.0",
     "convex-helpers": "^0.1.107",
     "dayjs": "^1.11.19",
     "expo": "~54.0.27",
