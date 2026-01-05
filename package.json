@@ -62,10 +62,10 @@
     "expo-tracking-transparency": "^6.0.8",
     "expo-updates": "~29.0.15",
     "expo-web-browser": "~15.0.10",
-    "posthog-react-native": "^4.16.2",
+    "posthog-react-native": "^4.17.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-hook-form": "^7.69.0",
+    "react-hook-form": "^7.70.0",
     "react-native": "0.81.5",
     "react-native-edge-to-edge": "1.7.0",
     "react-native-gesture-handler": "~2.28.0",
@@ -88,10 +88,10 @@
     "@testing-library/react-native": "^13.3.3",
     "@types/jest": "^29.5.14",
     "@types/react": "~19.1.12",
-    "@typescript-eslint/eslint-plugin": "^8.50.0",
-    "@typescript-eslint/parser": "^8.50.0",
-    "@typescript-eslint/typescript-estree": "^8.50.0",
-    "@typescript-eslint/utils": "^8.50.0",
+    "@typescript-eslint/eslint-plugin": "^8.51.0",
+    "@typescript-eslint/parser": "^8.51.0",
+    "@typescript-eslint/typescript-estree": "^8.51.0",
+    "@typescript-eslint/utils": "^8.51.0",
     "cheerio": "^1.1.2",
     "eslint": "^9.39.2",
     "eslint-config-expo": "~10.0.0",
@@ -112,5 +112,5 @@
     "typescript": "~5.9.3"
   },
   "private": true,
-  "packageManager": "pnpm@10.26.1"
+  "packageManager": "pnpm@10.27.0"
 }
