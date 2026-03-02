@@ -1,6 +1,6 @@
-import { type ExpoConfig } from 'expo/config';
+import type { ExpoConfig } from '@expo/config';
 
-import appPackage from './package.json';
+import appPackage from './package.json' with { type: 'json' };
 
 const isProd = process.env.APP_ENV === 'production';
 const name = isProd ? 'Petka' : 'Petka (DEV)';
@@ -60,7 +60,7 @@ const config: ExpoConfig = {
     'expo-asset',
     'expo-web-browser',
     [
-      '@sentry/react-native/expo',
+      '@sentry/react-native',
       {
         url: 'https://sentry.io/',
         project: 'petka-mobile-app',
@@ -68,6 +68,7 @@ const config: ExpoConfig = {
       },
     ],
     'expo-font',
+    'expo-image',
     'expo-localization',
     'expo-notifications',
     [
