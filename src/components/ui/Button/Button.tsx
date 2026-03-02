@@ -90,7 +90,6 @@ export function Button({
             accessible
             color={spinnerColor}
             size={sizeToIconSizeMap.get(size)! + 2}
-            style={styles.loader}
           />
         ) : (
           buttonText
@@ -299,14 +298,6 @@ const styles = StyleSheet.create((theme) => ({
   },
   containerPressed: {
     opacity: 0.4,
-  },
-  loader: {
-    variants: {
-      size: {},
-      variant: {},
-      intent: {},
-      fullwidth: {},
-    },
   },
   text: {
     fontFamily: theme.fonts.sans.bold,

@@ -20,7 +20,6 @@ const config: ExpoConfig = {
   icon: iconPath,
   scheme: 'petkaapp',
   userInterfaceStyle: 'automatic',
-  newArchEnabled: true,
   ios: {
     icon: iosIconPath,
     supportsTablet: false,
@@ -34,7 +33,6 @@ const config: ExpoConfig = {
       foregroundImage: isProd ? './src/assets/images/petka-app-icon-android-adaptive.png' : iconPath,
       backgroundColor: '#ffffff',
     },
-    edgeToEdgeEnabled: true,
     package: identifier,
     googleServicesFile: isProd ? (process.env.GOOGLE_SERVICES_JSON ?? './google-services.json') : undefined,
   },
