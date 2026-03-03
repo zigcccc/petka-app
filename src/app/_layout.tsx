@@ -132,14 +132,14 @@ function RootLayout() {
       Appearance.setColorScheme(preferredTheme);
     } else {
       UnistylesRuntime.setAdaptiveThemes(true);
-      Appearance.setColorScheme(UnistylesRuntime.themeName);
+      Appearance.setColorScheme(UnistylesRuntime.themeName ?? 'unspecified');
     }
     setThemeLoaded(true);
   }, []);
 
   useEffect(() => {
     if (Appearance.getColorScheme() !== rt.themeName) {
-      Appearance.setColorScheme(rt.themeName);
+      Appearance.setColorScheme(rt.themeName ?? 'unspecified');
     }
   }, [rt.themeName]);
 

@@ -205,7 +205,7 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - name: Push EAS Update to Production
-        run: eas update --channel production --message "v${{steps.version.outputs.version}}"
+        run: eas update --environment production --channel production --message "v${{steps.version.outputs.version}}"
 
       - name: Upload source maps to Sentry
         run: pnpx sentry-expo-upload-sourcemaps dist

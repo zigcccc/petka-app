@@ -1,6 +1,6 @@
-import { type ExpoConfig } from 'expo/config';
+import type { ExpoConfig } from '@expo/config';
 
-import appPackage from './package.json';
+import appPackage from './package.json' with { type: 'json' };
 
 const isProd = process.env.APP_ENV === 'production';
 const name = isProd ? 'Petka' : 'Petka (DEV)';
@@ -20,7 +20,6 @@ const config: ExpoConfig = {
   icon: iconPath,
   scheme: 'petkaapp',
   userInterfaceStyle: 'automatic',
-  newArchEnabled: true,
   ios: {
     icon: iosIconPath,
     supportsTablet: false,
@@ -34,7 +33,6 @@ const config: ExpoConfig = {
       foregroundImage: isProd ? './src/assets/images/petka-app-icon-android-adaptive.png' : iconPath,
       backgroundColor: '#ffffff',
     },
-    edgeToEdgeEnabled: true,
     package: identifier,
     googleServicesFile: isProd ? (process.env.GOOGLE_SERVICES_JSON ?? './google-services.json') : undefined,
   },
@@ -68,6 +66,7 @@ const config: ExpoConfig = {
       },
     ],
     'expo-font',
+    'expo-image',
     'expo-localization',
     'expo-notifications',
     [
