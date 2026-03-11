@@ -1,6 +1,7 @@
 import expoConfig from 'eslint-config-expo/flat.js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import eslintPluginUnusedImports from 'eslint-plugin-unused-imports';
+import { importX } from 'eslint-plugin-import-x';
 import { defineConfig } from 'eslint/config';
 
 export default defineConfig([
@@ -11,6 +12,7 @@ export default defineConfig([
     ignores: ['convex/_generated/**'],
     plugins: {
       'unused-imports': eslintPluginUnusedImports,
+      'import-x': importX,
     },
     rules: {
       'no-unused-vars': 'off',
