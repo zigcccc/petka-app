@@ -96,7 +96,6 @@ export default function DailyPuzzleSolvedScreen() {
               <AttemptsDistributionGraph
                 distribtions={data.distribution}
                 isPuzzleFailed={isFailed}
-                numberOfAllPuzzles={data.totalPlayed}
                 numberOfCurrentAttempts={attempts?.length}
               />
             </Card>

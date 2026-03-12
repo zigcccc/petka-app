@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native-unistyles';
 import { Text } from '@/components/ui';
 
 type Props = {
-  numberOfAllPuzzles: number;
   numberOfCurrentAttempts?: number;
   distribtions: Record<number, number>;
   isPuzzleFailed: boolean;
@@ -13,21 +12,22 @@ type Props = {
 export function AttemptsDistributionGraph({
   distribtions,
   isPuzzleFailed,
-  numberOfAllPuzzles,
   numberOfCurrentAttempts = 0,
 }: Readonly<Props>) {
+  const maxDistribution = Math.max(...Object.values(distribtions));
+
   return (
     <View style={styles.distrubitionsContainer}>
       {Object.entries(distribtions).map(([k, v]) => {
         const score = k.replace('_', '');
-        const isCurrent = numberOfCurrentAttempts === parseInt(score) && !isPuzzleFailed;
+        const isCurrent = numberOfCurrentAttempts === parseInt(score, 10) && !isPuzzleFailed;
 
         return (
           <View key={k} style={styles.distrubitionsEntry}>
             <Text size="sm" style={{ width: '5%', textAlign: 'left' }}>
               {score}
             </Text>
-            <View style={styles.ditributionsEntryLine({ percentage: (v / numberOfAllPuzzles) * 95, isCurrent })}>
+            <View style={styles.ditributionsEntryLine({ percentage: (v / maxDistribution) * 95, isCurrent })}>
               <Text color={isCurrent ? 'white' : 'grey70'} size="sm">
                 {v}
               </Text>

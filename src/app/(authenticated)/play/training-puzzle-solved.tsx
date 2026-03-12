@@ -100,7 +100,6 @@ export default function TrainingPuzzleSolvedScreen() {
               <AttemptsDistributionGraph
                 distribtions={data.distribution}
                 isPuzzleFailed={isFailed}
-                numberOfAllPuzzles={data.totalWon}
                 numberOfCurrentAttempts={attempts?.length}
               />
             </Card>
