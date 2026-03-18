@@ -59,7 +59,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
                 posthog.capture('leaderboards:leave', {
                   leaderboardId,
                   userId: user._id,
-                  leaderboardType: leaderboardType.Enum.private,
+                  leaderboardType: leaderboardType.enum.private,
                 });
               })
               .catch(() => {
@@ -88,7 +88,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
               posthog.capture('leaderboards:delete', {
                 leaderboardId,
                 userId: user._id,
-                leaderboardType: leaderboardType.Enum.private,
+                leaderboardType: leaderboardType.enum.private,
               });
             })
             .catch(() => {
@@ -122,7 +122,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
               posthog.capture('leaderboards:update_name', {
                 leaderboardId,
                 userId: user._id,
-                leaderboardType: leaderboardType.Enum.private,
+                leaderboardType: leaderboardType.enum.private,
               });
             })
             .catch(() => {
@@ -157,7 +157,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
               posthog.capture('leaderboards:join', {
                 leaderboardId: leaderboard._id,
                 userId: user._id,
-                leaderboardType: leaderboardType.Enum.private,
+                leaderboardType: leaderboardType.enum.private,
               });
             })
             .catch((err) => {
@@ -202,7 +202,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
               posthog.capture('leaderboards:create', {
                 leaderboardId,
                 userId: user._id,
-                leaderboardType: leaderboardType.Enum.private,
+                leaderboardType: leaderboardType.enum.private,
               });
             })
             .catch(() => {
@@ -226,7 +226,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
         text: 'Kopiraj',
         onPress() {
           Clipboard.setStringAsync(inviteCode).then(() => {
-            posthog.capture('leaderboards:invite_code:copy', { leaderboardType: leaderboardType.Enum.private });
+            posthog.capture('leaderboards:invite_code:copy', { leaderboardType: leaderboardType.enum.private });
             toaster.toast('Koda kopirana', { intent: 'success' });
           });
         },
@@ -241,7 +241,7 @@ export function useLeaderboards(type: LeaderboardType, range: LeaderboardRange) 
     posthog.capture('leaderboards:actions_open', {
       leaderboardId: leaderboard._id,
       userId: user?._id!,
-      leaderboardType: leaderboardType.Enum.private,
+      leaderboardType: leaderboardType.enum.private,
     });
 
     actionSheet.present(

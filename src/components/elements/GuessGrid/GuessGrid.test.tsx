@@ -29,11 +29,11 @@ describe('<GuessGrid />', () => {
       userId: 'user1' as Id<'users'>,
       attempt: 'apple',
       checkedLetters: [
-        { letter: 'a', index: 0, status: checkedLetterStatus.Enum.misplaced },
-        { letter: 'p', index: 1, status: checkedLetterStatus.Enum.misplaced },
-        { letter: 'p', index: 2, status: checkedLetterStatus.Enum.invalid },
-        { letter: 'l', index: 3, status: checkedLetterStatus.Enum.misplaced },
-        { letter: 'e', index: 4, status: checkedLetterStatus.Enum.misplaced },
+        { letter: 'a', index: 0, status: checkedLetterStatus.enum.misplaced },
+        { letter: 'p', index: 1, status: checkedLetterStatus.enum.misplaced },
+        { letter: 'p', index: 2, status: checkedLetterStatus.enum.invalid },
+        { letter: 'l', index: 3, status: checkedLetterStatus.enum.misplaced },
+        { letter: 'e', index: 4, status: checkedLetterStatus.enum.misplaced },
       ],
     };
     const attempt2 = {
@@ -43,11 +43,11 @@ describe('<GuessGrid />', () => {
       userId: 'user1' as Id<'users'>,
       attempt: 'palms',
       checkedLetters: [
-        { letter: 'p', index: 0, status: checkedLetterStatus.Enum.correct },
-        { letter: 'a', index: 1, status: checkedLetterStatus.Enum.misplaced },
-        { letter: 'l', index: 2, status: checkedLetterStatus.Enum.misplaced },
-        { letter: 'm', index: 3, status: checkedLetterStatus.Enum.misplaced },
-        { letter: 's', index: 4, status: checkedLetterStatus.Enum.misplaced },
+        { letter: 'p', index: 0, status: checkedLetterStatus.enum.correct },
+        { letter: 'a', index: 1, status: checkedLetterStatus.enum.misplaced },
+        { letter: 'l', index: 2, status: checkedLetterStatus.enum.misplaced },
+        { letter: 'm', index: 3, status: checkedLetterStatus.enum.misplaced },
+        { letter: 's', index: 4, status: checkedLetterStatus.enum.misplaced },
       ],
     };
     const attempt3 = {
@@ -57,11 +57,11 @@ describe('<GuessGrid />', () => {
       userId: 'user1' as Id<'users'>,
       attempt: 'psalm',
       checkedLetters: [
-        { letter: 'p', index: 0, status: checkedLetterStatus.Enum.correct },
-        { letter: 's', index: 1, status: checkedLetterStatus.Enum.correct },
-        { letter: 'a', index: 2, status: checkedLetterStatus.Enum.correct },
-        { letter: 'l', index: 3, status: checkedLetterStatus.Enum.correct },
-        { letter: 'm', index: 4, status: checkedLetterStatus.Enum.correct },
+        { letter: 'p', index: 0, status: checkedLetterStatus.enum.correct },
+        { letter: 's', index: 1, status: checkedLetterStatus.enum.correct },
+        { letter: 'a', index: 2, status: checkedLetterStatus.enum.correct },
+        { letter: 'l', index: 3, status: checkedLetterStatus.enum.correct },
+        { letter: 'm', index: 4, status: checkedLetterStatus.enum.correct },
       ],
     };
 

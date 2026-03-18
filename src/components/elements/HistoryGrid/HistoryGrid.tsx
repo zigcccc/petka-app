@@ -27,8 +27,8 @@ export function HistoryGrid({ puzzle, userId, style, cellWidth }: Readonly<Props
   const isFailedByUser = !!userId && puzzle.attempts?.length === 6 && !isSolvedByUser;
   const isSolvedOrFailedByUser = isSolvedByUser || isFailedByUser;
   const shouldShowSolution =
-    puzzle.type === puzzleType.Enum.daily ? isInPast || isSolvedOrFailedByUser : isSolvedOrFailedByUser;
-  const shouldShowOverlay = !isSolvedOrFailedByUser && puzzle.type === puzzleType.Enum.daily;
+    puzzle.type === puzzleType.enum.daily ? isInPast || isSolvedOrFailedByUser : isSolvedOrFailedByUser;
+  const shouldShowOverlay = !isSolvedOrFailedByUser && puzzle.type === puzzleType.enum.daily;
 
   const paddedAttempts = useMemo(() => {
     const padded: PuzzleGuessAttempt[] = new Array(6)

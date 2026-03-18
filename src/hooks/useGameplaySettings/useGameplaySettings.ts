@@ -17,7 +17,7 @@ const GAMEPLAY_SETTINGS_STORAGE_KEY = 'GAMEPLAY_SETTINGS';
 
 const gameplaySettingsDefaultValues = {
   autosubmitPuzzleAttempt: true,
-  keyboardType: gameplayKeyboardType.Enum.qwerty,
+  keyboardType: gameplayKeyboardType.enum.qwerty,
 } as const;
 
 export function useGameplaySettings() {
@@ -56,7 +56,7 @@ export function useGameplaySettings() {
   return useMemo(
     () => ({
       autosubmitPuzzleAttempt: settings && settings !== 'loading' ? settings.autosubmitPuzzleAttempt : true,
-      keyboardType: settings && settings !== 'loading' ? settings.keyboardType : gameplayKeyboardType.Enum.qwerty,
+      keyboardType: settings && settings !== 'loading' ? settings.keyboardType : gameplayKeyboardType.enum.qwerty,
       isUninitialised: settings !== 'loading' && !settings,
       updateSettings,
       setDefaultSettings,

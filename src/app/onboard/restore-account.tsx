@@ -12,8 +12,8 @@ import { useUser } from '@/hooks/useUser';
 import { getOsMajorVersion } from '@/utils/platform';
 
 const restoreAccountModel = z.object({
-  id: z.string().trim().min(1, { message: 'Polje je obvezno.' }),
-  nickname: z.string().trim().min(1, { message: 'Polje je obvezno.' }),
+  id: z.string().trim().min(1, { error: 'Polje je obvezno.' }),
+  nickname: z.string().trim().min(1, { error: 'Polje je obvezno.' }),
 });
 type RestoreAccount = z.infer<typeof restoreAccountModel>;
 

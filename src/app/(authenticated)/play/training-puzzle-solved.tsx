@@ -15,7 +15,7 @@ export default function TrainingPuzzleSolvedScreen() {
   const router = useRouter();
   const { attempts, onCreateTrainingPuzzle, isCreating, isMarkingAsSolved, isFailed, onShareResults, puzzle } =
     useTrainingPuzzle();
-  const { isLoading, data } = usePuzzleStatistics(puzzleType.Enum.training);
+  const { isLoading, data } = usePuzzleStatistics(puzzleType.enum.training);
   const { isLoading: isLoadingDictionaryEntry, data: dictionaryEntry } = useDictionaryEntry(
     puzzle ? { term: puzzle.solution } : 'skip'
   );

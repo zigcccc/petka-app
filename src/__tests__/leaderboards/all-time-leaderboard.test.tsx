@@ -44,7 +44,7 @@ describe('<AllTimeLeaderboardScreen />', () => {
 
   it('should trigger global leaderboard and private leaderboards queries with "alltime" param', () => {
     render(<AllTimeLeaderboardScreen />);
-    expect(useLeaderboardsSpy).toHaveBeenCalledWith(leaderboardType.Enum.private, leaderboardRange.Enum.alltime);
+    expect(useLeaderboardsSpy).toHaveBeenCalledWith(leaderboardType.enum.private, leaderboardRange.enum.alltime);
   });
 
   it('should set the parent navigation option title to "Lestvica vseh časov"', () => {

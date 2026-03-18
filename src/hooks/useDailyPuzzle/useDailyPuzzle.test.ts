@@ -241,7 +241,7 @@ describe('useDailyPuzzle', () => {
     expect(mockCaptureEvent).toHaveBeenCalledWith('puzzle:solved', {
       puzzleId: testDailyPuzzle1._id,
       userId: testUser1._id,
-      type: puzzleType.Enum.daily,
+      type: puzzleType.enum.daily,
     });
 
     expect(hapticsImpactAsyncSpy).not.toHaveBeenCalled();
@@ -276,7 +276,7 @@ describe('useDailyPuzzle', () => {
     expect(mockCaptureEvent).toHaveBeenCalledWith('puzzle:solved', {
       puzzleId: testDailyPuzzle1._id,
       userId: testUser1._id,
-      type: puzzleType.Enum.daily,
+      type: puzzleType.enum.daily,
     });
 
     expect(mockToast).not.toHaveBeenCalled();
@@ -310,7 +310,7 @@ describe('useDailyPuzzle', () => {
     expect(mockCaptureEvent).toHaveBeenCalledWith('puzzle:solved', {
       puzzleId: testDailyPuzzle1._id,
       userId: testUser1._id,
-      type: puzzleType.Enum.daily,
+      type: puzzleType.enum.daily,
     });
 
     expect(mockToast).not.toHaveBeenCalled();

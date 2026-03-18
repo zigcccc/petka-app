@@ -8,7 +8,7 @@ export const testGlobalLeaderboard1: LeaderboardWithScores = {
   _creationTime: 1751879215893,
   inviteCode: null,
   name: 'Globalna lestvica',
-  type: leaderboardType.Enum.global,
+  type: leaderboardType.enum.global,
   users: [testUser1._id],
   creatorId: undefined,
   scores: [{ isForCurrentUser: true, position: 1, score: 7, user: testUser1 }],
@@ -19,7 +19,7 @@ export const testPrivateLeaderboard1: LeaderboardWithScores = {
   _creationTime: 1751879215893,
   inviteCode: null,
   name: 'Moja lestvica',
-  type: leaderboardType.Enum.private,
+  type: leaderboardType.enum.private,
   users: [testUser1._id],
   creatorId: testUser1._id,
   scores: [

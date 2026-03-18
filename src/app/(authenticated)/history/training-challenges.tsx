@@ -15,7 +15,7 @@ export default function TrainingChallengesHistoryScreen() {
   const timestampRef = useRef(Date.now());
   const { results, loadMore, status } = usePaginatedQuery(
     api.puzzles.queries.list,
-    user?._id ? { userId: user._id, type: puzzleType.Enum.training, timestamp: timestampRef.current } : 'skip',
+    user?._id ? { userId: user._id, type: puzzleType.enum.training, timestamp: timestampRef.current } : 'skip',
     { initialNumItems: 7 }
   );
 

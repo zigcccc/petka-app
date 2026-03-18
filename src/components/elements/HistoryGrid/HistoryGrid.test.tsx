@@ -13,7 +13,7 @@ const testPuzzle = {
   year: 2023,
   month: 1,
   day: 1,
-  type: puzzleType.Enum.daily,
+  type: puzzleType.enum.daily,
   solution: 'apple',
   solvedBy: [],
   attempts: [],
@@ -57,7 +57,7 @@ describe('<HistoryGrid />', () => {
   });
 
   it('shows solution for non-daily puzzle if solved', () => {
-    const puzzle = { ...testPuzzle, type: puzzleType.Enum.training, solvedBy: ['user1'] };
+    const puzzle = { ...testPuzzle, type: puzzleType.enum.training, solvedBy: ['user1'] };
     render(<HistoryGrid puzzle={puzzle} userId="user1" />);
 
     expect(screen.getByText(/Rešitev:/)).toBeOnTheScreen();

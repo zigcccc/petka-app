@@ -41,14 +41,14 @@ export function useGuessGrid({ attempts, onSubmitAttempt }: Options) {
           continue;
         }
 
-        const isExistingLetterCorrect = existingLetter.status === checkedLetterStatus.Enum.correct;
-        const isExistingLetterMisplaced = existingLetter.status === checkedLetterStatus.Enum.misplaced;
+        const isExistingLetterCorrect = existingLetter.status === checkedLetterStatus.enum.correct;
+        const isExistingLetterMisplaced = existingLetter.status === checkedLetterStatus.enum.misplaced;
 
         if (isExistingLetterCorrect) {
           continue;
         }
 
-        if (isExistingLetterMisplaced && letter.status === checkedLetterStatus.Enum.invalid) {
+        if (isExistingLetterMisplaced && letter.status === checkedLetterStatus.enum.invalid) {
           continue;
         }
 

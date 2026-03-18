@@ -20,6 +20,6 @@ export const testPuzzleStatistics1: UserPuzzleStatistics = {
   totalFailed: 1,
   currentStreak: 2,
   maxStreak: 3,
-  puzzleType: puzzleType.Enum.daily,
+  puzzleType: puzzleType.enum.daily,
   userId: testUser1._id,
 };

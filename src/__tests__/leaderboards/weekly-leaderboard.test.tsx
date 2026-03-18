@@ -45,7 +45,7 @@ describe('<WeeklyLeaderboardScreen />', () => {
   it('should trigger global leaderboard and private leaderboards queries with "weekly" param', () => {
     render(<WeeklyLeaderboardScreen />);
 
-    expect(useLeaderboardsSpy).toHaveBeenCalledWith(leaderboardType.Enum.private, leaderboardRange.Enum.weekly);
+    expect(useLeaderboardsSpy).toHaveBeenCalledWith(leaderboardType.enum.private, leaderboardRange.enum.weekly);
   });
 
   it('should set the parent navigation option title to "Tedenska lestvica"', () => {

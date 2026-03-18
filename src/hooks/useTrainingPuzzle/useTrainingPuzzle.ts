@@ -55,7 +55,7 @@ export function useTrainingPuzzle() {
   const handleCreateTrainingPuzzle = useCallback(async () => {
     try {
       const puzzleId = await createTrainingPuzzle({ userId: user?._id! });
-      posthog.capture('puzzle:created', { puzzleId, userId: user?._id!, type: puzzleType.Enum.training });
+      posthog.capture('puzzle:created', { puzzleId, userId: user?._id!, type: puzzleType.enum.training });
     } catch {
       toaster.toast('Nekaj je šlo narobe.', { intent: 'error' });
     }
@@ -63,7 +63,7 @@ export function useTrainingPuzzle() {
 
   const handleMarkPuzzleAsSolved = async () => {
     await markPuzzleAsSolved({ puzzleId: puzzle?._id!, userId: user?._id! });
-    posthog.capture('puzzle:solved', { puzzleId: puzzle?._id!, userId: user?._id!, type: puzzleType.Enum.training });
+    posthog.capture('puzzle:solved', { puzzleId: puzzle?._id!, userId: user?._id!, type: puzzleType.enum.training });
   };
 
   const handleSharePuzzleResults = useCallback(async () => {

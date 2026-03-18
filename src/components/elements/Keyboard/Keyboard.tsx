@@ -18,7 +18,7 @@ export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Readon
   const { keyboardType } = useGameplaySettings();
 
   const keys = useMemo(() => {
-    return keyboardType === gameplayKeyboardType.Enum.qwerty ? qwertyKeys : abcdKeys;
+    return keyboardType === gameplayKeyboardType.enum.qwerty ? qwertyKeys : abcdKeys;
   }, [keyboardType]);
 
   return (
@@ -27,9 +27,9 @@ export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Readon
         <View key={idx} style={styles.keyboardRow}>
           {keysRow.map((key) => {
             const checkedLetter = checkedLetters.find((checkedLetter) => checkedLetter.letter === key);
-            const isCorrect = checkedLetter?.status === checkedLetterStatus.Enum.correct;
-            const isInvalid = checkedLetter?.status === checkedLetterStatus.Enum.invalid;
-            const isMisplaced = checkedLetter?.status === checkedLetterStatus.Enum.misplaced;
+            const isCorrect = checkedLetter?.status === checkedLetterStatus.enum.correct;
+            const isInvalid = checkedLetter?.status === checkedLetterStatus.enum.invalid;
+            const isMisplaced = checkedLetter?.status === checkedLetterStatus.enum.misplaced;
             const isSpecialCharacter = key.startsWith('{') && key.endsWith('}');
 
             return (

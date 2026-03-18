@@ -10,9 +10,9 @@ function GuessGridCell({ testID, value, idx, checkedLetters = [], cellWidth }: R
   const checkedLetter = checkedLetters.find(
     (checkedLetter) => checkedLetter.index === idx && checkedLetter.letter === value
   );
-  const isCorrect = value ? checkedLetter?.status === checkedLetterStatus.Enum.correct : false;
-  const isMisplaced = value ? checkedLetter?.status === checkedLetterStatus.Enum.misplaced : false;
-  const isInvalid = value ? checkedLetter?.status === checkedLetterStatus.Enum.invalid : false;
+  const isCorrect = value ? checkedLetter?.status === checkedLetterStatus.enum.correct : false;
+  const isMisplaced = value ? checkedLetter?.status === checkedLetterStatus.enum.misplaced : false;
+  const isInvalid = value ? checkedLetter?.status === checkedLetterStatus.enum.invalid : false;
 
   return (
     <View style={styles.cell({ isCorrect, isInvalid, isMisplaced, cellWidth })} testID={testID}>

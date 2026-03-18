@@ -77,7 +77,7 @@ describe('Settings screen', () => {
     });
     useGameplaySettingsSpy.mockReturnValue({
       autosubmitPuzzleAttempt: true,
-      keyboardType: gameplayKeyboardType.Enum.qwerty,
+      keyboardType: gameplayKeyboardType.enum.qwerty,
       updateSettings: mockUpdateSettings,
       setDefaultSettings: mockSetDefaultSettings,
     });
@@ -138,10 +138,10 @@ describe('Settings screen', () => {
     render(<SettingsScreen />);
 
     fireEvent.press(screen.getByRole('radio', { name: /QWERTY tipkovnica/ }));
-    expect(mockUpdateSettings).toHaveBeenCalledWith({ keyboardType: gameplayKeyboardType.Enum.qwerty });
+    expect(mockUpdateSettings).toHaveBeenCalledWith({ keyboardType: gameplayKeyboardType.enum.qwerty });
 
     fireEvent.press(screen.getByRole('radio', { name: /ABCDE tipkovnica/ }));
-    expect(mockUpdateSettings).toHaveBeenCalledWith({ keyboardType: gameplayKeyboardType.Enum.abcde });
+    expect(mockUpdateSettings).toHaveBeenCalledWith({ keyboardType: gameplayKeyboardType.enum.abcde });
   });
 
   it('should set default settings on "Ponastavi" button press', async () => {

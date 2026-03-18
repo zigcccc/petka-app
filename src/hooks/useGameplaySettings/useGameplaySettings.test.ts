@@ -31,13 +31,13 @@ describe('useGameplaySettings', () => {
     await waitFor(() => {
       expect(result.current.isUninitialised).toBe(true);
     });
-    expect(result.current.keyboardType).toBe(gameplayKeyboardType.Enum.qwerty);
+    expect(result.current.keyboardType).toBe(gameplayKeyboardType.enum.qwerty);
   });
 
   it('should load saved settings from storage', async () => {
     const saved: GameplaySettings = {
       autosubmitPuzzleAttempt: false,
-      keyboardType: gameplayKeyboardType.Enum.abcde,
+      keyboardType: gameplayKeyboardType.enum.abcde,
     };
     (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(JSON.stringify(saved));
 
@@ -47,7 +47,7 @@ describe('useGameplaySettings', () => {
       expect(result.current.autosubmitPuzzleAttempt).toBe(false);
     });
 
-    expect(result.current.keyboardType).toBe(gameplayKeyboardType.Enum.abcde);
+    expect(result.current.keyboardType).toBe(gameplayKeyboardType.enum.abcde);
     expect(result.current.isUninitialised).toBe(false);
   });
 
@@ -60,7 +60,7 @@ describe('useGameplaySettings', () => {
       expect(result.current.autosubmitPuzzleAttempt).toBe(true);
     });
 
-    expect(result.current.keyboardType).toBe(gameplayKeyboardType.Enum.qwerty);
+    expect(result.current.keyboardType).toBe(gameplayKeyboardType.enum.qwerty);
   });
 
   it('should update settings and save to storage', async () => {
@@ -80,7 +80,7 @@ describe('useGameplaySettings', () => {
       'GAMEPLAY_SETTINGS',
       JSON.stringify({
         autosubmitPuzzleAttempt: false,
-        keyboardType: gameplayKeyboardType.Enum.qwerty,
+        keyboardType: gameplayKeyboardType.enum.qwerty,
       })
     );
     expect(result.current.autosubmitPuzzleAttempt).toBe(false);
@@ -90,7 +90,7 @@ describe('useGameplaySettings', () => {
   it('should merge new settings with existing ones', async () => {
     const saved: GameplaySettings = {
       autosubmitPuzzleAttempt: false,
-      keyboardType: gameplayKeyboardType.Enum.abcde,
+      keyboardType: gameplayKeyboardType.enum.abcde,
     };
     (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(JSON.stringify(saved));
 
@@ -101,14 +101,14 @@ describe('useGameplaySettings', () => {
     });
 
     await act(async () => {
-      await result.current.updateSettings({ keyboardType: gameplayKeyboardType.Enum.qwerty });
+      await result.current.updateSettings({ keyboardType: gameplayKeyboardType.enum.qwerty });
     });
 
     expect(AsyncStorage.setItem).toHaveBeenCalledWith(
       'GAMEPLAY_SETTINGS',
       JSON.stringify({
         autosubmitPuzzleAttempt: false,
-        keyboardType: gameplayKeyboardType.Enum.qwerty,
+        keyboardType: gameplayKeyboardType.enum.qwerty,
       })
     );
   });

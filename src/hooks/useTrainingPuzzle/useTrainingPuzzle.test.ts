@@ -131,7 +131,7 @@ describe('useTrainingPuzzle', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('puzzle:created', {
         puzzleId: 'createdPuzzleId',
         userId: testUser1._id,
-        type: puzzleType.Enum.training,
+        type: puzzleType.enum.training,
       });
     });
 
@@ -272,7 +272,7 @@ describe('useTrainingPuzzle', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('puzzle:solved', {
         puzzleId: testTrainingPuzzle1._id,
         userId: testUser1._id,
-        type: puzzleType.Enum.training,
+        type: puzzleType.enum.training,
       });
     });
   });
