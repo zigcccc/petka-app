@@ -36,7 +36,7 @@ export function useDailyPuzzle() {
       if (isCorrect) {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         markPuzzleAsSolved({ puzzleId: puzzle?._id!, userId: user?._id! });
-        posthog.capture('puzzle:solved', { puzzleId: puzzle?._id!, userId: user?._id!, type: puzzleType.Enum.daily });
+        posthog.capture('puzzle:solved', { puzzleId: puzzle?._id!, userId: user?._id!, type: puzzleType.enum.daily });
       } else if (attemptIdx === 5) {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
         markPuzzleAsSolved({ puzzleId: puzzle?._id!, userId: user?._id! });

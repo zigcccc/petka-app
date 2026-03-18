@@ -1,5 +1,5 @@
 import { NoOp } from 'convex-helpers/server/customFunctions';
-import { zCustomQuery, zCustomAction, zCustomMutation } from 'convex-helpers/server/zod';
+import { zCustomQuery, zCustomAction, zCustomMutation } from 'convex-helpers/server/zod4';
 
 import {
   query as baseQuery,

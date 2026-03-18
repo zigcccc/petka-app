@@ -1,5 +1,5 @@
 import { ConvexError } from 'convex/values';
-import { zid } from 'convex-helpers/server/zod';
+import { zid } from 'convex-helpers/server/zod4';
 import { z } from 'zod';
 
 import { internal } from '../_generated/api';
@@ -87,7 +87,7 @@ export const cleanupUserData = internalMutation({
 
     const joinedLeaderboardsQuery = ctx.db
       .query('leaderboards')
-      .withIndex('by_type', (q) => q.eq('type', leaderboardType.Enum.private));
+      .withIndex('by_type', (q) => q.eq('type', leaderboardType.enum.private));
     for await (const joinedLeaderboard of joinedLeaderboardsQuery) {
       await ctx.db.patch(joinedLeaderboard._id, { users: joinedLeaderboard.users?.filter((userId) => userId !== id) });
     }
@@ -101,7 +101,7 @@ export const cleanupUserData = internalMutation({
 
     const puzzlesQuery = ctx.db
       .query('puzzles')
-      .withIndex('by_type_creator', (q) => q.eq('type', puzzleType.Enum.training).eq('creatorId', id));
+      .withIndex('by_type_creator', (q) => q.eq('type', puzzleType.enum.training).eq('creatorId', id));
     for await (const puzzle of puzzlesQuery) {
       await ctx.db.delete(puzzle._id);
     }

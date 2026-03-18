@@ -16,7 +16,7 @@ const UniIcon = withUnistyles(Octicons);
 export default function DailyPuzzleSolvedScreen() {
   const router = useRouter();
   const { attempts, isFailed, onShareResults, puzzle } = useDailyPuzzle();
-  const { isLoading, data } = usePuzzleStatistics(puzzleType.Enum.daily);
+  const { isLoading, data } = usePuzzleStatistics(puzzleType.enum.daily);
   const { isLoading: isLoadingDictionaryEntry, data: dictionaryEntry } = useDictionaryEntry(
     puzzle ? { term: puzzle.solution } : 'skip'
   );

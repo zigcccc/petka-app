@@ -97,7 +97,7 @@ describe('useLeaderboards', () => {
   const testLeaderboard = {
     _id: 'testLeaderboardId' as Id<'leaderboards'>,
     _creationTime: 1751438306804,
-    type: leaderboardType.Enum.private,
+    type: leaderboardType.enum.private,
     creatorId: 'testCreatorId' as Id<'users'>,
     inviteCode: 'INVITE_ME',
     name: 'Test leaderboard',
@@ -107,7 +107,7 @@ describe('useLeaderboards', () => {
 
   const testUser = { _id: 'testUserId' as Id<'users'> };
 
-  const initialProps = { type: leaderboardType.Enum.private, range: leaderboardRange.Enum.weekly };
+  const initialProps = { type: leaderboardType.enum.private, range: leaderboardRange.enum.weekly };
 
   const renderHook = renderHookBase<
     ReturnType<typeof useLeaderboards>,
@@ -191,7 +191,7 @@ describe('useLeaderboards', () => {
         expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:join', {
           leaderboardId: 'leaderboard1',
           userId: testUser._id,
-          leaderboardType: leaderboardType.Enum.private,
+          leaderboardType: leaderboardType.enum.private,
         });
       });
       expect(mockToast).not.toHaveBeenCalled();
@@ -318,7 +318,7 @@ describe('useLeaderboards', () => {
         expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:create', {
           leaderboardId: 'leaderboardId',
           userId: testUser._id,
-          leaderboardType: leaderboardType.Enum.private,
+          leaderboardType: leaderboardType.enum.private,
         });
       });
 
@@ -431,14 +431,14 @@ describe('useLeaderboards', () => {
         expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:delete', {
           leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
           userId: testUser._id,
-          leaderboardType: leaderboardType.Enum.private,
+          leaderboardType: leaderboardType.enum.private,
         });
       });
 
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
       expect(mockToast).not.toHaveBeenCalled();
     });
@@ -478,12 +478,12 @@ describe('useLeaderboards', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
       expect(mockCaptureEvent).not.toHaveBeenCalledWith('leaderboards:delete', {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
     });
 
@@ -515,7 +515,7 @@ describe('useLeaderboards', () => {
         expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:update_name', {
           leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
           userId: testUser._id,
-          leaderboardType: leaderboardType.Enum.private,
+          leaderboardType: leaderboardType.enum.private,
         });
       });
 
@@ -523,7 +523,7 @@ describe('useLeaderboards', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
     });
 
@@ -558,12 +558,12 @@ describe('useLeaderboards', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
       expect(mockCaptureEvent).not.toHaveBeenCalledWith('leaderboards:update_name', {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
     });
 
@@ -593,12 +593,12 @@ describe('useLeaderboards', () => {
         expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
           leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
           userId: testUser._id,
-          leaderboardType: leaderboardType.Enum.private,
+          leaderboardType: leaderboardType.enum.private,
         });
         expect(mockCaptureEvent).not.toHaveBeenCalledWith('leaderboards:update_name', {
           leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
           userId: testUser._id,
-          leaderboardType: leaderboardType.Enum.private,
+          leaderboardType: leaderboardType.enum.private,
         });
       }
     );
@@ -627,12 +627,12 @@ describe('useLeaderboards', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
       expect(mockCaptureEvent).not.toHaveBeenCalledWith('leaderboards:update_name', {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
     });
 
@@ -665,10 +665,10 @@ describe('useLeaderboards', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:invite_code:copy', {
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
     });
 
@@ -691,10 +691,10 @@ describe('useLeaderboards', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboardWithCurrentUserAsCreator._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
       expect(mockCaptureEvent).not.toHaveBeenCalledWith('leaderboards:invite_code:copy', {
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
     });
   });
@@ -740,13 +740,13 @@ describe('useLeaderboards', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboard._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
       await waitFor(() => {
         expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:leave', {
           leaderboardId: testLeaderboard._id,
           userId: testUser._id,
-          leaderboardType: leaderboardType.Enum.private,
+          leaderboardType: leaderboardType.enum.private,
         });
       });
     });
@@ -786,12 +786,12 @@ describe('useLeaderboards', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboard._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
       expect(mockCaptureEvent).not.toHaveBeenCalledWith('leaderboards:leave', {
         leaderboardId: testLeaderboard._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
     });
 
@@ -813,12 +813,12 @@ describe('useLeaderboards', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboard._id,
         userId: undefined,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
       expect(mockCaptureEvent).not.toHaveBeenCalledWith('leaderboards:leave', {
         leaderboardId: testLeaderboard._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
     });
 
@@ -851,10 +851,10 @@ describe('useLeaderboards', () => {
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:actions_open', {
         leaderboardId: testLeaderboard._id,
         userId: testUser._id,
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
       expect(mockCaptureEvent).toHaveBeenCalledWith('leaderboards:invite_code:copy', {
-        leaderboardType: leaderboardType.Enum.private,
+        leaderboardType: leaderboardType.enum.private,
       });
     });
   });

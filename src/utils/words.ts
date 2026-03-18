@@ -35,21 +35,21 @@ export function checkWordleAttempt(attempt: string, solution: string) {
 
   for (let i = 0; i < attemptLetters.length; i++) {
     if (attemptLetters[i] === solutionLetters[i]) {
-      result.push({ letter: attemptLetters[i], index: i, status: checkedLetterStatus.Enum.correct });
+      result.push({ letter: attemptLetters[i], index: i, status: checkedLetterStatus.enum.correct });
       usedIndices[i] = true;
     } else {
-      result.push({ letter: attemptLetters[i], index: i, status: checkedLetterStatus.Enum.invalid });
+      result.push({ letter: attemptLetters[i], index: i, status: checkedLetterStatus.enum.invalid });
     }
   }
 
   for (let i = 0; i < attemptLetters.length; i++) {
     const res = result[i];
-    if (res.status !== checkedLetterStatus.Enum.invalid) continue;
+    if (res.status !== checkedLetterStatus.enum.invalid) continue;
 
     const matchIndex = solutionLetters.findIndex((l, j) => l === res.letter && !usedIndices[j]);
 
     if (matchIndex !== -1) {
-      result[i].status = checkedLetterStatus.Enum.misplaced;
+      result[i].status = checkedLetterStatus.enum.misplaced;
       usedIndices[matchIndex] = true;
     }
   }

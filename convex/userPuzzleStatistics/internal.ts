@@ -15,7 +15,7 @@ export const readAllUsersQuery = internalQuery({
 export const populateForUser = internalMutation({
   args: { id: v.id('users') },
   async handler(ctx, { id }) {
-    for (const type of [puzzleType.Enum.daily, puzzleType.Enum.training]) {
+    for (const type of [puzzleType.enum.daily, puzzleType.enum.training]) {
       const existingUserStatistics = await ctx.db
         .query('userPuzzleStatistics')
         .withIndex('by_user_puzzle_type', (q) => q.eq('userId', id).eq('puzzleType', type))
@@ -25,7 +25,7 @@ export const populateForUser = internalMutation({
       }
 
       const basePuzzlesQuery =
-        type === puzzleType.Enum.daily
+        type === puzzleType.enum.daily
           ? ctx.db.query('puzzles').withIndex('by_type', (q) => q.eq('type', type))
           : ctx.db.query('puzzles').withIndex('by_type_creator', (q) => q.eq('type', type).eq('creatorId', id));
       const allPuzzles = await basePuzzlesQuery.order('desc').collect();
@@ -59,7 +59,7 @@ export const populateForUser = internalMutation({
         const numOfAttempts = attempts.length;
         const lastAttempt = attempts.at(-1);
         const isLastAttemptCorrect = lastAttempt?.checkedLetters.every(
-          (checkedLetter) => checkedLetter.status === checkedLetterStatus.Enum.correct
+          (checkedLetter) => checkedLetter.status === checkedLetterStatus.enum.correct
         );
 
         if (isLastAttemptCorrect) {

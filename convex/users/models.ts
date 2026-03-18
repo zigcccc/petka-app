@@ -1,5 +1,5 @@
 import { defineTable } from 'convex/server';
-import { zodToConvex } from 'convex-helpers/server/zod';
+import { zodToConvex } from 'convex-helpers/server/zod4';
 import { z } from 'zod';
 
 import { getBaseDbModel } from '../shared/models';
@@ -13,13 +13,13 @@ export type User = z.infer<typeof userModel>;
 export const createUserModel = z.object({
   nickname: z
     .string()
-    .min(3, { message: 'Vzdevek mora vsebovati vsaj 3 znake.' })
-    .max(20, { message: 'Vzdevek lahko vsebuje največ 20 znakov.' })
+    .min(3, { error: 'Vzdevek mora vsebovati vsaj 3 znake.' })
+    .max(20, { error: 'Vzdevek lahko vsebuje največ 20 znakov.' })
     .regex(/^(?!.*(@|https?:\/\/|www\.|\.\w{2,})).*$/, {
-      message: 'Vzdevek ne sme vsebovati spletnih ali e-poštnih naslovov.',
+      error: 'Vzdevek ne sme vsebovati spletnih ali e-poštnih naslovov.',
     })
     .regex(/[a-zA-Z0-9]/, {
-      message: 'Vzdevek mora vsebovati vsaj eno črko ali številko.',
+      error: 'Vzdevek mora vsebovati vsaj eno črko ali številko.',
     }),
 });
 export type CreateUser = z.infer<typeof createUserModel>;

@@ -62,7 +62,7 @@ describe('Training puzzle solved screen', () => {
 
   it('should trigger puzzle statistics query with "training" as a puzzle type param', () => {
     render(<TrainingPuzzleSolvedScreen />);
-    expect(usePuzzleStatisticsSpy).toHaveBeenCalledWith(puzzleType.Enum.training);
+    expect(usePuzzleStatisticsSpy).toHaveBeenCalledWith(puzzleType.enum.training);
   });
 
   it('should render correct title and subtile when isFailed=false', () => {

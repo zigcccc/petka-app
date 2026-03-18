@@ -15,7 +15,7 @@ describe('<Keyboard />', () => {
   const useGameplaySettingsSpy = useGameplaySettings as jest.Mock;
 
   beforeEach(() => {
-    useGameplaySettingsSpy.mockReturnValue({ keyboardType: gameplayKeyboardType.Enum.qwerty });
+    useGameplaySettingsSpy.mockReturnValue({ keyboardType: gameplayKeyboardType.enum.qwerty });
   });
 
   it('should render without crashing', () => {
@@ -54,9 +54,9 @@ describe('<Keyboard />', () => {
 
   it('should apply styles based on checked letters status', () => {
     const checkedLetters = [
-      { index: 0, letter: 'a', status: checkedLetterStatus.Enum.correct },
-      { index: 1, letter: 'b', status: checkedLetterStatus.Enum.misplaced },
-      { index: 2, letter: 'c', status: checkedLetterStatus.Enum.invalid },
+      { index: 0, letter: 'a', status: checkedLetterStatus.enum.correct },
+      { index: 1, letter: 'b', status: checkedLetterStatus.enum.misplaced },
+      { index: 2, letter: 'c', status: checkedLetterStatus.enum.invalid },
     ];
     render(<Keyboard checkedLetters={checkedLetters} isDisabled={false} onKeyPress={() => {}} />);
 
@@ -76,8 +76,8 @@ describe('<Keyboard />', () => {
   });
 
   it.each([
-    { keyboardType: gameplayKeyboardType.Enum.abcde, expectedFirstKey: 'a' },
-    { keyboardType: gameplayKeyboardType.Enum.qwerty, expectedFirstKey: 'e' },
+    { keyboardType: gameplayKeyboardType.enum.abcde, expectedFirstKey: 'a' },
+    { keyboardType: gameplayKeyboardType.enum.qwerty, expectedFirstKey: 'e' },
   ])(
     'should render "$expectedFirstKey" as the first key when keyboard layout is $keyboardType',
     ({ keyboardType, expectedFirstKey }) => {

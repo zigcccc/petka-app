@@ -18,7 +18,7 @@ export default function AllTimeLeaderboardScreen() {
     onPresentLeaderboardActions,
     onCreatePrivateLeaderboard,
     onJoinPrivateLeaderboard,
-  } = useLeaderboards(leaderboardType.Enum.private, leaderboardRange.Enum.alltime);
+  } = useLeaderboards(leaderboardType.enum.private, leaderboardRange.enum.alltime);
 
   useFocusEffect(
     useCallback(() => {

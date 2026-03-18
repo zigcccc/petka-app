@@ -26,7 +26,7 @@ describe('Gameplay Settings Screen', () => {
     useRouterSpy.mockReturnValue({ replace: mockReplace });
     useGameplaySettingsSpy.mockReturnValue({
       autosubmitPuzzleAttempt: true,
-      keyboardType: gameplayKeyboardType.Enum.qwerty,
+      keyboardType: gameplayKeyboardType.enum.qwerty,
       updateSettings: mockUpdateSettings,
       isUninitialised: true,
       setDefaultSettings: mockSetDefaultSettings,
@@ -72,8 +72,8 @@ describe('Gameplay Settings Screen', () => {
   });
 
   it.each([
-    { radioButton: 'QWERTY tipkovnica', keyboardType: gameplayKeyboardType.Enum.qwerty },
-    { radioButton: 'ABCDE tipkovnica', keyboardType: gameplayKeyboardType.Enum.abcde },
+    { radioButton: 'QWERTY tipkovnica', keyboardType: gameplayKeyboardType.enum.qwerty },
+    { radioButton: 'ABCDE tipkovnica', keyboardType: gameplayKeyboardType.enum.abcde },
   ])('should update gameplay setting on "$radioButton" radio button press', ({ radioButton, keyboardType }) => {
     render(<GameplaySettingsScreen />);
 

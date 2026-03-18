@@ -30,7 +30,7 @@ describe('usePuzzleStatistics', () => {
   it('should trigger puzzle statistics query with "skip" param if user data is not available', () => {
     useUserSpy.mockReturnValue({ user: null });
 
-    renderHook(() => usePuzzleStatistics(puzzleType.Enum.daily));
+    renderHook(() => usePuzzleStatistics(puzzleType.enum.daily));
 
     expect(usePuzzlesStatisticsQuerySpy).toHaveBeenCalledWith('skip');
   });
@@ -38,11 +38,11 @@ describe('usePuzzleStatistics', () => {
   it('should trigger puzzle statistics query with userId and puzzle type params when user data is available', () => {
     useUserSpy.mockReturnValue({ user: testUser1 });
 
-    renderHook(() => usePuzzleStatistics(puzzleType.Enum.daily));
+    renderHook(() => usePuzzleStatistics(puzzleType.enum.daily));
 
     expect(usePuzzlesStatisticsQuerySpy).toHaveBeenCalledWith({
       userId: testUser1._id,
-      puzzleType: puzzleType.Enum.daily,
+      puzzleType: puzzleType.enum.daily,
     });
   });
 
@@ -55,7 +55,7 @@ describe('usePuzzleStatistics', () => {
     ({ isLoading, isNotFound }) => {
       usePuzzlesStatisticsQuerySpy.mockReturnValue({ data: testPuzzleStatistics1, isLoading, isNotFound });
 
-      const { result } = renderHook(() => usePuzzleStatistics(puzzleType.Enum.daily));
+      const { result } = renderHook(() => usePuzzleStatistics(puzzleType.enum.daily));
 
       expect(result.current.isLoading).toBe(true);
       expect(result.current.data).toBe(null);
@@ -65,7 +65,7 @@ describe('usePuzzleStatistics', () => {
   it('should set isLoading=false and data to query data when query.isLoading=false and query.isNotFound=false', () => {
     usePuzzlesStatisticsQuerySpy.mockReturnValue({ data: testPuzzleStatistics1, isLoading: false, isNotFound: false });
 
-    const { result } = renderHook(() => usePuzzleStatistics(puzzleType.Enum.daily));
+    const { result } = renderHook(() => usePuzzleStatistics(puzzleType.enum.daily));
 
     expect(result.current.isLoading).toBe(false);
     expect(result.current.data).toEqual(testPuzzleStatistics1);

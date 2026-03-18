@@ -1,5 +1,5 @@
 import { ConvexError } from 'convex/values';
-import { zid } from 'convex-helpers/server/zod';
+import { zid } from 'convex-helpers/server/zod4';
 import { z } from 'zod';
 
 import { pickRandomWord } from '@/utils/words';
@@ -41,7 +41,7 @@ export const list = query({
 
     const baseQuery = ctx.db.query('puzzles');
     const indexedQuery =
-      type === puzzleType.Enum.daily
+      type === puzzleType.enum.daily
         ? baseQuery.withIndex('by_type', (q) => q.eq('type', type).lte('_creationTime', currentDate.getTime()))
         : baseQuery.withIndex('by_type_creator', (q) => q.eq('type', type).eq('creatorId', normalizedUserId));
 
@@ -76,7 +76,7 @@ export const readUserActiveTrainingPuzzle = query({
 
     const userTrainingPuzzle = await ctx.db
       .query('puzzles')
-      .withIndex('by_type_creator', (q) => q.eq('type', puzzleType.Enum.training).eq('creatorId', normalizedUserId))
+      .withIndex('by_type_creator', (q) => q.eq('type', puzzleType.enum.training).eq('creatorId', normalizedUserId))
       .order('desc')
       .first();
 
@@ -92,7 +92,7 @@ export const readActiveDailyPuzzle = query({
       .query('puzzles')
       .withIndex('by_type_year_month_day', (q) =>
         q
-          .eq('type', puzzleType.Enum.daily)
+          .eq('type', puzzleType.enum.daily)
           .eq('year', date.getFullYear())
           .eq('month', date.getMonth() + 1)
           .eq('day', date.getDate())
@@ -113,7 +113,7 @@ export const readUserPuzzlesStatistics = query({
     }
 
     const basePuzzlesQuery =
-      type === puzzleType.Enum.daily
+      type === puzzleType.enum.daily
         ? ctx.db.query('puzzles').withIndex('by_type', (q) => q.eq('type', type))
         : ctx.db.query('puzzles').withIndex('by_type_creator', (q) => q.eq('type', type).eq('creatorId', userId));
 
@@ -150,7 +150,7 @@ export const readUserPuzzlesStatistics = query({
       const numOfAttempts = attempts.length;
       const lastAttempt = attempts.at(-1);
       const isLastAttemptCorrect = lastAttempt?.checkedLetters.every(
-        (checkedLetter) => checkedLetter.status === checkedLetterStatus.Enum.correct
+        (checkedLetter) => checkedLetter.status === checkedLetterStatus.enum.correct
       );
 
       if (isLastAttemptCorrect) {
@@ -192,7 +192,7 @@ export const createTrainingPuzzle = mutation({
     const word = pickRandomWord(words);
 
     const puzzleId = await ctx.db.insert('puzzles', {
-      type: puzzleType.Enum.training,
+      type: puzzleType.enum.training,
       creatorId: userId,
       solution: word,
       solvedBy: [],
@@ -272,7 +272,7 @@ export const markAsSolved = mutation({
       });
     }
 
-    if (puzzle.type === puzzleType.Enum.daily) {
+    if (puzzle.type === puzzleType.enum.daily) {
       const globalLeaderboard = await ctx.db
         .query('leaderboards')
         .withIndex('by_type', (q) => q.eq('type', 'global'))

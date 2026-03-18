@@ -1,5 +1,5 @@
 import { defineTable } from 'convex/server';
-import { zid, zodToConvex } from 'convex-helpers/server/zod';
+import { zid, zodToConvex } from 'convex-helpers/server/zod4';
 import { z } from 'zod';
 
 import { puzzleType } from '../puzzles/models';

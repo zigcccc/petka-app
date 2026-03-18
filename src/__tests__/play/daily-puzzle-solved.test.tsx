@@ -61,7 +61,7 @@ describe('Daily puzzle solved screen', () => {
 
   it('should trigger puzzle statistics query with "daily" as a puzzle type param', () => {
     render(<DailyPuzzleSolvedScreen />);
-    expect(usePuzzleStatisticsSpy).toHaveBeenCalledWith(puzzleType.Enum.daily);
+    expect(usePuzzleStatisticsSpy).toHaveBeenCalledWith(puzzleType.enum.daily);
   });
 
   it('should render correct title and subtile when isFailed=false', () => {

@@ -56,8 +56,8 @@ export default function SettingsScreen() {
                 style={styles.radioContainer}
                 value={keyboardType}
               >
-                <RadioInput.Item label="QWERTY tipkovnica" value={gameplayKeyboardType.Enum.qwerty} />
-                <RadioInput.Item label="ABCDE tipkovnica" value={gameplayKeyboardType.Enum.abcde} />
+                <RadioInput.Item label="QWERTY tipkovnica" value={gameplayKeyboardType.enum.qwerty} />
+                <RadioInput.Item label="ABCDE tipkovnica" value={gameplayKeyboardType.enum.abcde} />
               </RadioInput>
             }
             title="Razporeditev tipk"

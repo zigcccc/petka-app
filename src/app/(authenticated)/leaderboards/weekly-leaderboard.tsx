@@ -19,7 +19,7 @@ export default function WeeklyLeaderboardScreen() {
     onCreatePrivateLeaderboard,
     onJoinPrivateLeaderboard,
     onPresentLeaderboardActions,
-  } = useLeaderboards(leaderboardType.Enum.private, leaderboardRange.Enum.weekly);
+  } = useLeaderboards(leaderboardType.enum.private, leaderboardRange.enum.weekly);
 
   useFocusEffect(
     useCallback(() => {
