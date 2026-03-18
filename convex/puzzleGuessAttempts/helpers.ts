@@ -5,5 +5,5 @@ export function isAttemptCorrect(attempt?: Pick<PuzzleGuessAttempt, 'checkedLett
     return false;
   }
 
-  return attempt.checkedLetters.every((letter) => letter.status === checkedLetterStatus.Enum.correct);
+  return attempt.checkedLetters.every((letter) => letter.status === checkedLetterStatus.enum.correct);
 }

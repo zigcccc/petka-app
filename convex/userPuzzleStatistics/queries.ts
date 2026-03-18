@@ -1,4 +1,4 @@
-import { zid } from 'convex-helpers/server/zod';
+import { zid } from 'convex-helpers/server/zod4';
 
 import { puzzleType } from '../puzzles/models';
 import { query } from '../shared/queries';

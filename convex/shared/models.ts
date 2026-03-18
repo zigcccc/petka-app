@@ -1,4 +1,4 @@
-import { zid } from 'convex-helpers/server/zod';
+import { zid } from 'convex-helpers/server/zod4';
 import { z } from 'zod';
 
 export const getBaseDbModel = <const T extends string>(tablename: T) =>

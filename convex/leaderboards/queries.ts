@@ -1,6 +1,6 @@
 import { type NamedTableInfo, type Query } from 'convex/server';
 import { ConvexError } from 'convex/values';
-import { zid } from 'convex-helpers/server/zod';
+import { zid } from 'convex-helpers/server/zod4';
 import { z } from 'zod';
 
 import { internal } from '../_generated/api';
@@ -32,7 +32,7 @@ export const list = query({
       .collect();
 
     const userJoinedLeaderboards =
-      type === leaderboardType.Enum.private
+      type === leaderboardType.enum.private
         ? leaderboards.filter((leaderboard) => leaderboard.users?.includes(userId))
         : leaderboards;
 
@@ -42,7 +42,7 @@ export const list = query({
       const leaderboardEntries = await ctx.db
         .query('leaderboardEntries')
         .withIndex('by_leaderboard_recordedAt', (q) => {
-          if (range === leaderboardRange.Enum.weekly) {
+          if (range === leaderboardRange.enum.weekly) {
             const { lastMonday, nextSunday } = weekBounds(timestamp);
             return q
               .eq('leaderboardId', leaderboard._id)
@@ -103,7 +103,7 @@ export const readGlobalLeaderboard = query({
 
     const globalLeaderboard = await ctx.db
       .query('leaderboards')
-      .withIndex('by_type', (q) => q.eq('type', leaderboardType.Enum.global))
+      .withIndex('by_type', (q) => q.eq('type', leaderboardType.enum.global))
       .unique();
 
     if (!globalLeaderboard) {
@@ -112,7 +112,7 @@ export const readGlobalLeaderboard = query({
 
     let leaderboardEntriesBaseQuery: Query<NamedTableInfo<DataModel, 'leaderboardEntries'>>;
 
-    if (range === leaderboardRange.Enum.weekly) {
+    if (range === leaderboardRange.enum.weekly) {
       const { lastMonday, nextSunday } = weekBounds(timestamp);
 
       leaderboardEntriesBaseQuery = ctx.db
@@ -180,7 +180,7 @@ export const populateLeaderboardWithExistingRecords = internalMutation({
   async handler(ctx, { userId, leaderboardId }) {
     const globalLeaderboard = await ctx.db
       .query('leaderboards')
-      .withIndex('by_type', (q) => q.eq('type', leaderboardType.Enum.global))
+      .withIndex('by_type', (q) => q.eq('type', leaderboardType.enum.global))
       .unique();
     if (!globalLeaderboard) {
       throw new ConvexError({ message: 'Global leaderboard not found', code: 500 });
@@ -222,7 +222,7 @@ export const createPrivateLeaderboard = mutation({
 
       const createdLeaderboardId = await ctx.db.insert('leaderboards', {
         name: data.name,
-        type: leaderboardType.Enum.private,
+        type: leaderboardType.enum.private,
         creatorId: normalizedUserId,
         users: [normalizedUserId],
         inviteCode,
@@ -323,7 +323,7 @@ export const deletePrivateLeaderboard = mutation({
       throw new ConvexError({ message: 'Leaderboard not found.', code: 404 });
     }
 
-    if (leaderboard.type === leaderboardType.Enum.global) {
+    if (leaderboard.type === leaderboardType.enum.global) {
       throw new ConvexError({ message: 'Cannot perform delete opration on a global leaderboard.', code: 403 });
     }
 

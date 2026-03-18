@@ -1,5 +1,5 @@
 import { ConvexError } from 'convex/values';
-import { zid } from 'convex-helpers/server/zod';
+import { zid } from 'convex-helpers/server/zod4';
 import { z } from 'zod';
 
 import { mutation, query } from '../shared/queries';

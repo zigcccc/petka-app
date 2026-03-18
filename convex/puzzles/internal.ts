@@ -22,7 +22,7 @@ export const createDailyPuzzle = internalMutation({
     const word = pickRandomWord(words);
 
     await ctx.db.insert('puzzles', {
-      type: puzzleType.Enum.daily,
+      type: puzzleType.enum.daily,
       creatorId: null,
       solution: word,
       solvedBy: [],
@@ -48,7 +48,7 @@ export const sendReminderForDailyChallenge = internalMutation({
       .query('puzzles')
       .withIndex('by_type_year_month_day', (q) =>
         q
-          .eq('type', puzzleType.Enum.daily)
+          .eq('type', puzzleType.enum.daily)
           .eq('year', today.getFullYear())
           .eq('month', today.getMonth() + 1)
           .eq('day', today.getDate())

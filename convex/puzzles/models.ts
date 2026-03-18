@@ -1,5 +1,5 @@
 import { defineTable } from 'convex/server';
-import { zodToConvex } from 'convex-helpers/server/zod';
+import { zodToConvex } from 'convex-helpers/server/zod4';
 import { z } from 'zod';
 
 import { puzzleGuessAttemptModel } from '../puzzleGuessAttempts/models';
