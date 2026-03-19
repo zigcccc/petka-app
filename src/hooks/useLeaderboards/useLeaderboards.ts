@@ -5,11 +5,11 @@ import { Alert } from 'react-native';
 
 import { useActionSheet } from '@/context/ActionSheet';
 import { usePrompt } from '@/context/Prompt';
-import { type Id } from '@/convex/_generated/dataModel';
+import type { Id } from '@/convex/_generated/dataModel';
 import {
-  type LeaderboardWithScores,
   type LeaderboardRange,
   type LeaderboardType,
+  type LeaderboardWithScores,
   leaderboardType,
 } from '@/convex/leaderboards/models';
 

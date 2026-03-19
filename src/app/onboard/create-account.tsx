@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ConvexError } from 'convex/values';
 import { Link, useRouter } from 'expo-router';
-import { useForm, Controller, type SubmitHandler, type SubmitErrorHandler } from 'react-hook-form';
+import { Controller, type SubmitErrorHandler, type SubmitHandler, useForm } from 'react-hook-form';
 import { Platform, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
@@ -62,7 +62,6 @@ export default function CreateAccountScreen() {
           name="nickname"
           render={({ field, fieldState }) => (
             <TextInput
-              ref={field.ref}
               autoCapitalize="none"
               autoFocus
               error={fieldState.error?.message}
@@ -71,6 +70,7 @@ export default function CreateAccountScreen() {
               onChangeText={field.onChange}
               onSubmitEditing={handleSubmit(onSubmit, onValidationError)}
               placeholder="Tvoj vzdevek"
+              ref={field.ref}
               returnKeyType="go"
               submitBehavior="submit"
               value={field.value}

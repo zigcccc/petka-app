@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import { type PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { ScrollView } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 

@@ -1,9 +1,8 @@
-import { render, screen, fireEvent, within, renderHook } from '@testing-library/react-native';
-import React from 'react';
+import { fireEvent, render, renderHook, screen, within } from '@testing-library/react-native';
 
 import { RadioInput } from './RadioInput';
-import { useRadioInputContext, RadioInputContext } from './RadioInput.context';
-import { type RadioInputContextProps } from './RadioInput.types';
+import { RadioInputContext, useRadioInputContext } from './RadioInput.context';
+import type { RadioInputContextProps } from './RadioInput.types';
 
 describe('RadioInput', () => {
   it('renders all items with separators between them', () => {
@@ -86,7 +85,7 @@ describe('RadioInput', () => {
 
 describe('useRadioInputContext', () => {
   it('returns the context value when used inside the provider', () => {
-    const mockContext: RadioInputContextProps<string> = {
+    const mockContext: RadioInputContextProps = {
       value: 'test',
       onChange: jest.fn(),
     };

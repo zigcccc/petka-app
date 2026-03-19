@@ -5,8 +5,8 @@ import { type StyleProp, View, type ViewStyle } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Text } from '@/components/ui';
-import { type PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
-import { puzzleType, type PuzzleWithAttempts } from '@/convex/puzzles/models';
+import type { PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
+import { type PuzzleWithAttempts, puzzleType } from '@/convex/puzzles/models';
 import { getDateObjectFromPuzzle } from '@/utils/puzzles';
 
 import { GuessGrid } from '../GuessGrid';
@@ -66,10 +66,10 @@ export function HistoryGrid({ puzzle, userId, style, cellWidth }: Readonly<Props
           <View key={getMappingKey(attempt._id, rowIdx)} style={styles.gridRow}>
             {attempt.checkedLetters.map((letter, idx) => (
               <GuessGrid.Cell
-                key={getMappingKey(`cell-${idx}`, idx)}
                 cellWidth={cellWidth}
                 checkedLetters={attempt.checkedLetters}
                 idx={idx}
+                key={getMappingKey(`cell-${idx}`, idx)}
                 testID={`cell-${attempt._id}-${idx}`}
                 value={letter.letter}
               />

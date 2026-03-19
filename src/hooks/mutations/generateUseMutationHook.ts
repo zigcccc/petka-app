@@ -1,7 +1,7 @@
 import { useMutation } from 'convex/react';
-import { type FunctionReference } from 'convex/server';
+import type { FunctionReference } from 'convex/server';
 import { usePostHog } from 'posthog-react-native';
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 export function generateUseMutationHook<MutationFn extends FunctionReference<'mutation'>>(mutationFn: MutationFn) {
   return function useMutationHook() {

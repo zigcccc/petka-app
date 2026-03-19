@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-import { type Octicons } from '@expo/vector-icons';
-import { type ComponentProps } from 'react';
+import type { Octicons } from '@expo/vector-icons';
+import type { ComponentProps } from 'react';
 import { Text as MockText } from 'react-native';
 
 jest.mock('@react-native-async-storage/async-storage', () =>
@@ -19,6 +18,7 @@ jest.mock('expo', () => ({
 
 jest.mock('@expo/vector-icons', () => ({
   ...jest.requireActual('@expo/vector-icons'),
+  // biome-ignore lint/suspicious/noExplicitAny: Test mock, fine with any
   Octicons: (props: ComponentProps<typeof Octicons> & { uniProps?: (theme: unknown) => any }) => {
     const { defaultTheme } = jest.requireActual('./src/styles/themes');
     const transformedProps = props.uniProps ? props.uniProps(defaultTheme) : {};

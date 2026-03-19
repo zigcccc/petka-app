@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react-native';
 
-import { type Id } from '@/convex/_generated/dataModel';
+import type { Id } from '@/convex/_generated/dataModel';
 import { checkedLetterStatus } from '@/convex/puzzleGuessAttempts/models';
 import { defaultTheme } from '@/styles/themes';
 

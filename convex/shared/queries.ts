@@ -1,11 +1,11 @@
 import { NoOp } from 'convex-helpers/server/customFunctions';
-import { zCustomQuery, zCustomAction, zCustomMutation } from 'convex-helpers/server/zod4';
+import { zCustomAction, zCustomMutation, zCustomQuery } from 'convex-helpers/server/zod4';
 
 import {
-  query as baseQuery,
   action as baseAction,
-  mutation as baseMutation,
   internalMutation as baseInternalMutation,
+  mutation as baseMutation,
+  query as baseQuery,
 } from '../_generated/server';
 
 export const query = zCustomQuery(baseQuery, NoOp);

@@ -2,12 +2,12 @@ import { useConvex } from 'convex/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { api } from '@/convex/_generated/api';
-import { checkedLetterStatus, type CheckedLetter, type PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
+import { type CheckedLetter, checkedLetterStatus, type PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
 import { useGameplaySettings } from '@/hooks/useGameplaySettings';
 import { useToaster } from '@/hooks/useToaster';
 import { deepClone } from '@/utils/clone';
 
-import { type KeyboardKey } from '../Keyboard';
+import type { KeyboardKey } from '../Keyboard';
 
 import { findCurrentGridRowIdx, getUpdatedGrid } from './GuessGrid.helpers';
 

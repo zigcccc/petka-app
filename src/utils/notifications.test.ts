@@ -87,31 +87,31 @@ describe('registerForPushNotificationsAsync', () => {
     expect(mockRequestPermissionsAsync).not.toHaveBeenCalled();
   });
 
-  it.each([Notifications.PermissionStatus.DENIED, Notifications.PermissionStatus.UNDETERMINED])(
-    'should use the status received from the requestPermissionsAsyn when status of getPermissionsAsync is %s',
-    async (getPermissionsAsyncStatus) => {
-      mockGetPermissionsAsync.mockResolvedValue({ status: getPermissionsAsyncStatus });
-      mockRequestPermissionsAsync.mockResolvedValue({ status: Notifications.PermissionStatus.GRANTED });
+  it.each([
+    Notifications.PermissionStatus.DENIED,
+    Notifications.PermissionStatus.UNDETERMINED,
+  ])('should use the status received from the requestPermissionsAsyn when status of getPermissionsAsync is %s', async (getPermissionsAsyncStatus) => {
+    mockGetPermissionsAsync.mockResolvedValue({ status: getPermissionsAsyncStatus });
+    mockRequestPermissionsAsync.mockResolvedValue({ status: Notifications.PermissionStatus.GRANTED });
 
-      const result = await registerForPushNotificationsAsync();
+    const result = await registerForPushNotificationsAsync();
 
-      expect(result).toBe(testPushToken);
+    expect(result).toBe(testPushToken);
 
-      expect(mockRequestPermissionsAsync).toHaveBeenCalled();
-    }
-  );
+    expect(mockRequestPermissionsAsync).toHaveBeenCalled();
+  });
 
-  it.each([Notifications.PermissionStatus.DENIED, Notifications.PermissionStatus.UNDETERMINED])(
-    'should throw an error if final status is not "granted" (final status is %s)',
-    async (finalStatus) => {
-      mockGetPermissionsAsync.mockResolvedValue({ status: finalStatus });
-      mockRequestPermissionsAsync.mockResolvedValue({ status: finalStatus });
+  it.each([
+    Notifications.PermissionStatus.DENIED,
+    Notifications.PermissionStatus.UNDETERMINED,
+  ])('should throw an error if final status is not "granted" (final status is %s)', async (finalStatus) => {
+    mockGetPermissionsAsync.mockResolvedValue({ status: finalStatus });
+    mockRequestPermissionsAsync.mockResolvedValue({ status: finalStatus });
 
-      await expect(registerForPushNotificationsAsync()).rejects.toThrow(
-        'Permission not granted to get push token for push notification!'
-      );
-    }
-  );
+    await expect(registerForPushNotificationsAsync()).rejects.toThrow(
+      'Permission not granted to get push token for push notification!'
+    );
+  });
 
   it('should throw an error if project id is not defined in neither expoConfig or easConfig', async () => {
     mockExpoConfig = null;
@@ -131,18 +131,20 @@ describe('registerForPushNotificationsAsync', () => {
     expect(mockGetExpoPushTokenAsync).toHaveBeenCalledWith({ projectId: 'testExpoProjectId' });
   });
 
-  it.each([null, { extra: null }, { extra: { eas: null } }, { extra: { eas: { projectId: null } } }])(
-    'should use the projectId defined in easConfig if expoConfig is %s',
-    async (expoConfig) => {
-      mockExpoConfig = expoConfig;
-      mockProjectId = 'testProjectId';
-      mockGetPermissionsAsync.mockResolvedValue({ status: Notifications.PermissionStatus.GRANTED });
+  it.each([
+    null,
+    { extra: null },
+    { extra: { eas: null } },
+    { extra: { eas: { projectId: null } } },
+  ])('should use the projectId defined in easConfig if expoConfig is %s', async (expoConfig) => {
+    mockExpoConfig = expoConfig;
+    mockProjectId = 'testProjectId';
+    mockGetPermissionsAsync.mockResolvedValue({ status: Notifications.PermissionStatus.GRANTED });
 
-      await registerForPushNotificationsAsync();
+    await registerForPushNotificationsAsync();
 
-      expect(mockGetExpoPushTokenAsync).toHaveBeenCalledWith({ projectId: 'testProjectId' });
-    }
-  );
+    expect(mockGetExpoPushTokenAsync).toHaveBeenCalledWith({ projectId: 'testProjectId' });
+  });
 });
 
 describe('notificationsPermissionsLookup', () => {
@@ -174,19 +176,19 @@ describe('notificationsPermissionsLookup', () => {
     { status: Notifications.PermissionStatus.GRANTED, canAskAgain: false },
     { status: Notifications.PermissionStatus.UNDETERMINED, canAskAgain: false },
     { status: Notifications.PermissionStatus.DENIED, canAskAgain: true },
-  ])(
-    'should trigger getPermissionsAsync call when callback is passed - status is $status and canAskAgain is $canAskAgain',
-    async ({ status, canAskAgain }) => {
-      mockGetPermissionsAsync.mockResolvedValue({ status, canAskAgain });
+  ])('should trigger getPermissionsAsync call when callback is passed - status is $status and canAskAgain is $canAskAgain', async ({
+    status,
+    canAskAgain,
+  }) => {
+    mockGetPermissionsAsync.mockResolvedValue({ status, canAskAgain });
 
-      const callback = jest.fn();
-      notificationsPermissionsLookup(callback);
+    const callback = jest.fn();
+    notificationsPermissionsLookup(callback);
 
-      expect(mockGetPermissionsAsync).toHaveBeenCalled();
+    expect(mockGetPermissionsAsync).toHaveBeenCalled();
 
-      await waitFor(() => {
-        expect(callback).toHaveBeenCalledWith(true);
-      });
-    }
-  );
+    await waitFor(() => {
+      expect(callback).toHaveBeenCalledWith(true);
+    });
+  });
 });

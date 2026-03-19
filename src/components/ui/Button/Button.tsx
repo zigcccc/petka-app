@@ -1,5 +1,5 @@
-import { type IconProps } from '@expo/vector-icons/build/createIconSet';
-import { cloneElement, createContext, type ReactElement, useContext, useMemo, type PropsWithChildren } from 'react';
+import type { IconProps } from '@expo/vector-icons/build/createIconSet';
+import { cloneElement, createContext, type PropsWithChildren, type ReactElement, useContext, useMemo } from 'react';
 import { ActivityIndicator, Pressable, type StyleProp, Text, type ViewStyle } from 'react-native';
 import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
 

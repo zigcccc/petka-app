@@ -1,4 +1,4 @@
-import { type Id } from '@/convex/_generated/dataModel';
+import type { Id } from '@/convex/_generated/dataModel';
 import { checkedLetterStatus, type PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
 
 import { testTrainingPuzzle1 } from './puzzles';

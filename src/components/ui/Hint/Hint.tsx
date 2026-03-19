@@ -1,7 +1,7 @@
 import { Octicons } from '@expo/vector-icons';
-import { type PropsWithChildren, type ReactNode } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 import { View } from 'react-native';
-import { StyleSheet, withUnistyles, type UnistylesVariants } from 'react-native-unistyles';
+import { StyleSheet, type UnistylesVariants, withUnistyles } from 'react-native-unistyles';
 
 import { Text } from '../Text';
 

@@ -1,5 +1,5 @@
-import { type PropsWithChildren } from 'react';
-import { type StyleProp, type ViewStyle } from 'react-native';
+import type { PropsWithChildren } from 'react';
+import type { StyleProp, ViewStyle } from 'react-native';
 
 export type RadioInputProps<Value extends string> = PropsWithChildren<{
   style?: StyleProp<ViewStyle>;
@@ -12,4 +12,7 @@ export type RadioInputItemProps = {
   label: string;
 };
 
-export type RadioInputContextProps<Value extends string = any> = Pick<RadioInputProps<Value>, 'value' | 'onChange'>;
+export type RadioInputContextProps = {
+  onChange: (newValue: string) => void;
+  value?: string;
+};

@@ -1,20 +1,20 @@
-import { type NamedTableInfo, type Query } from 'convex/server';
+import type { NamedTableInfo, Query } from 'convex/server';
 import { ConvexError } from 'convex/values';
 import { zid } from 'convex-helpers/server/zod4';
 import { z } from 'zod';
 
 import { internal } from '../_generated/api';
-import { type DataModel, type Id } from '../_generated/dataModel';
+import type { DataModel, Id } from '../_generated/dataModel';
 import { generateRandomString, weekBounds, windowAround } from '../shared/helpers';
 import { internalMutation, mutation, query } from '../shared/queries';
-import { type User } from '../users/models';
+import type { User } from '../users/models';
 
 import {
   createLeaderboardModel,
+  type LeaderboardWithScores,
   leaderboardRange,
   leaderboardType,
   updateLeaderboardModel,
-  type LeaderboardWithScores,
 } from './models';
 
 export const list = query({

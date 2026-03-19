@@ -147,12 +147,12 @@ function RootLayout() {
     posthog.screen(pathname, params);
   }, [pathname, params, posthog]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Purposely ignoring some dependencies here
   useEffect(() => {
     if (user) {
       posthog.identify(user._id, user);
       notifications.register(user._id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?._id]);
 
   useEffect(() => {
@@ -186,7 +186,7 @@ function RootLayout() {
             headerBackVisible: false,
             headerStyle: styles.header,
             headerShown: Platform.select({
-              ios: getOsMajorVersion() > 18 ? false : true,
+              ios: !(getOsMajorVersion() > 18),
               android: true,
             }),
           }}

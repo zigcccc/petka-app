@@ -1,4 +1,4 @@
-import { type PuzzleType } from '@/convex/puzzles/models';
+import type { PuzzleType } from '@/convex/puzzles/models';
 
 import { usePuzzlesStatisticsQuery } from '../queries';
 import { useUser } from '../useUser';

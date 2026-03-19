@@ -61,7 +61,6 @@ export default function RestoreAccountScreen() {
           name="id"
           render={({ field, fieldState }) => (
             <TextInput
-              ref={field.ref}
               autoCapitalize="none"
               autoFocus
               error={fieldState.error?.message}
@@ -70,6 +69,7 @@ export default function RestoreAccountScreen() {
               onChangeText={field.onChange}
               onSubmitEditing={() => setFocus('nickname')}
               placeholder="ID profila"
+              ref={field.ref}
               returnKeyType="next"
               value={field.value}
             />
@@ -80,7 +80,6 @@ export default function RestoreAccountScreen() {
           name="nickname"
           render={({ field, fieldState }) => (
             <TextInput
-              ref={field.ref}
               autoCapitalize="none"
               error={fieldState.error?.message}
               label="Vzdevek"
@@ -88,6 +87,7 @@ export default function RestoreAccountScreen() {
               onChangeText={field.onChange}
               onSubmitEditing={handleSubmit(onSubmit)}
               placeholder="Vzdevek profila"
+              ref={field.ref}
               returnKeyType="go"
               submitBehavior="submit"
               value={field.value}

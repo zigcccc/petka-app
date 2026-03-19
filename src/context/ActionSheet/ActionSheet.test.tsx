@@ -1,10 +1,10 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import { type PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { ActionSheetIOS, type ActionSheetIOSOptions, Button, Platform, Text } from 'react-native';
 
 import { ActionSheetProvider } from './ActionSheet.provider';
-import { type ActionSheetPressCallback } from './ActionSheet.types';
+import type { ActionSheetPressCallback } from './ActionSheet.types';
 import { useActionSheet } from './useActionSheet';
 
 describe('<ActionSheetProvider />', () => {

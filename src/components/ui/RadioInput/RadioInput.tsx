@@ -1,4 +1,4 @@
-import { Children, useMemo } from 'react';
+import { Children, useCallback, useMemo } from 'react';
 import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
@@ -6,7 +6,7 @@ import { Icon } from '../Icon';
 import { Text } from '../Text';
 
 import { RadioInputContext, useRadioInputContext } from './RadioInput.context';
-import { type RadioInputItemProps, type RadioInputProps } from './RadioInput.types';
+import type { RadioInputItemProps, RadioInputProps } from './RadioInput.types';
 
 export function RadioInput<Value extends string>({
   children,
@@ -16,7 +16,8 @@ export function RadioInput<Value extends string>({
 }: Readonly<RadioInputProps<Value>>) {
   const numOfItems = Children.count(children);
 
-  const contextValue = useMemo(() => ({ onChange, value }) as const, [onChange, value]);
+  const handleChange = useCallback((newValue: string) => onChange(newValue as Value), [onChange]);
+  const contextValue = useMemo(() => ({ onChange: handleChange, value }), [handleChange, value]);
 
   return (
     <RadioInputContext.Provider value={contextValue}>

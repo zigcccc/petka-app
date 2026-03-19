@@ -10,7 +10,7 @@ export function pickRandomWord(words: WordEntry[], decayFactor = 2.5) {
   if (words.length === 0) throw new Error('No words to choose from');
 
   const weights = words.map((w) => {
-    return w.frequency / Math.pow(1 + w.numOfTimesUsed, decayFactor);
+    return w.frequency / (1 + w.numOfTimesUsed) ** decayFactor;
   });
 
   const totalWeight = weights.reduce((sum, w) => sum + w, 0);

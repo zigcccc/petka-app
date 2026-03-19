@@ -123,25 +123,25 @@ describe('Create Account Screen', () => {
     expect(mockSetUserId).not.toHaveBeenCalled();
   });
 
-  it.each([{}, null])(
-    'should trigger validate account info and reject account restoration if response does not include user id (response = %p)',
-    async (response) => {
-      mockValidateUserAccount.mockResolvedValue(response);
-      render(<RestoreAccountScreen />);
+  it.each([
+    {},
+    null,
+  ])('should trigger validate account info and reject account restoration if response does not include user id (response = %p)', async (response) => {
+    mockValidateUserAccount.mockResolvedValue(response);
+    render(<RestoreAccountScreen />);
 
-      fireEvent.changeText(screen.getByPlaceholderText('ID profila'), 'asd785asd65a4s67');
-      fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), 'Vzdevek');
+    fireEvent.changeText(screen.getByPlaceholderText('ID profila'), 'asd785asd65a4s67');
+    fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), 'Vzdevek');
 
-      fireEvent.press(screen.getByRole('button', { name: 'Obnovi profil' }));
+    fireEvent.press(screen.getByRole('button', { name: 'Obnovi profil' }));
 
-      await waitFor(() => {
-        expect(mockValidateUserAccount).toHaveBeenCalledWith({ id: 'asd785asd65a4s67', nickname: 'Vzdevek' });
-      });
+    await waitFor(() => {
+      expect(mockValidateUserAccount).toHaveBeenCalledWith({ id: 'asd785asd65a4s67', nickname: 'Vzdevek' });
+    });
 
-      expect(mockToast).toHaveBeenCalledWith('Napačni podatki', { intent: 'error' });
-      expect(mockSetUserId).not.toHaveBeenCalled();
-    }
-  );
+    expect(mockToast).toHaveBeenCalledWith('Napačni podatki', { intent: 'error' });
+    expect(mockSetUserId).not.toHaveBeenCalled();
+  });
 
   it('should trigger validate account info and restore user account when response includes user id', async () => {
     mockValidateUserAccount.mockResolvedValue(testUser1);

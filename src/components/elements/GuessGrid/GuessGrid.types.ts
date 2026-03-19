@@ -1,4 +1,4 @@
-import { type CheckedLetter, type PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
+import type { CheckedLetter, PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
 
 export type GuessGridProps = {
   attempts?: PuzzleGuessAttempt[];

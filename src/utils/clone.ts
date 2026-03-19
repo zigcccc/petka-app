@@ -9,7 +9,7 @@ export function deepClone<T>(value: T): T {
 
   const copy = {} as { [key: string]: unknown };
   for (const key in value) {
-    if (Object.prototype.hasOwnProperty.call(value, key)) {
+    if (Object.hasOwn(value, key)) {
       copy[key] = deepClone((value as { [key: string]: unknown })[key]);
     }
   }

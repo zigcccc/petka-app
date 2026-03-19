@@ -1,4 +1,4 @@
-import { type ComponentProps, type Ref } from 'react';
+import type { ComponentProps, Ref } from 'react';
 import { TextInput as RNTextInput, View } from 'react-native';
 import { StyleSheet, withUnistyles } from 'react-native-unistyles';
 
@@ -28,7 +28,7 @@ export function TextInput({ error, ref, label, style, ...rest }: Readonly<Props>
           {label}
         </Text>
       )}
-      <UniTextInput {...rest} ref={ref} accessibilityLabel={label ?? rest.placeholder} style={[styles.input, style]} />
+      <UniTextInput {...rest} accessibilityLabel={label ?? rest.placeholder} ref={ref} style={[styles.input, style]} />
       {hasError && (
         <Text color="red40" size="xs" weight="medium">
           {error}

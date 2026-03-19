@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-native';
 
-import { usePlural, type PluralTextMap } from './usePlural';
+import { type PluralTextMap, usePlural } from './usePlural';
 
 describe('usePlural', () => {
   const textsMap: PluralTextMap = {

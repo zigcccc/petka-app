@@ -1,4 +1,4 @@
-import { renderHook, act, waitFor } from '@testing-library/react-native';
+import { act, renderHook, waitFor } from '@testing-library/react-native';
 import type { FunctionReference } from 'convex/server';
 
 import { generateUseMutationHook } from './generateUseMutationHook';

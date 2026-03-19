@@ -1,4 +1,4 @@
-import { type Id } from '@/convex/_generated/dataModel';
+import type { Id } from '@/convex/_generated/dataModel';
 import { type Puzzle, puzzleType } from '@/convex/puzzles/models';
 
 import { testUser1 } from './users';

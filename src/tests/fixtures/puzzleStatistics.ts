@@ -1,6 +1,6 @@
-import { type Id } from '@/convex/_generated/dataModel';
+import type { Id } from '@/convex/_generated/dataModel';
 import { puzzleType } from '@/convex/puzzles/models';
-import { type UserPuzzleStatistics } from '@/convex/userPuzzleStatistics/models';
+import type { UserPuzzleStatistics } from '@/convex/userPuzzleStatistics/models';
 
 import { testUser1 } from './users';
 

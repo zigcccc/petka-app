@@ -1,4 +1,4 @@
-import { type ActionSheetIOSOptions } from 'react-native';
+import type { ActionSheetIOSOptions } from 'react-native';
 
 export type ActionSheetPressCallback = (buttonIndex: number) => void;
 

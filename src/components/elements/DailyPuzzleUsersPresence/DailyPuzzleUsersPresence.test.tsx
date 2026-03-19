@@ -63,15 +63,15 @@ describe('<DailyPuzzleUsersPresence />', () => {
     { numOfOnlinePlayers: 3, expectedText: '3 uporabniki igrajo' },
     { numOfOnlinePlayers: 4, expectedText: '4 uporabniki igrajo' },
     { numOfOnlinePlayers: 5, expectedText: '5 uporabnikov igra' },
-  ])(
-    'should render "$expectedText" when there are $numberOfOnlinePlayers online',
-    ({ expectedText, numOfOnlinePlayers }) => {
-      const presence = Array.from({ length: numOfOnlinePlayers })
-        .fill(null)
-        .map((_, idx) => ({ lastDisconnected: 1756888381508, online: true, userId: `user-${idx + 1}` }));
-      render(<DailyPuzzleUsersPresence currentUserNickname="notTheTarget" presence={presence} />);
+  ])('should render "$expectedText" when there are $numberOfOnlinePlayers online', ({
+    expectedText,
+    numOfOnlinePlayers,
+  }) => {
+    const presence = Array.from({ length: numOfOnlinePlayers })
+      .fill(null)
+      .map((_, idx) => ({ lastDisconnected: 1756888381508, online: true, userId: `user-${idx + 1}` }));
+    render(<DailyPuzzleUsersPresence currentUserNickname="notTheTarget" presence={presence} />);
 
-      expect(screen.queryByText(expectedText, { exact: false })).toBeOnTheScreen();
-    }
-  );
+    expect(screen.queryByText(expectedText, { exact: false })).toBeOnTheScreen();
+  });
 });
