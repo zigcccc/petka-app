@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native-unistyles';
 import { Button, Text } from '@/components/ui';
 
 import { ActionSheetContext } from './ActionSheet.context';
-import { type ActionSheetPressCallback } from './ActionSheet.types';
+import type { ActionSheetPressCallback } from './ActionSheet.types';
 
 export function ActionSheetProvider({ children }: Readonly<PropsWithChildren>) {
   const ref = useRef<ComponentRef<typeof BottomSheetModal>>(null);
@@ -25,7 +25,7 @@ export function ActionSheetProvider({ children }: Readonly<PropsWithChildren>) {
         ActionSheetIOS.showActionSheetWithOptions(options, onActionPress);
       }
     },
-    [ref, isAndroid]
+    [isAndroid]
   );
 
   const handleDismiss = () => {
@@ -44,13 +44,13 @@ export function ActionSheetProvider({ children }: Readonly<PropsWithChildren>) {
       {children}
 
       <BottomSheetModal
-        ref={ref}
         accessibilityLabel="Action sheet with options"
         accessibilityRole="menu"
         backdropComponent={(props) => <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />}
         backgroundStyle={styles.background}
         handleComponent={null}
         onDismiss={handleDismiss}
+        ref={ref}
       >
         <BottomSheetView style={styles.container}>
           {!config || !actionCallbackRef.current ? (
@@ -76,6 +76,7 @@ export function ActionSheetProvider({ children }: Readonly<PropsWithChildren>) {
                   }
 
                   return (
+                    // biome-ignore lint/suspicious/noArrayIndexKey: Fine with it here
                     <View key={`${actionText}-${idx}`} style={styles.actionButtonContainer}>
                       <Button
                         disabled={config.disabledButtonIndices?.includes(idx)}

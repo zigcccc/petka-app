@@ -1,6 +1,6 @@
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
-import { type PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { Alert, type AlertButton, Button, Platform, Text } from 'react-native';
 
 import { PromptProvider } from './Prompt.provider';

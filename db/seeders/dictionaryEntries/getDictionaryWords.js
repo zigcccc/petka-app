@@ -1,9 +1,8 @@
-import fs, { readFile } from 'fs/promises';
-import { createWriteStream } from 'fs';
-import path from 'path';
+import { createWriteStream } from 'node:fs';
+import fs, { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import * as cheerio from 'cheerio';
-
-import { fileURLToPath } from 'url';
 import { XMLParser } from 'fast-xml-parser';
 
 import { fetchDictionaryTermHtml } from './utils.js';
@@ -87,7 +86,7 @@ async function readAndParseXmlFiles(directoryPath) {
       const isValid = await isValidDictionaryTerm(item.word);
       if (isValid) {
         console.log(`Writing word: ${item.word} with frequency: ${item.frequency}`);
-        writeStream.write(JSON.stringify(item) + '\n');
+        writeStream.write(`${JSON.stringify(item)}\n`);
       } else {
         console.warn('Found illegal word: ', item.word);
       }

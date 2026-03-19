@@ -41,23 +41,19 @@ export default function WeeklyLeaderboardScreen() {
             </Card>
           ))}
         </View>
-      ) : (
-        <>
-          {isLoading ? null : (
-            <View style={styles.noLeaderboardsContainer}>
-              <NoLeaderboards
-                accessibilityLabel="No leaderboards"
-                accessibilityRole="image"
-                accessible
-                height={200}
-                width={200}
-              />
-              <Text align="center" color="grey70" size="sm">
-                Pridružen/a nisi še nobeni lestvici...
-              </Text>
-            </View>
-          )}
-        </>
+      ) : isLoading ? null : (
+        <View style={styles.noLeaderboardsContainer}>
+          <NoLeaderboards
+            accessibilityLabel="No leaderboards"
+            accessibilityRole="image"
+            accessible
+            height={200}
+            width={200}
+          />
+          <Text align="center" color="grey70" size="sm">
+            Pridružen/a nisi še nobeni lestvici...
+          </Text>
+        </View>
       )}
       <View style={styles.actions}>
         <Button intent="terciary" loading={isJoining} onPress={onJoinPrivateLeaderboard} variant="fill">

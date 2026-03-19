@@ -1,6 +1,6 @@
 import { deepClone } from '@/utils/clone';
 
-import { type KeyboardKey } from '../Keyboard';
+import type { KeyboardKey } from '../Keyboard';
 
 export const findCurrentGridRowIdx = (grid: (string | null)[][]) => {
   const rowIdx = grid.findIndex((row) => !row.every(Boolean));
@@ -8,7 +8,7 @@ export const findCurrentGridRowIdx = (grid: (string | null)[][]) => {
 };
 
 export const findCellIndexToInsert = (grid: (string | null)[][], rowIdx: number) => {
-  const nextCellIndex = grid[rowIdx].findIndex((cell) => cell === null);
+  const nextCellIndex = grid[rowIdx].indexOf(null);
   return nextCellIndex !== -1 ? nextCellIndex : 5;
 };
 

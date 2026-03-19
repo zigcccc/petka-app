@@ -6,7 +6,7 @@ import { Text } from '@/components/ui';
 import { type CheckedLetter, checkedLetterStatus } from '@/convex/puzzleGuessAttempts/models';
 import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
 
-import { abcdKeys, keysToIconMap, qwertyKeys, type KeyboardKey as KeyboardKeyType } from './Keyboard.constants';
+import { abcdKeys, type KeyboardKey as KeyboardKeyType, keysToIconMap, qwertyKeys } from './Keyboard.constants';
 
 type Props = {
   onKeyPress: (key: KeyboardKeyType) => void;
@@ -24,6 +24,7 @@ export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Readon
   return (
     <View style={styles.keyboard}>
       {keys.map((keysRow, idx) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: Fine with it here
         <View key={idx} style={styles.keyboardRow}>
           {keysRow.map((key) => {
             const checkedLetter = checkedLetters.find((checkedLetter) => checkedLetter.letter === key);

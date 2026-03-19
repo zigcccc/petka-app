@@ -3,11 +3,11 @@ import * as Clipboard from 'expo-clipboard';
 import * as Device from 'expo-device';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
-import { type ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 import { Text as MockText, View as MockView } from 'react-native';
 
 import SettingsScreen from '@/app/(authenticated)/settings';
-import { type GenericStackScreen } from '@/components/navigation';
+import type { GenericStackScreen } from '@/components/navigation';
 import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { useToaster } from '@/hooks/useToaster';
@@ -174,41 +174,42 @@ describe('Settings screen', () => {
     });
   });
 
-  it.each([null, { hasToken: false }])(
-    'should render the "Toggle push notifications" switch with value=false when status=%s',
-    (status) => {
-      usePushNotificationsSpy.mockReturnValue({
-        status,
-        toggle: mockTogglePushNotifications,
-        systemNotificationsEnabled: false,
-      });
+  it.each([
+    null,
+    { hasToken: false },
+  ])('should render the "Toggle push notifications" switch with value=false when status=%s', (status) => {
+    usePushNotificationsSpy.mockReturnValue({
+      status,
+      toggle: mockTogglePushNotifications,
+      systemNotificationsEnabled: false,
+    });
 
-      render(<SettingsScreen />);
+    render(<SettingsScreen />);
 
-      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
-      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
-        text: 'Off',
-      });
-    }
-  );
+    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
+    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
+      text: 'Off',
+    });
+  });
 
-  it.each([null, undefined, false])(
-    'should render the "Toggle push notifications" switch with value=false when systemNotificationsEnabled=%s',
-    (systemNotificationsEnabled) => {
-      usePushNotificationsSpy.mockReturnValue({
-        status: { hasToken: true },
-        toggle: mockTogglePushNotifications,
-        systemNotificationsEnabled,
-      });
+  it.each([
+    null,
+    undefined,
+    false,
+  ])('should render the "Toggle push notifications" switch with value=false when systemNotificationsEnabled=%s', (systemNotificationsEnabled) => {
+    usePushNotificationsSpy.mockReturnValue({
+      status: { hasToken: true },
+      toggle: mockTogglePushNotifications,
+      systemNotificationsEnabled,
+    });
 
-      render(<SettingsScreen />);
+    render(<SettingsScreen />);
 
-      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
-      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
-        text: 'Off',
-      });
-    }
-  );
+    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
+    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
+      text: 'Off',
+    });
+  });
 
   it('should trigger toggle push notifications action on switch press', () => {
     render(<SettingsScreen />);

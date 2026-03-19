@@ -3,7 +3,7 @@ import { usePostHog } from 'posthog-react-native';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AppState } from 'react-native';
 
-import { type Id } from '@/convex/_generated/dataModel';
+import type { Id } from '@/convex/_generated/dataModel';
 import { notificationsPermissionsLookup, registerForPushNotificationsAsync } from '@/utils/notifications';
 
 import { useRegisterUserForPushNotificationsMutation, useToggleUserPushNotificationsMutation } from '../mutations';
@@ -19,7 +19,7 @@ export function usePushNotifications(userId?: Id<'users'>) {
   const toaster = useToaster();
   const { data: status } = useUserNotificationsStatusQuery(userId ? { userId } : 'skip');
 
-  const enabled = useMemo(() => !!(status && status.hasToken && !status.paused), [status]);
+  const enabled = useMemo(() => !!(status?.hasToken && !status.paused), [status]);
 
   const toggle = useCallback(
     async (shouldEnable: boolean) => {

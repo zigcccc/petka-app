@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react-native';
 import dayjs, { type Dayjs } from 'dayjs';
 
-import { type Id } from '@/convex/_generated/dataModel';
+import type { Id } from '@/convex/_generated/dataModel';
 import { type Puzzle, puzzleType } from '@/convex/puzzles/models';
 
 import { HistoryGrid } from './HistoryGrid';

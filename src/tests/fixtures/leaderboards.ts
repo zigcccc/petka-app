@@ -1,5 +1,5 @@
-import { type Id } from '@/convex/_generated/dataModel';
-import { leaderboardType, type LeaderboardWithScores } from '@/convex/leaderboards/models';
+import type { Id } from '@/convex/_generated/dataModel';
+import { type LeaderboardWithScores, leaderboardType } from '@/convex/leaderboards/models';
 
 import { testUser1, testUser2 } from './users';
 

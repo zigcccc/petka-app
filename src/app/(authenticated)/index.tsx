@@ -90,11 +90,11 @@ export default function HomeScreen() {
         </View>
       </View>
       <BottomSheetModal
-        ref={sheetRef}
         accessibilityLabel="Settings not configured alert"
         accessibilityRole="alert"
         backdropComponent={(props) => <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />}
         onDismiss={setDefaultSettings}
+        ref={sheetRef}
       >
         <BottomSheetView style={styles.sheetContainer}>
           <View style={styles.sheetHeader}>

@@ -50,7 +50,6 @@ export function PromptProvider({ children }: Readonly<PropsWithChildren>) {
     <PromptContext.Provider value={contextValue}>
       {children}
       <BottomSheetModal
-        ref={ref}
         accessibilityLabel="Prompt alert"
         accessibilityRole="alert"
         backdropComponent={(props) => <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />}
@@ -58,6 +57,7 @@ export function PromptProvider({ children }: Readonly<PropsWithChildren>) {
         detached={true}
         handleComponent={null}
         onDismiss={handleDismiss}
+        ref={ref}
         style={{ marginHorizontal: 24 }}
       >
         <BottomSheetView
@@ -88,8 +88,9 @@ export function PromptProvider({ children }: Readonly<PropsWithChildren>) {
           <View style={styles.buttonsContainer}>
             {promptButtons.map((button, idx) => (
               <Button
-                key={`${button.text}-${idx}`}
                 intent={button.style === 'destructive' ? 'danger' : button.isPreferred ? 'terciary' : 'shaded'}
+                // biome-ignore lint/suspicious/noArrayIndexKey: Fine with it here
+                key={`${button.text}-${idx}`}
                 onPress={
                   button.style === 'cancel'
                     ? () => ref.current?.dismiss()

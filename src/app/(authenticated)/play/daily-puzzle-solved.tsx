@@ -1,10 +1,10 @@
 import { Octicons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
-import { View, ActivityIndicator, Platform, ScrollView } from 'react-native';
+import { ActivityIndicator, Platform, ScrollView, View } from 'react-native';
 import { StyleSheet, withUnistyles } from 'react-native-unistyles';
 
 import { AttemptsDistributionGraph } from '@/components/elements';
-import { Card, Button, Text } from '@/components/ui';
+import { Button, Card, Text } from '@/components/ui';
 import { puzzleType } from '@/convex/puzzles/models';
 import { useDictionaryEntry } from '@/hooks/queries';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';

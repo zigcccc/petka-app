@@ -11,9 +11,9 @@ Petka is a Slovenian-language Wordle clone built with React Native / Expo. The b
 ```bash
 pnpm install            # Install dependencies
 pnpm start              # Start Expo dev server
-pnpm run lint           # ESLint via expo lint
+pnpm run lint           # Biome check
 pnpm run typecheck      # tsc --noEmit
-pnpm run format         # Prettier --write .
+pnpm run format         # Biome format --write .
 pnpm test               # Jest
 pnpm test:coverage      # Jest with coverage
 pnpm test path/to/test.ts   # Single test file
@@ -58,17 +58,17 @@ Each resource (users, puzzles, leaderboards, etc.) has its own folder with:
 
 `convex/schema.ts` assembles all table definitions and their indexes. `convex/convex.config.ts` registers Convex components (crons, migrations, expo-push-notifications, presence). Never edit `convex/_generated/`.
 
-Validators use `zod` via `convex-helpers` (`zodToConvex`, `zid` for typed document IDs).
+Validators use `zod` (v4) via `convex-helpers/server/zod4` (`zodToConvex`, `zid` for typed document IDs).
 
 ## Code conventions
 
-**Imports:** ordered `object → builtin → external → internal → parent → sibling → index`, with a blank line between groups. Internal paths use the `@/` alias (maps to `src/`). Type-only imports must use `import { type X }` syntax.
+**Imports:** ordered `object → builtin → external → internal → parent → sibling → index`, with a blank line between groups. Internal paths use the `@/` alias (maps to `src/`). Type-only imports must use `import type { X }` syntax (also enforced by biome). For mixed imports use `import { Component, type ComponentProps }` syntax.
 
-**JSX props:** `key` and `ref` come first (enforced by ESLint), remaining props alphabetically.
+**JSX props:** all props sorted alphabetically (enforced by Biome `useSortedAttributes`).
 
 **Unused vars:** prefix with `_` to suppress the lint rule (`_unusedVar`). Avoid doing that unless absolutely necessary.
 
-**Prettier:** 120-char line width, single quotes, 2-space indent, trailing commas (ES5).
+**Biome:** 120-char line width, single quotes, 2-space indent, trailing commas (ES5). Config in `biome.json`.
 
 **Convex mutations:** always use `generateUseMutationHook` — it provides consistent loading state and PostHog error capture. Do not call `useMutation` directly in components.
 

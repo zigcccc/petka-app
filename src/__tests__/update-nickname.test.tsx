@@ -151,30 +151,31 @@ describe('Update Nickname Screen', () => {
     });
   });
 
-  it.each(['https://www.g.com', 'http://something.com', 'someone@gmail.com'])(
-    'should reject account creation if inputted nickname includes web address (%s)',
-    async (input) => {
-      render(<UpdateNicknameScreen />);
+  it.each([
+    'https://www.g.com',
+    'http://something.com',
+    'someone@gmail.com',
+  ])('should reject account creation if inputted nickname includes web address (%s)', async (input) => {
+    render(<UpdateNicknameScreen />);
 
-      fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), input);
+    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), input);
+    expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
+
+    fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).toBeDisabled();
+    });
+
+    expect(screen.queryByText('Vzdevek ne sme vsebovati spletnih ali e-poštnih naslovov.')).toBeOnTheScreen();
+    expect(mockToast).toHaveBeenCalledWith('Popravite napake', { intent: 'error' });
+
+    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
+
+    await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
-
-      fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
-
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).toBeDisabled();
-      });
-
-      expect(screen.queryByText('Vzdevek ne sme vsebovati spletnih ali e-poštnih naslovov.')).toBeOnTheScreen();
-      expect(mockToast).toHaveBeenCalledWith('Popravite napake', { intent: 'error' });
-
-      fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
-
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
-      });
-    }
-  );
+    });
+  });
 
   it('should reject account creation if inputted nickname includes only symbols wihout any letters/numbers', async () => {
     render(<UpdateNicknameScreen />);

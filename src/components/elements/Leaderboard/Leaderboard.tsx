@@ -2,7 +2,7 @@ import { View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Text } from '@/components/ui';
-import { type LeaderboardScoreWithUser } from '@/convex/leaderboards/models';
+import type { LeaderboardScoreWithUser } from '@/convex/leaderboards/models';
 
 type Props = {
   scores?: LeaderboardScoreWithUser[];

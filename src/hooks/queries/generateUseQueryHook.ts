@@ -1,5 +1,5 @@
 import { useQuery } from 'convex/react';
-import { type FunctionReference } from 'convex/server';
+import type { FunctionReference } from 'convex/server';
 import { useRef } from 'react';
 
 export function generateUseQueryHook<QueryFn extends FunctionReference<'query'>>(queryFn: QueryFn) {

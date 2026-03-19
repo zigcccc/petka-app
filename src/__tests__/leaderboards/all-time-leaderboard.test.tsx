@@ -80,13 +80,13 @@ describe('<AllTimeLeaderboardScreen />', () => {
     expect(mockPresentLeaderboardActions).toHaveBeenCalledWith(testPrivateLeaderboard1);
   });
 
-  it.each([null, []])(
-    'should render empty state if no private leaderboards exist (private leaderboards = %p)',
-    (leaderboards) => {
-      useLeaderboardsSpy.mockReturnValue({ leaderboards });
-      render(<AllTimeLeaderboardScreen />);
+  it.each([
+    null,
+    [],
+  ])('should render empty state if no private leaderboards exist (private leaderboards = %p)', (leaderboards) => {
+    useLeaderboardsSpy.mockReturnValue({ leaderboards });
+    render(<AllTimeLeaderboardScreen />);
 
-      expect(screen.queryByText('Pridružen/a nisi še nobeni lestvici...')).toBeOnTheScreen();
-    }
-  );
+    expect(screen.queryByText('Pridružen/a nisi še nobeni lestvici...')).toBeOnTheScreen();
+  });
 });

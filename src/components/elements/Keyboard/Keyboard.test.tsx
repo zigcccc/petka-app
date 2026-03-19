@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native';
 
 import { checkedLetterStatus } from '@/convex/puzzleGuessAttempts/models';
 import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
@@ -78,13 +78,13 @@ describe('<Keyboard />', () => {
   it.each([
     { keyboardType: gameplayKeyboardType.enum.abcde, expectedFirstKey: 'a' },
     { keyboardType: gameplayKeyboardType.enum.qwerty, expectedFirstKey: 'e' },
-  ])(
-    'should render "$expectedFirstKey" as the first key when keyboard layout is $keyboardType',
-    ({ keyboardType, expectedFirstKey }) => {
-      useGameplaySettingsSpy.mockReturnValue({ keyboardType });
-      render(<Keyboard checkedLetters={[]} isDisabled={false} onKeyPress={() => {}} />);
+  ])('should render "$expectedFirstKey" as the first key when keyboard layout is $keyboardType', ({
+    keyboardType,
+    expectedFirstKey,
+  }) => {
+    useGameplaySettingsSpy.mockReturnValue({ keyboardType });
+    render(<Keyboard checkedLetters={[]} isDisabled={false} onKeyPress={() => {}} />);
 
-      expect(screen.getAllByTestId(/keyboard-key--*/)[0]).toHaveTextContent(expectedFirstKey);
-    }
-  );
+    expect(screen.getAllByTestId(/keyboard-key--*/)[0]).toHaveTextContent(expectedFirstKey);
+  });
 });

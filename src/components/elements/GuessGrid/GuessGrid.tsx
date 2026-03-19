@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native-unistyles';
 import { Text } from '@/components/ui';
 import { checkedLetterStatus } from '@/convex/puzzleGuessAttempts/models';
 
-import { type GuessGridCellProps, type GuessGridProps } from './GuessGrid.types';
+import type { GuessGridCellProps, GuessGridProps } from './GuessGrid.types';
 
 function GuessGridCell({ testID, value, idx, checkedLetters = [], cellWidth }: Readonly<GuessGridCellProps>) {
   const checkedLetter = checkedLetters.find(
@@ -29,12 +29,14 @@ export function GuessGrid({ attempts = [], grid, isValidating = false }: Readonl
       {grid.map((row, rowIdx) => {
         const attempt = attempts[rowIdx];
         return (
+          // biome-ignore lint/suspicious/noArrayIndexKey: Fine with it here
           <View key={rowIdx} style={styles.row} testID={`guess-grid--row-${rowIdx}`}>
             {row.map((cell, cellIdx) => (
               <GuessGridCell
-                key={cellIdx}
                 checkedLetters={attempt?.checkedLetters}
                 idx={cellIdx}
+                // biome-ignore lint/suspicious/noArrayIndexKey: Fine with it here
+                key={cellIdx}
                 testID={`guess-grid--row-${rowIdx}--cell-${cellIdx}`}
                 value={cell}
               />

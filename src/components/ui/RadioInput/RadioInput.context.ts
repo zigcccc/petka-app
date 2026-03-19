@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import { type RadioInputContextProps } from './RadioInput.types';
+import type { RadioInputContextProps } from './RadioInput.types';
 
 export const RadioInputContext = createContext<RadioInputContextProps | null>(null);
 

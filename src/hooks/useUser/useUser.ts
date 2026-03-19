@@ -3,7 +3,7 @@ import { usePostHog } from 'posthog-react-native';
 import { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 
-import { type CreateUser, type PatchUser } from '@/convex/users/models';
+import type { CreateUser, PatchUser } from '@/convex/users/models';
 
 import { useCreateUserMutation, useDeleteUserMutation, usePatchUserMutation } from '../mutations';
 import { useUserQuery } from '../queries';

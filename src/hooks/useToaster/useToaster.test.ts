@@ -33,20 +33,20 @@ describe('useToaster', () => {
     { intent: 'success', expectedPreset: 'done' },
     { intent: 'warning', expectedPreset: 'error' },
     { intent: 'none', expectedPreset: 'none' },
-  ] as const)(
-    'should display toast - intent=$intent -> expected preset = $expectedPreset',
-    ({ intent, expectedPreset }) => {
-      const { result } = renderHook(() => useToaster());
+  ] as const)('should display toast - intent=$intent -> expected preset = $expectedPreset', ({
+    intent,
+    expectedPreset,
+  }) => {
+    const { result } = renderHook(() => useToaster());
 
-      result.current.toast('Test toast', { message: 'Toast message', intent, from: 'bottom' });
+    result.current.toast('Test toast', { message: 'Toast message', intent, from: 'bottom' });
 
-      expect(toastSpy).toHaveBeenCalledWith({
-        title: 'Test toast',
-        message: 'Toast message',
-        haptic: intent,
-        preset: expectedPreset,
-        from: 'bottom',
-      });
-    }
-  );
+    expect(toastSpy).toHaveBeenCalledWith({
+      title: 'Test toast',
+      message: 'Toast message',
+      haptic: intent,
+      preset: expectedPreset,
+      from: 'bottom',
+    });
+  });
 });

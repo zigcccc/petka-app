@@ -6,8 +6,8 @@ import { puzzleType } from '@/convex/puzzles/models';
 import { useDictionaryEntry } from '@/hooks/queries';
 import { usePuzzleStatistics } from '@/hooks/usePuzzlesStatistics';
 import { useTrainingPuzzle } from '@/hooks/useTrainingPuzzle';
-import { testTrainingPuzzle1 } from '@/tests/fixtures/puzzles';
 import { testPuzzleStatistics1 } from '@/tests/fixtures/puzzleStatistics';
+import { testTrainingPuzzle1 } from '@/tests/fixtures/puzzles';
 
 jest.mock('expo-router', () => ({
   ...jest.requireActual('expo-router'),

@@ -1,6 +1,6 @@
 import { usePresence } from '@convex-dev/presence/react-native';
 import * as Sentry from '@sentry/react-native';
-import { useRouter, useNavigation, type ErrorBoundaryProps, Link } from 'expo-router';
+import { type ErrorBoundaryProps, Link, useNavigation, useRouter } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
 import { useEffect } from 'react';
 import { ActivityIndicator, Image, Platform, Pressable, View } from 'react-native';

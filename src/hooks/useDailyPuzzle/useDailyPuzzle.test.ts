@@ -3,7 +3,7 @@ import * as Haptics from 'expo-haptics';
 import { usePostHog } from 'posthog-react-native';
 import { Share } from 'react-native';
 
-import { type Id } from '@/convex/_generated/dataModel';
+import type { Id } from '@/convex/_generated/dataModel';
 import { puzzleType } from '@/convex/puzzles/models';
 import { testCorrectPuzzleGuessAttempt1, testIncorrectPuzzleGuessAttempt1 } from '@/tests/fixtures/puzzleGuessAttempts';
 import { testDailyPuzzle1 } from '@/tests/fixtures/puzzles';

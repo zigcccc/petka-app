@@ -1,5 +1,5 @@
 import { Octicons } from '@expo/vector-icons';
-import { useRouter, Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { ActivityIndicator, Platform, ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
