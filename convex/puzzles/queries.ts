@@ -285,7 +285,7 @@ export const markAsSolved = mutation({
         leaderboard.users?.includes(normalizedUserId)
       );
       const leaderboardsToUpdate = globalLeaderboard ? [globalLeaderboard, ...userLeaderboards] : userLeaderboards;
-      const puzzleScore = 7 - puzzleAttempts.length;
+      const puzzleScore = isFailed ? 0 : 7 - puzzleAttempts.length;
 
       for (const leaderboard of leaderboardsToUpdate) {
         await ctx.db.insert('leaderboardEntries', {
