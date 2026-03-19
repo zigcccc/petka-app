@@ -62,7 +62,7 @@ Validators use `zod` (v4) via `convex-helpers/server/zod4` (`zodToConvex`, `zid`
 
 ## Code conventions
 
-**Imports:** ordered `object → builtin → external → internal → parent → sibling → index`, with a blank line between groups. Internal paths use the `@/` alias (maps to `src/`). Type-only imports must use `import { type X }` syntax.
+**Imports:** ordered `object → builtin → external → internal → parent → sibling → index`, with a blank line between groups. Internal paths use the `@/` alias (maps to `src/`). Type-only imports must use `import type { X }` syntax (also enforced by biome). For mixed imports use `import { Component, type ComponentProps }` syntax.
 
 **JSX props:** all props sorted alphabetically (enforced by Biome `useSortedAttributes`).
 
