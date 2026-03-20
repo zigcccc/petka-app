@@ -50,7 +50,7 @@ export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Readon
               >
                 <Text
                   allowFontScaling={false}
-                  style={styles.keyText({ isInvalid, isMisplaced, isCorrect })}
+                  style={styles.keyText({ isInvalid, isMisplaced, isCorrect, isSpecialCharacter })}
                   weight="bold"
                 >
                   {keysToIconMap.get(key) ?? key}
@@ -110,14 +110,17 @@ const styles = StyleSheet.create((theme, rt) => ({
     isCorrect,
     isInvalid,
     isMisplaced,
+    isSpecialCharacter,
   }: {
     isInvalid: boolean;
     isMisplaced: boolean;
     isCorrect: boolean;
+    isSpecialCharacter: boolean;
   }) => ({
     textTransform: 'uppercase',
     width: 22,
     textAlign: 'center',
+    marginTop: isSpecialCharacter ? theme.spacing[2] : 0,
     color: isInvalid || isMisplaced || isCorrect ? theme.colors.white : theme.colors.foreground,
   }),
 }));

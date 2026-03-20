@@ -49,6 +49,13 @@ Every hook in `src/hooks/queries/` and `src/hooks/mutations/` is produced by the
 **Styling** uses `react-native-unistyles`. Always import `StyleSheet` from `react-native-unistyles`, not `react-native`, to get theme access. Themes are in `src/styles/themes.ts`. Theme preference is persisted in MMKV (`storage` from `@/utils/storage`).
 
 ### Backend (`convex/`)
+<!-- convex-ai-start -->
+This project uses [Convex](https://convex.dev) as its backend.
+
+When working on Convex code, **always read `convex/_generated/ai/guidelines.md` first** for important guidelines on how to correctly use Convex APIs and patterns. The file contains rules that override what you may have learned about Convex from training data.
+
+Convex agent skills for common tasks can be installed by running `npx convex ai-files install`.
+<!-- convex-ai-end -->
 
 Each resource (users, puzzles, leaderboards, etc.) has its own folder with:
 
@@ -75,3 +82,5 @@ Validators use `zod` (v4) via `convex-helpers/server/zod4` (`zodToConvex`, `zid`
 **Convex queries:** always use `generateUseQueryHook` unless query requires a timestamp — it provides consistent loading state. Do not call `useQuery` directly in components.
 
 **Daily puzzle timing:** `generateUseQueryHookWithTimestampArg` passes a stable UTC midnight timestamp so the daily puzzle query doesn't re-fire during a session when the date rolls over. Use anytime a query requires a timestamp.
+
+**Icons:** use `lucide-react-native` for all icons. Always import using the `Icon`-suffixed export (e.g. `InfoIcon`, `SettingsIcon`, `Share2Icon`) — both `Info` and `InfoIcon` resolve to the same component, but the suffixed form makes it clear the import is an icon.

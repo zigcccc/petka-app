@@ -1,7 +1,7 @@
-import { Octicons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
-import { ActivityIndicator, Platform, ScrollView, View } from 'react-native';
-import { StyleSheet, withUnistyles } from 'react-native-unistyles';
+import { ArrowUpRightIcon, ShareIcon } from 'lucide-react-native';
+import { ActivityIndicator, Platform, Pressable, ScrollView, View } from 'react-native';
+import { StyleSheet } from 'react-native-unistyles';
 
 import { AttemptsDistributionGraph } from '@/components/elements';
 import { Button, Card, Text } from '@/components/ui';
@@ -10,8 +10,6 @@ import { useDictionaryEntry } from '@/hooks/queries';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
 import { usePuzzleStatistics } from '@/hooks/usePuzzlesStatistics';
 import { capitalize } from '@/utils/strings';
-
-const UniIcon = withUnistyles(Octicons);
 
 export default function DailyPuzzleSolvedScreen() {
   const router = useRouter();
@@ -51,9 +49,12 @@ export default function DailyPuzzleSolvedScreen() {
                   asChild
                   href={`https://www.fran.si/iskanje?View=1&Query=${puzzle?.solution}`}
                 >
-                  <Text size="xs" weight="medium">
-                    SSKJ <Octicons name="arrow-up-right" />
-                  </Text>
+                  <Pressable style={styles.solutionLink}>
+                    <Text size="xs" weight="medium">
+                      SSKJ
+                    </Text>
+                    <ArrowUpRightIcon size={14} />
+                  </Pressable>
                 </Link>
               </View>
               {!isLoadingDictionaryEntry && (
@@ -101,7 +102,9 @@ export default function DailyPuzzleSolvedScreen() {
             </Card>
             <Button onPress={onShareResults} size="sm" variant="outline">
               <Button.Text>Deli</Button.Text>
-              <UniIcon name="share" size={16} uniProps={(theme) => ({ color: theme.colors.petka.green })} />
+              <Button.Icon>
+                <ShareIcon />
+              </Button.Icon>
             </Button>
           </ScrollView>
         )}
@@ -140,6 +143,13 @@ const styles = StyleSheet.create((theme, rt) => ({
     gap: theme.spacing[2],
   },
   solutionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  solutionLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    borderBottomColor: theme.colors.foreground,
+    borderBottomWidth: 1,
+  },
   actions: {
     gap: theme.spacing[4],
   },

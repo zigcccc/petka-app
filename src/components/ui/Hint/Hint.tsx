@@ -1,8 +1,9 @@
-import { Octicons } from '@expo/vector-icons';
+import { InfoIcon } from 'lucide-react-native';
 import type { PropsWithChildren, ReactNode } from 'react';
 import { View } from 'react-native';
-import { StyleSheet, type UnistylesVariants, withUnistyles } from 'react-native-unistyles';
+import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
 
+import { Icon } from '../Icon';
 import { Text } from '../Text';
 
 type Props = PropsWithChildren<{
@@ -11,17 +12,16 @@ type Props = PropsWithChildren<{
 }> &
   UnistylesVariants<typeof styles>;
 
-const UniIcon = withUnistyles(Octicons);
-
 export function Hint({ actions, children, intent = 'warning', title }: Props) {
   styles.useVariants({ intent });
 
   return (
     <View style={styles.hint}>
       <View style={styles.hintHeader}>
-        <UniIcon
-          name="info"
+        <Icon
+          icon={InfoIcon}
           size={14}
+          strokeWidth={3}
           testID="hint--icon"
           uniProps={(theme) => {
             const intentToIconColorMap = new Map([

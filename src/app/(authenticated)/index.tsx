@@ -1,6 +1,6 @@
-import { Octicons } from '@expo/vector-icons';
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { type Href, useFocusEffect, useRouter } from 'expo-router';
+import { ChartLineIcon, GraduationCapIcon, HistoryIcon, InfoIcon, SettingsIcon } from 'lucide-react-native';
 import { type ComponentRef, useCallback, useRef } from 'react';
 import { Image, Platform, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
@@ -50,7 +50,7 @@ export default function HomeScreen() {
             <View style={styles.action}>
               <Button intent="secondary" onPress={() => router.navigate('/play/training-puzzle')} size="lg">
                 <Button.Icon>
-                  <Octicons name="mortar-board" />
+                  <GraduationCapIcon />
                 </Button.Icon>
                 <Button.Text>Trening</Button.Text>
               </Button>
@@ -58,7 +58,7 @@ export default function HomeScreen() {
             <View style={styles.action}>
               <Button intent="secondary" onPress={() => router.navigate('/leaderboards/weekly-leaderboard')} size="lg">
                 <Button.Icon>
-                  <Octicons name="graph" />
+                  <ChartLineIcon />
                 </Button.Icon>
                 <Button.Text>Lestvica</Button.Text>
               </Button>
@@ -68,21 +68,21 @@ export default function HomeScreen() {
             <View style={styles.action}>
               <Button intent="black" onPress={() => router.navigate('/app-info')} size="lg">
                 <Button.Icon>
-                  <Octicons name="info" />
+                  <InfoIcon />
                 </Button.Icon>
               </Button>
             </View>
             <View style={styles.action}>
               <Button intent="black" onPress={() => router.navigate('/history/daily-challenges')} size="lg">
                 <Button.Icon>
-                  <Octicons name="history" />
+                  <HistoryIcon />
                 </Button.Icon>
               </Button>
             </View>
             <View style={styles.action}>
               <Button intent="black" onPress={() => router.navigate('/settings')} size="lg">
                 <Button.Icon>
-                  <Octicons name="gear" />
+                  <SettingsIcon />
                 </Button.Icon>
               </Button>
             </View>

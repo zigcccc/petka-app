@@ -1,4 +1,4 @@
-import { Octicons } from '@expo/vector-icons';
+import { type LucideIcon, PencilIcon } from 'lucide-react-native';
 import type { PropsWithChildren, ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
@@ -8,10 +8,10 @@ import { Text } from '../Text';
 type Props = PropsWithChildren<{
   title?: string;
   onShowActions?: () => void;
-  actionsIconName?: keyof typeof Octicons.glyphMap;
+  actionsIcon?: LucideIcon;
 }>;
 
-export function Card({ actionsIconName = 'pencil', children, title, onShowActions }: Readonly<Props>) {
+export function Card({ actionsIcon: ActionsIcon = PencilIcon, children, title, onShowActions }: Readonly<Props>) {
   const { theme } = useUnistyles();
 
   return (
@@ -33,12 +33,7 @@ export function Card({ actionsIconName = 'pencil', children, title, onShowAction
             testID="card--actions-trigger"
           >
             {({ pressed }) => (
-              <Octicons
-                color={theme.colors.grey[50]}
-                name={actionsIconName}
-                size={18}
-                style={{ opacity: pressed ? 0.4 : 1 }}
-              />
+              <ActionsIcon color={theme.colors.grey[50]} size={18} style={{ opacity: pressed ? 0.4 : 1 }} />
             )}
           </Pressable>
         )}

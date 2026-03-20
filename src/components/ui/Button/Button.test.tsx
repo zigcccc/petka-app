@@ -1,5 +1,5 @@
-import { Octicons } from '@expo/vector-icons';
 import { fireEvent, render, screen } from '@testing-library/react-native';
+import { AlertTriangleIcon } from 'lucide-react-native';
 
 import { Button } from './Button';
 
@@ -29,7 +29,7 @@ describe('<Button />', () => {
       <Button intent="danger" onPress={jest.fn()} size="lg">
         With icon{' '}
         <Button.Icon>
-          <Octicons name="alert" testID="button-icon" />
+          <AlertTriangleIcon testID="button-icon" />
         </Button.Icon>
       </Button>
     );
@@ -43,12 +43,12 @@ describe('<Button />', () => {
       <Button intent="danger" onPress={jest.fn()} size="lg">
         With icon{' '}
         <Button.Icon>
-          <Octicons name="alert" />
+          <AlertTriangleIcon />
         </Button.Icon>
       </Button>
     );
 
-    expect(screen.queryByTestId('icon-alert')).toBeOnTheScreen();
-    expect(screen.queryByRole('button', { name: /icon-alert/ })).toBeOnTheScreen();
+    expect(screen.queryByTestId('icon-AlertTriangleIcon')).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: /icon-AlertTriangleIcon/ })).toBeOnTheScreen();
   });
 });

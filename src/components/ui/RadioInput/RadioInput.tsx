@@ -1,3 +1,4 @@
+import { CheckIcon } from 'lucide-react-native';
 import { Children, useCallback, useMemo } from 'react';
 import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
@@ -49,7 +50,7 @@ function RadioInputItem({ label, value }: Readonly<RadioInputItemProps>) {
     >
       {isSelected && (
         <Icon
-          name="check"
+          icon={CheckIcon}
           size={16}
           testID="radio-input--item--check-icon"
           uniProps={(theme) => ({ color: theme.colors.foreground })}

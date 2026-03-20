@@ -1,9 +1,9 @@
-import type { IconProps } from '@expo/vector-icons/build/createIconSet';
 import { cloneElement, createContext, type PropsWithChildren, type ReactElement, useContext, useMemo } from 'react';
 import { ActivityIndicator, Pressable, type StyleProp, Text, type ViewStyle } from 'react-native';
 import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
 
 import { defaultTheme } from '@/styles/themes';
+import type { IconProps } from '../Icon';
 
 type Props = PropsWithChildren<{
   onPress?: () => void;
@@ -108,7 +108,7 @@ function ButtonText({ children }: Readonly<PropsWithChildren>) {
 
 Button.Text = ButtonText;
 
-function ButtonIcon({ children }: Readonly<{ children: ReactElement<IconProps<string>> }>) {
+function ButtonIcon({ children }: Readonly<{ children: ReactElement<IconProps> }>) {
   const buttonStyles = useButtonContext();
   styles.useVariants(buttonStyles);
 
@@ -116,13 +116,16 @@ function ButtonIcon({ children }: Readonly<{ children: ReactElement<IconProps<st
     return null;
   }
 
+  const iconName = (children.type as { displayName?: string }).displayName ?? 'icon';
+
   return (
     <>
       {cloneElement(children, {
         color: styles.text.color ?? '',
         size: sizeToIconSizeMap.get(buttonStyles.size),
-        testID: children.props.testID ?? `icon-${children.props.name}`,
-        accessibilityLabel: `icon-${children.props.name}`,
+        testID: children.props.testID ?? `icon-${iconName}`,
+        accessibilityLabel: `icon-${iconName}`,
+        strokeWidth: 2.5,
       })}
     </>
   );

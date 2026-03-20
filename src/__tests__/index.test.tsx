@@ -60,13 +60,13 @@ describe('Home screen', () => {
     fireEvent.press(screen.getByRole('button', { name: /Lestvica/ }));
     expect(mockNavigate).toHaveBeenNthCalledWith(3, '/leaderboards/weekly-leaderboard');
 
-    fireEvent.press(screen.getByRole('button', { name: /icon-info/ }));
+    fireEvent.press(screen.getByRole('button', { name: /icon-InfoIcon/ }));
     expect(mockNavigate).toHaveBeenNthCalledWith(4, '/app-info');
 
-    fireEvent.press(screen.getByRole('button', { name: /icon-history/ }));
+    fireEvent.press(screen.getByRole('button', { name: /icon-HistoryIcon/ }));
     expect(mockNavigate).toHaveBeenNthCalledWith(5, '/history/daily-challenges');
 
-    fireEvent.press(screen.getByRole('button', { name: /icon-gear/ }));
+    fireEvent.press(screen.getByRole('button', { name: /icon-SettingsIcon/ }));
     expect(mockNavigate).toHaveBeenNthCalledWith(6, '/settings');
   });
 
