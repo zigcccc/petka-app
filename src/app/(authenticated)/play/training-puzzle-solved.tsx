@@ -1,6 +1,6 @@
-import { Octicons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
-import { ActivityIndicator, Platform, ScrollView, View } from 'react-native';
+import { ArrowUpRightIcon, Share2Icon } from 'lucide-react-native';
+import { ActivityIndicator, Platform, Pressable, ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { AttemptsDistributionGraph } from '@/components/elements';
@@ -55,9 +55,12 @@ export default function TrainingPuzzleSolvedScreen() {
                   asChild
                   href={`https://www.fran.si/iskanje?View=1&Query=${puzzle?.solution}`}
                 >
-                  <Text size="xs" style={{ flexShrink: 1 }} weight="medium">
-                    SSKJ <Octicons name="arrow-up-right" />
-                  </Text>
+                  <Pressable style={styles.solutionLink}>
+                    <Text size="xs" weight="medium">
+                      SSKJ
+                    </Text>
+                    <ArrowUpRightIcon size={14} />
+                  </Pressable>
                 </Link>
               </View>
               {!isLoadingDictionaryEntry && (
@@ -106,7 +109,7 @@ export default function TrainingPuzzleSolvedScreen() {
             <Button intent="shaded" onPress={onShareResults} size="sm" variant="outline">
               <Button.Text>Deli</Button.Text>
               <Button.Icon>
-                <Octicons name="share" />
+                <Share2Icon />
               </Button.Icon>
             </Button>
           </ScrollView>
@@ -148,6 +151,13 @@ const styles = StyleSheet.create((theme, rt) => ({
     gap: theme.spacing[2],
   },
   solutionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  solutionLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    borderBottomColor: theme.colors.foreground,
+    borderBottomWidth: 1,
+  },
   actions: {
     gap: theme.spacing[4],
   },

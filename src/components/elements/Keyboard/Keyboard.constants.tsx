@@ -1,4 +1,4 @@
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { CornerDownRightIcon, DeleteIcon } from 'lucide-react-native';
 
 export const qwertyKeys = [
   ['e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'š', 'ž'],
@@ -17,6 +17,6 @@ export const keys = qwertyKeys;
 export type KeyboardKey = (typeof keys)[number][number];
 
 export const keysToIconMap = new Map([
-  ['{Backspace}', <Ionicons key="backspace" name="backspace-outline" size={22} testID="keyboard-icon--backspace" />],
-  ['{Enter}', <MaterialIcons key="enter" name="subdirectory-arrow-right" size={22} testID="keyboard-icon--enter" />],
+  ['{Backspace}', <DeleteIcon key="backspace" size={22} testID="keyboard-icon--backspace" />],
+  ['{Enter}', <CornerDownRightIcon key="enter" size={22} testID="keyboard-icon--enter" />],
 ]);

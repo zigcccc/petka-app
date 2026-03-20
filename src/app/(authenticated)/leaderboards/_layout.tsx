@@ -1,5 +1,5 @@
-import Octicons from '@expo/vector-icons/Octicons';
 import { Tabs } from 'expo-router';
+import { CalendarIcon, GraduationCapIcon } from 'lucide-react-native';
 import { withUnistyles } from 'react-native-unistyles';
 
 const StyledTabs = withUnistyles(Tabs, (theme) => ({
@@ -17,7 +17,7 @@ export default function LeaderboardsTabsLayout() {
         name="weekly-leaderboard"
         options={{
           title: 'Tedenska lestvica',
-          tabBarIcon: ({ color }) => <Octicons color={color} name="calendar" size={24} />,
+          tabBarIcon: ({ color }) => <CalendarIcon color={color} size={24} />,
           headerShown: false,
         }}
       />
@@ -25,7 +25,7 @@ export default function LeaderboardsTabsLayout() {
         name="all-time-leaderboard"
         options={{
           title: 'Lestvica vseh časov',
-          tabBarIcon: ({ color }) => <Octicons color={color} name="mortar-board" size={24} />,
+          tabBarIcon: ({ color }) => <GraduationCapIcon color={color} size={24} />,
           headerShown: false,
         }}
       />

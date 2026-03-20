@@ -1,5 +1,5 @@
-import { Octicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { CalendarIcon, GraduationCapIcon } from 'lucide-react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 export default function TabLayout() {
@@ -18,7 +18,7 @@ export default function TabLayout() {
         name="daily-challenges"
         options={{
           title: 'Dnevni izzivi',
-          tabBarIcon: ({ color }) => <Octicons color={color} name="calendar" size={24} />,
+          tabBarIcon: ({ color }) => <CalendarIcon color={color} size={24} />,
           headerShown: false,
         }}
       />
@@ -26,7 +26,7 @@ export default function TabLayout() {
         name="training-challenges"
         options={{
           title: 'Trening izzivi',
-          tabBarIcon: ({ color }) => <Octicons color={color} name="mortar-board" size={24} />,
+          tabBarIcon: ({ color }) => <GraduationCapIcon color={color} size={24} />,
           headerShown: false,
         }}
       />

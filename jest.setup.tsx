@@ -1,7 +1,3 @@
-import type { Octicons } from '@expo/vector-icons';
-import type { ComponentProps } from 'react';
-import { Text as MockText } from 'react-native';
-
 jest.mock('@react-native-async-storage/async-storage', () =>
   require('@react-native-async-storage/async-storage/jest/async-storage-mock')
 );
@@ -16,22 +12,39 @@ jest.mock('expo', () => ({
   isRunningInExpoGo: jest.fn().mockReturnValue(false),
 }));
 
-jest.mock('@expo/vector-icons', () => ({
-  ...jest.requireActual('@expo/vector-icons'),
-  // biome-ignore lint/suspicious/noExplicitAny: Test mock, fine with any
-  Octicons: (props: ComponentProps<typeof Octicons> & { uniProps?: (theme: unknown) => any }) => {
-    const { defaultTheme } = jest.requireActual('./src/styles/themes');
-    const transformedProps = props.uniProps ? props.uniProps(defaultTheme) : {};
+jest.mock('lucide-react-native', () => {
+  const { Text } = require('react-native');
+  const { defaultTheme } = jest.requireActual('./src/styles/themes');
 
-    return (
-      <MockText
-        {...props}
-        accessibilityLabel={props.accessibilityLabel ?? props.name}
-        style={{ color: transformedProps?.color ?? props.color }}
-      />
-    );
-  },
-}));
+  const createMockIcon = (name: string) => {
+    // biome-ignore lint/suspicious/noExplicitAny: Test mock, fine with any
+    const MockIcon = ({ testID, accessibilityLabel, color, size, uniProps, ...rest }: Record<string, any>) => {
+      const transformed = uniProps ? uniProps(defaultTheme) : {};
+      const resolvedColor = transformed?.color ?? color;
+      return (
+        <Text
+          accessibilityLabel={accessibilityLabel ?? name}
+          color={resolvedColor}
+          size={size}
+          style={resolvedColor ? { color: resolvedColor } : undefined}
+          testID={testID}
+          {...rest}
+        />
+      );
+    };
+    MockIcon.displayName = name;
+    return MockIcon;
+  };
+
+  return new Proxy(
+    {},
+    {
+      get(_t: unknown, prop: string) {
+        return createMockIcon(prop);
+      },
+    }
+  );
+});
 
 jest.mock('@gorhom/bottom-sheet', () => ({
   __esModule: true,
