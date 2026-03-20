@@ -1,5 +1,4 @@
-import type { LucideIcon } from 'lucide-react-native';
-import { PencilIcon } from 'lucide-react-native';
+import { type LucideIcon, PencilIcon } from 'lucide-react-native';
 import type { PropsWithChildren, ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';

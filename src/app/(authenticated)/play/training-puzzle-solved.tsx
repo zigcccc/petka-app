@@ -1,5 +1,5 @@
 import { Link, useRouter } from 'expo-router';
-import { ArrowUpRightIcon, Share2Icon } from 'lucide-react-native';
+import { ArrowUpRightIcon, ShareIcon } from 'lucide-react-native';
 import { ActivityIndicator, Platform, Pressable, ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
@@ -109,7 +109,7 @@ export default function TrainingPuzzleSolvedScreen() {
             <Button intent="shaded" onPress={onShareResults} size="sm" variant="outline">
               <Button.Text>Deli</Button.Text>
               <Button.Icon>
-                <Share2Icon />
+                <ShareIcon />
               </Button.Icon>
             </Button>
           </ScrollView>

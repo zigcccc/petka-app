@@ -2,75 +2,67 @@
 
 ## Key-Value Storage
 
-Use the localStorage polyfill for key-value storage. **Never use AsyncStorage**
+Use MMKV (`react-native-mmkv`) for all key-value storage needs. It is synchronous, fast, and already set up in this project. **Do not use AsyncStorage or the localStorage polyfill.**
+
+The shared MMKV instance is exported from `@/utils/storage`:
 
 ```tsx
-import "expo-sqlite/localStorage/install";
+import { storage } from '@/utils/storage';
 
-// Simple get/set
-localStorage.setItem("key", "value");
-localStorage.getItem("key");
+// Strings
+storage.set('key', 'value');
+storage.getString('key');
 
-// Store objects as JSON
-localStorage.setItem("user", JSON.stringify({ name: "John", id: 1 }));
-const user = JSON.parse(localStorage.getItem("user") ?? "{}");
+// Booleans / numbers
+storage.set('flag', true);
+storage.getBoolean('flag');
+
+// Objects — serialize to JSON manually
+storage.set('user', JSON.stringify({ name: 'John' }));
+const user = JSON.parse(storage.getString('user') ?? '{}');
+
+// Delete
+storage.delete('key');
 ```
 
 ## When to Use What
 
-| Use Case                                             | Solution                |
-| ---------------------------------------------------- | ----------------------- |
-| Simple key-value (settings, preferences, small data) | `localStorage` polyfill |
-| Large datasets, complex queries, relational data     | Full `expo-sqlite`      |
-| Sensitive data (tokens, passwords)                   | `expo-secure-store`     |
+| Use Case                                         | Solution              |
+| ------------------------------------------------ | --------------------- |
+| Simple key-value (settings, preferences, flags)  | MMKV (`@/utils/storage`) |
+| Sensitive data (tokens, passwords)               | `expo-secure-store`   |
+| Large datasets, complex queries, relational data | `expo-sqlite`         |
 
-## Storage with React State
+**Exception — existing identity persistence:** the Convex user ID is stored in AsyncStorage on first account creation. This flow is owned by `useUser()` (`src/hooks/useUser/`) — do not touch or migrate it.
 
-Create a storage utility with subscriptions for reactive updates:
+## MMKV with React State
 
-```tsx
-// utils/storage.ts
-import "expo-sqlite/localStorage/install";
-
-type Listener = () => void;
-const listeners = new Map<string, Set<Listener>>();
-
-export const storage = {
-  get<T>(key: string, defaultValue: T): T {
-    const value = localStorage.getItem(key);
-    return value ? JSON.parse(value) : defaultValue;
-  },
-
-  set<T>(key: string, value: T): void {
-    localStorage.setItem(key, JSON.stringify(value));
-    listeners.get(key)?.forEach((fn) => fn());
-  },
-
-  subscribe(key: string, listener: Listener): () => void {
-    if (!listeners.has(key)) listeners.set(key, new Set());
-    listeners.get(key)!.add(listener);
-    return () => listeners.get(key)?.delete(listener);
-  },
-};
-```
-
-## React Hook for Storage
+MMKV supports listener-based subscriptions via `addOnValueChangedListener`, which pairs well with `useSyncExternalStore`:
 
 ```tsx
-// hooks/use-storage.ts
-import { useSyncExternalStore } from "react";
-import { storage } from "@/utils/storage";
+import { useSyncExternalStore } from 'react';
+import { storage } from '@/utils/storage';
 
 export function useStorage<T>(
   key: string,
-  defaultValue: T
+  defaultValue: T,
+  deserialize: (raw: string) => T = JSON.parse,
+  serialize: (value: T) => string = JSON.stringify,
 ): [T, (value: T) => void] {
   const value = useSyncExternalStore(
-    (cb) => storage.subscribe(key, cb),
-    () => storage.get(key, defaultValue)
+    (cb) => {
+      const sub = storage.addOnValueChangedListener((changedKey) => {
+        if (changedKey === key) cb();
+      });
+      return () => sub.remove();
+    },
+    () => {
+      const raw = storage.getString(key);
+      return raw !== undefined ? deserialize(raw) : defaultValue;
+    },
   );
 
-  return [value, (newValue: T) => storage.set(key, newValue)];
+  return [value, (newValue: T) => storage.set(key, serialize(newValue))];
 }
 ```
 
@@ -78,44 +70,13 @@ Usage:
 
 ```tsx
 function Settings() {
-  const [theme, setTheme] = useStorage("theme", "light");
+  const [theme, setTheme] = useStorage('theme', 'light');
 
   return (
     <Switch
-      value={theme === "dark"}
-      onValueChange={(dark) => setTheme(dark ? "dark" : "light")}
+      value={theme === 'dark'}
+      onValueChange={(dark) => setTheme(dark ? 'dark' : 'light')}
     />
   );
 }
-```
-
-## Full SQLite for Complex Data
-
-For larger datasets or complex queries, use expo-sqlite directly:
-
-```tsx
-import * as SQLite from "expo-sqlite";
-
-const db = await SQLite.openDatabaseAsync("app.db");
-
-// Create table
-await db.execAsync(`
-  CREATE TABLE IF NOT EXISTS events (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    date TEXT NOT NULL,
-    location TEXT
-  )
-`);
-
-// Insert
-await db.runAsync("INSERT INTO events (title, date) VALUES (?, ?)", [
-  "Meeting",
-  "2024-01-15",
-]);
-
-// Query
-const events = await db.getAllAsync("SELECT * FROM events WHERE date > ?", [
-  "2024-01-01",
-]);
 ```
