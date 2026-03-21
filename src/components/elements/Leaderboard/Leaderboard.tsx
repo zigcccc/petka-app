@@ -40,11 +40,14 @@ const styles = StyleSheet.create((theme) => ({
   container: {
     gap: theme.spacing[3],
   },
-  entry: {
-    flexDirection: 'row',
-    gap: 8,
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  entry({ pressed }: { pressed?: boolean }) {
+    return {
+      opacity: pressed ? 0.4 : 1,
+      flexDirection: 'row',
+      gap: 8,
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    };
   },
   contentLeft: {
     flexDirection: 'row',
