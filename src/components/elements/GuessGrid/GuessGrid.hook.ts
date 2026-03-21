@@ -8,7 +8,6 @@ import { useToaster } from '@/hooks/useToaster';
 import { deepClone } from '@/utils/clone';
 
 import type { KeyboardKey } from '../Keyboard';
-
 import { findCurrentGridRowIdx, getUpdatedGrid } from './GuessGrid.helpers';
 
 const initialGuesses = new Array(6).fill(new Array(5).fill(null));

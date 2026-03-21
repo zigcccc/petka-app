@@ -4,7 +4,6 @@ import { pickRandomWord } from '@/utils/words';
 
 import { internalMutation } from '../_generated/server';
 import { pushNotifications } from '../notifications/services';
-
 import { puzzleType } from './models';
 
 export const createDailyPuzzle = internalMutation({

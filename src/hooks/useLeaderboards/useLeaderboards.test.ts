@@ -24,7 +24,6 @@ import {
 import { useLeaderboardsQuery } from '../queries';
 import { useToaster } from '../useToaster';
 import { useUser } from '../useUser';
-
 import { useLeaderboards } from './useLeaderboards';
 
 jest.mock('posthog-react-native', () => ({

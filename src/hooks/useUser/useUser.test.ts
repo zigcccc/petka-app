@@ -8,7 +8,6 @@ import { testUser1 } from '@/tests/fixtures/users';
 import { useCreateUserMutation, useDeleteUserMutation, usePatchUserMutation } from '../mutations';
 import { useUserQuery } from '../queries';
 import { useToaster } from '../useToaster';
-
 import { LOADING_USER_ID, useUser } from './useUser';
 
 jest.mock('posthog-react-native', () => ({

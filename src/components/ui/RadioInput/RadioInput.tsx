@@ -5,7 +5,6 @@ import { StyleSheet } from 'react-native-unistyles';
 
 import { Icon } from '../Icon';
 import { Text } from '../Text';
-
 import { RadioInputContext, useRadioInputContext } from './RadioInput.context';
 import type { RadioInputItemProps, RadioInputProps } from './RadioInput.types';
 

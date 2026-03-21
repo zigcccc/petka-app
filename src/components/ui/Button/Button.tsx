@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, type StyleProp, Text, type ViewStyle } fr
 import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
 
 import { defaultTheme } from '@/styles/themes';
+
 import type { IconProps } from '../Icon';
 
 type Props = PropsWithChildren<{

@@ -8,7 +8,6 @@ import type { DataModel, Id } from '../_generated/dataModel';
 import { generateRandomString, weekBounds, windowAround } from '../shared/helpers';
 import { internalMutation, mutation, query } from '../shared/queries';
 import type { User } from '../users/models';
-
 import {
   createLeaderboardModel,
   type LeaderboardWithScores,

@@ -13,7 +13,6 @@ import { useCreatePuzzleGuessAttemptMutation, useMarkPuzzleAsSolvedMutation } fr
 import { useActiveDailyPuzzleQuery, usePuzzleAttemptsQuery } from '../queries';
 import { useToaster } from '../useToaster';
 import { useUser } from '../useUser';
-
 import { useDailyPuzzle } from './useDailyPuzzle';
 
 jest.mock('posthog-react-native', () => ({

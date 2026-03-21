@@ -8,7 +8,6 @@ import { isAttemptCorrect } from '../puzzleGuessAttempts/helpers';
 import { checkedLetterStatus } from '../puzzleGuessAttempts/models';
 import { paginationOptsValidator } from '../shared/models';
 import { mutation, query } from '../shared/queries';
-
 import { puzzleType } from './models';
 
 export const read = query({
