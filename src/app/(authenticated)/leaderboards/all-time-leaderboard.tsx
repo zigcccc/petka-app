@@ -1,4 +1,4 @@
-import { useFocusEffect, useNavigation } from 'expo-router';
+import { useFocusEffect, useNavigation, useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
@@ -11,6 +11,7 @@ import { useLeaderboards } from '@/hooks/useLeaderboards';
 
 export default function AllTimeLeaderboardScreen() {
   const navigation = useNavigation();
+  const router = useRouter();
   const {
     leaderboards: privateLeaderboards,
     isCreating,
@@ -36,7 +37,12 @@ export default function AllTimeLeaderboardScreen() {
               onShowActions={() => onPresentLeaderboardActions(leaderboard)}
               title={leaderboard.name ?? leaderboard._id}
             >
-              <Leaderboard scores={leaderboard.scores} />
+              <Leaderboard
+                onEntryPress={(userId) =>
+                  router.navigate({ pathname: '/(authenticated)/user-profile', params: { userId } })
+                }
+                scores={leaderboard.scores}
+              />
             </Card>
           ))}
         </View>
