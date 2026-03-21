@@ -5,7 +5,7 @@ import { StyleSheet } from 'react-native-unistyles';
 
 import { Text } from '@/components/ui';
 
-export function ModalViewBackButton({ canGoBack }: { canGoBack?: boolean }) {
+export function ModalViewBackButton({ canGoBack, tintColor }: { canGoBack?: boolean; tintColor?: string }) {
   const router = useRouter();
 
   if (!canGoBack) {
@@ -14,7 +14,7 @@ export function ModalViewBackButton({ canGoBack }: { canGoBack?: boolean }) {
 
   return (
     <Pressable onPress={router.back} style={styles.container}>
-      <ChevronLeftIcon size={28} strokeWidth={2} />
+      <ChevronLeftIcon color={tintColor} size={28} strokeWidth={2} />
       <Text weight="medium">Nazaj</Text>
     </Pressable>
   );
