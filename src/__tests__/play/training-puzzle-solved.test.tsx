@@ -91,7 +91,7 @@ describe('Training puzzle solved screen', () => {
     usePuzzleStatisticsSpy.mockReturnValue({ isLoading: true, data: undefined });
     render(<TrainingPuzzleSolvedScreen />);
 
-    expect(screen.queryByRole('spinbutton', { name: 'Nalagam statistiko trening izzivov...' })).toBeOnTheScreen();
+    expect(screen.queryByRole('progressbar', { name: 'Nalagam statistiko trening izzivov...' })).toBeOnTheScreen();
     expect(screen.queryByText('Trening statistika')).not.toBeOnTheScreen();
   });
 
@@ -126,7 +126,7 @@ describe('Training puzzle solved screen', () => {
     usePuzzleStatisticsSpy.mockReturnValue({ isLoading: false, data: testPuzzleStatistics1 });
     render(<TrainingPuzzleSolvedScreen />);
 
-    expect(screen.queryByRole('spinbutton', { name: 'Nalagam statistiko trening izzivov...' })).not.toBeOnTheScreen();
+    expect(screen.queryByRole('progressbar', { name: 'Nalagam statistiko trening izzivov...' })).not.toBeOnTheScreen();
 
     expect(screen.queryByText('Trening statistika')).toBeOnTheScreen();
 

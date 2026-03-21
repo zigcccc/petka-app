@@ -75,7 +75,7 @@ describe('<UserProfileScreen />', () => {
     useUserQuerySpy.mockReturnValue({ isLoading: true, data: undefined });
     render(<UserProfileScreen />);
 
-    expect(screen.queryByRole('spinbutton', { name: 'Nalagam podatke o uporabniku...' })).toBeOnTheScreen();
+    expect(screen.queryByRole('progressbar', { name: 'Nalagam podatke o uporabniku...' })).toBeOnTheScreen();
     expect(screen.queryByText('Statistika dnevnih izzivov')).not.toBeOnTheScreen();
   });
 
@@ -83,7 +83,7 @@ describe('<UserProfileScreen />', () => {
     usePuzzlesStatisticsQuerySpy.mockReturnValue({ isLoading: true, data: undefined });
     render(<UserProfileScreen />);
 
-    expect(screen.queryByRole('spinbutton', { name: 'Nalagam podatke o uporabniku...' })).toBeOnTheScreen();
+    expect(screen.queryByRole('progressbar', { name: 'Nalagam podatke o uporabniku...' })).toBeOnTheScreen();
     expect(screen.queryByText('Statistika dnevnih izzivov')).not.toBeOnTheScreen();
   });
 
@@ -97,7 +97,7 @@ describe('<UserProfileScreen />', () => {
   it('should render daily stats when data is loaded', () => {
     render(<UserProfileScreen />);
 
-    expect(screen.queryByRole('spinbutton', { name: 'Nalagam podatke o uporabniku...' })).not.toBeOnTheScreen();
+    expect(screen.queryByRole('progressbar', { name: 'Nalagam podatke o uporabniku...' })).not.toBeOnTheScreen();
     expect(screen.queryByText('Statistika dnevnih izzivov')).toBeOnTheScreen();
     expect(screen.getByTestId('stat-total-played')).toHaveTextContent(/Odigranih5/);
     expect(screen.getByTestId('stat-win-rate')).toHaveTextContent(/% rešenih80%/);
@@ -105,15 +105,16 @@ describe('<UserProfileScreen />', () => {
     expect(screen.getByTestId('stat-max-streak')).toHaveTextContent(/Najdaljši niz3/);
   });
 
-  it('should render 100% win rate when totalPlayed is 0', () => {
+  it('should render win rate rounded up to nearest integer', () => {
     usePuzzlesStatisticsQuerySpy.mockReturnValue({
       isLoading: false,
       isNotFound: false,
-      data: { ...testPuzzleStatistics1, totalPlayed: 0, totalWon: 0 },
+      data: { ...testPuzzleStatistics1, totalPlayed: 3, totalWon: 1 },
     });
     render(<UserProfileScreen />);
 
-    expect(screen.queryByText('100%')).toBeOnTheScreen();
+    // Math.ceil(1 / 3 * 100) = Math.ceil(33.33) = 34
+    expect(screen.getByTestId('stat-win-rate')).toHaveTextContent(/34%/);
   });
 
   it('should render empty state when user has no stats', () => {

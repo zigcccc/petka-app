@@ -33,7 +33,7 @@ export default function DailyPuzzleSolvedScreen() {
           <View style={styles.contentLoadingContainer}>
             <ActivityIndicator
               accessibilityLabel="Nalagam statistiko dnevnih izzivov..."
-              accessibilityRole="spinbutton"
+              accessibilityRole="progressbar"
               accessible
               size="small"
             />

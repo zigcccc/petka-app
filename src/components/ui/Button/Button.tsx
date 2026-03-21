@@ -87,7 +87,7 @@ export function Button({
         {loading ? (
           <ActivityIndicator
             accessibilityLabel="Loading..."
-            accessibilityRole="spinbutton"
+            accessibilityRole="progressbar"
             accessible
             color={spinnerColor}
             size={sizeToIconSizeMap.get(size)! + 2}

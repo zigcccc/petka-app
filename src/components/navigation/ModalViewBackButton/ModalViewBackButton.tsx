@@ -23,7 +23,6 @@ export function ModalViewBackButton({ canGoBack }: { canGoBack?: boolean }) {
 const styles = StyleSheet.create((theme) => ({
   container: {
     flexDirection: 'row',
-    gap: 0,
     paddingLeft: theme.spacing[2],
     paddingRight: theme.spacing[4],
     alignItems: 'center',

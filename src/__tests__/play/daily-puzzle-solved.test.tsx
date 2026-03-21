@@ -90,7 +90,7 @@ describe('Daily puzzle solved screen', () => {
     usePuzzleStatisticsSpy.mockReturnValue({ isLoading: true, data: undefined });
     render(<DailyPuzzleSolvedScreen />);
 
-    expect(screen.queryByRole('spinbutton', { name: 'Nalagam statistiko dnevnih izzivov...' })).toBeOnTheScreen();
+    expect(screen.queryByRole('progressbar', { name: 'Nalagam statistiko dnevnih izzivov...' })).toBeOnTheScreen();
     expect(screen.queryByText('Statistika dnevnih izzivov')).not.toBeOnTheScreen();
   });
 
@@ -125,7 +125,7 @@ describe('Daily puzzle solved screen', () => {
     usePuzzleStatisticsSpy.mockReturnValue({ isLoading: false, data: testPuzzleStatistics1 });
     render(<DailyPuzzleSolvedScreen />);
 
-    expect(screen.queryByRole('spinbutton', { name: 'Nalagam statistiko dnevnih izzivov...' })).not.toBeOnTheScreen();
+    expect(screen.queryByRole('progressbar', { name: 'Nalagam statistiko dnevnih izzivov...' })).not.toBeOnTheScreen();
 
     expect(screen.queryByText('Statistika dnevnih izzivov')).toBeOnTheScreen();
 

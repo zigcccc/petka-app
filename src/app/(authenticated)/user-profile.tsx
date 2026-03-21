@@ -24,7 +24,7 @@ export default function UserProfileScreen() {
   const isLoading = isLoadingUser || isLoadingStats;
   const title = isLoadingUser ? 'Nalagam podatke...' : (user?.nickname ?? 'Profil');
   const memberSince = user ? dayjs(user._creationTime).format('MMMM YYYY') : '';
-  const winRate = stats && stats.totalPlayed > 0 ? Math.ceil((stats.totalWon / stats.totalPlayed) * 100) : 100;
+  const winRate = stats ? Math.ceil((stats.totalWon / stats.totalPlayed) * 100) : 0;
 
   return (
     <>
@@ -33,7 +33,7 @@ export default function UserProfileScreen() {
         <View style={styles.loadingContainer}>
           <ActivityIndicator
             accessibilityLabel="Nalagam podatke o uporabniku..."
-            accessibilityRole="spinbutton"
+            accessibilityRole="progressbar"
             accessible
             size="small"
           />
@@ -60,7 +60,7 @@ export default function UserProfileScreen() {
                     Odigranih
                   </Text>
                   <Text color="grey70" size="lg">
-                    {stats?.totalPlayed}
+                    {stats.totalPlayed}
                   </Text>
                 </View>
                 <View style={styles.statEntry} testID="stat-win-rate">
@@ -76,7 +76,7 @@ export default function UserProfileScreen() {
                     Trenutni niz
                   </Text>
                   <Text color="grey70" size="lg">
-                    {stats?.currentStreak}
+                    {stats.currentStreak}
                   </Text>
                 </View>
                 <View style={styles.statEntry} testID="stat-max-streak">
@@ -84,12 +84,12 @@ export default function UserProfileScreen() {
                     Najdaljši niz
                   </Text>
                   <Text color="grey70" size="lg">
-                    {stats?.maxStreak}
+                    {stats.maxStreak}
                   </Text>
                 </View>
               </View>
               <Card title="Distribucija poskusov">
-                <AttemptsDistributionGraph distribtions={stats!.distribution} isPuzzleFailed={false} />
+                <AttemptsDistributionGraph distribtions={stats.distribution} isPuzzleFailed={false} />
               </Card>
             </View>
           )}
