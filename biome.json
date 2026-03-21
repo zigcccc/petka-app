@@ -26,6 +26,26 @@
   },
   "assist": {
     "enabled": true,
-    "actions": { "source": { "organizeImports": "on", "useSortedAttributes": "on" } }
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              [":NODE:"],
+              ":BLANK_LINE:",
+              [":PACKAGE:"],
+              ":BLANK_LINE:",
+              ["@e2e/**"],
+              ":BLANK_LINE:",
+              ["@/**"],
+              ":BLANK_LINE:",
+              [":PATH:"]
+            ]
+          }
+        },
+        "useSortedAttributes": "on"
+      }
+    }
   }
 }

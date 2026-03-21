@@ -7,7 +7,6 @@ import { registerForPushNotificationsAsync } from '@/utils/notifications';
 import { useRegisterUserForPushNotificationsMutation, useToggleUserPushNotificationsMutation } from '../mutations';
 import { useUserNotificationsStatusQuery } from '../queries';
 import { useToaster } from '../useToaster';
-
 import { usePushNotifications } from './usePushNotifications';
 
 jest.mock('expo-router', () => ({

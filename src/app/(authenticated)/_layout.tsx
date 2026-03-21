@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { Platform } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
+import { ModalViewBackButton } from '@/components/navigation';
 import { useUser } from '@/hooks/useUser';
 import { getOsMajorVersion } from '@/utils/platform';
 
@@ -44,6 +45,16 @@ export default function AuthenticatedLayout() {
         }}
       />
       <Stack.Screen name="settings" options={{ headerTintColor: theme.colors.foreground }} />
+      <Stack.Screen
+        name="user-profile"
+        options={{
+          presentation: 'modal',
+          headerBackTitleStyle: styles.back,
+          headerLargeTitle: true,
+          headerLeft: ModalViewBackButton,
+          headerTintColor: theme.colors.foreground,
+        }}
+      />
       <Stack.Screen
         name="update-nickname"
         options={{

@@ -39,7 +39,7 @@ export default function TrainingPuzzleSolvedScreen() {
           <View style={styles.contentLoadingContainer}>
             <ActivityIndicator
               accessibilityLabel="Nalagam statistiko trening izzivov..."
-              accessibilityRole="spinbutton"
+              accessibilityRole="progressbar"
               accessible
               size="small"
             />

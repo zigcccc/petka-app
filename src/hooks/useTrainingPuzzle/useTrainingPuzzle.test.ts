@@ -17,7 +17,6 @@ import {
 import { useActiveTrainingPuzzleQuery, usePuzzleAttemptsQuery } from '../queries';
 import { useToaster } from '../useToaster';
 import { useUser } from '../useUser';
-
 import { useTrainingPuzzle } from './useTrainingPuzzle';
 
 jest.mock('posthog-react-native', () => ({

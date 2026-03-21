@@ -1,39 +1,57 @@
 {
-  "language_servers": ["!eslint", "..."],
+  "language_servers": [
+    "...",
+    "!eslint"
+  ],
   "code_actions_on_format": {
     "source.action.useSortedAttributes.biome": true,
     "source.action.useSortedKeys.biome": true,
     "source.fixAll.biome": true,
   },
+  "prettier": {
+    "allowed": false,
+  },
   "languages": {
     "JavaScript": {
       "formatter": {
-        "language_server": { "name": "biome" },
+        "language_server": {
+          "name": "biome"
+        },
       },
     },
     "TypeScript": {
       "formatter": {
-        "language_server": { "name": "biome" },
+        "language_server": {
+          "name": "biome"
+        },
       },
     },
     "TSX": {
       "formatter": {
-        "language_server": { "name": "biome" },
+        "language_server": {
+          "name": "biome"
+        },
       },
     },
     "JSON": {
       "formatter": {
-        "language_server": { "name": "biome" },
+        "language_server": {
+          "name": "biome"
+        },
       },
     },
     "CSS": {
       "formatter": {
-        "language_server": { "name": "biome" },
+        "language_server": {
+          "name": "biome"
+        },
       },
     },
     "YAML": {
       "formatter": {
-        "language_server": { "name": "biome" },
+        "language_server": {
+          "name": "biome"
+        },
       },
     },
   },

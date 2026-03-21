@@ -6,7 +6,6 @@ import { testUser1 } from '@/tests/fixtures/users';
 
 import { usePuzzlesStatisticsQuery } from '../queries';
 import { useUser } from '../useUser';
-
 import { usePuzzleStatistics } from './usePuzzlesStatistics';
 
 jest.mock('../queries', () => ({

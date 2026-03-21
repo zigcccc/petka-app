@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, type StyleProp, Text, type ViewStyle } fr
 import { StyleSheet, type UnistylesVariants } from 'react-native-unistyles';
 
 import { defaultTheme } from '@/styles/themes';
+
 import type { IconProps } from '../Icon';
 
 type Props = PropsWithChildren<{
@@ -86,7 +87,7 @@ export function Button({
         {loading ? (
           <ActivityIndicator
             accessibilityLabel="Loading..."
-            accessibilityRole="spinbutton"
+            accessibilityRole="progressbar"
             accessible
             color={spinnerColor}
             size={sizeToIconSizeMap.get(size)! + 2}

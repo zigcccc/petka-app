@@ -3,7 +3,6 @@ import { zid } from 'convex-helpers/server/zod4';
 import { z } from 'zod';
 
 import { mutation, query } from '../shared/queries';
-
 import { pushNotifications } from './services';
 
 export const readUserNotificationsStatus = query({

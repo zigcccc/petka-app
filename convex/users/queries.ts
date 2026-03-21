@@ -6,7 +6,6 @@ import { internal } from '../_generated/api';
 import { leaderboardType } from '../leaderboards/models';
 import { puzzleType } from '../puzzles/models';
 import { internalMutation, mutation, query } from '../shared/queries';
-
 import { createUserModel, patchUserModel } from './models';
 
 export const read = query({

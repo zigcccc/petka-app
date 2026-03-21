@@ -21,7 +21,7 @@ describe('<Button />', () => {
     );
 
     expect(screen.queryByText('Press me!')).not.toBeOnTheScreen();
-    expect(screen.queryByRole('spinbutton')).toBeOnTheScreen();
+    expect(screen.queryByRole('progressbar')).toBeOnTheScreen();
   });
 
   it('should add size and color props to icon wrapper in <Button.Icon>', () => {

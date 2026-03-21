@@ -1,18 +1,19 @@
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Text } from '@/components/ui';
 import type { LeaderboardScoreWithUser } from '@/convex/leaderboards/models';
 
 type Props = {
+  onEntryPress: (userId: string) => void;
   scores?: LeaderboardScoreWithUser[];
 };
 
-export function Leaderboard({ scores = [] }: Readonly<Props>) {
+export function Leaderboard({ onEntryPress, scores = [] }: Readonly<Props>) {
   return (
     <View style={styles.container}>
       {scores.map((score) => (
-        <View key={score.position} style={styles.entry}>
+        <Pressable key={score.position} onPress={() => onEntryPress(score.user._id)} style={styles.entry}>
           <View style={styles.contentLeft}>
             <View style={styles.chip({ isForCurrentUser: score.isForCurrentUser })}>
               <Text
@@ -29,7 +30,7 @@ export function Leaderboard({ scores = [] }: Readonly<Props>) {
           <Text size="lg" weight="bold">
             {score.score}
           </Text>
-        </View>
+        </Pressable>
       ))}
     </View>
   );
