@@ -118,7 +118,7 @@ describe('Settings screen', () => {
     expect(screen.queryByRole('button', { name: 'Spremeni' })).toBeOnTheScreen();
 
     expect(screen.queryByText('Profil ustvarjen')).toBeOnTheScreen();
-    expect(screen.queryByText('01. Jul 2025')).toBeOnTheScreen();
+    expect(screen.queryByText('01. jul. 2025')).toBeOnTheScreen();
 
     expect(screen.queryByText('ID profila')).toBeOnTheScreen();
     expect(screen.queryByText(testUser1._id)).toBeOnTheScreen();
