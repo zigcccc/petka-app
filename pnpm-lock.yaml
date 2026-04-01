@@ -28,7 +28,7 @@ importers:
         version: 5.2.8(@types/react@19.2.14)(react-native-gesture-handler@2.30.0(react-native@0.83.4(@babel/core@7.28.3)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native-reanimated@4.2.1(react-native-worklets@0.7.2(@babel/core@7.28.3)(react-native@0.83.4(@babel/core@7.28.3)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.4(@babel/core@7.28.3)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.4(@babel/core@7.28.3)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
       '@hookform/resolvers':
         specifier: ^5.2.2
-        version: 5.2.2(react-hook-form@7.71.2(react@19.2.0))
+        version: 5.2.2(react-hook-form@7.72.0(react@19.2.0))
       '@react-native-async-storage/async-storage':
         specifier: 2.2.0
         version: 2.2.0(react-native@0.83.4(@babel/core@7.28.3)(@types/react@19.2.14)(react@19.2.0))
@@ -144,8 +144,8 @@ importers:
         specifier: 19.2.0
         version: 19.2.0(react@19.2.0)
       react-hook-form:
-        specifier: ^7.71.2
-        version: 7.71.2(react@19.2.0)
+        specifier: ^7.72.0
+        version: 7.72.0(react@19.2.0)
       react-native:
         specifier: 0.83.4
         version: 0.83.4(@babel/core@7.28.3)(@types/react@19.2.14)(react@19.2.0)
@@ -4314,8 +4314,8 @@ packages:
     peerDependencies:
       react: '>=17.0.0'
 
-  react-hook-form@7.71.2:
-    resolution: {integrity: sha512-1CHvcDYzuRUNOflt4MOq3ZM46AronNJtQ1S7tnX6YN4y72qhgiUItpacZUAQ0TyWYci3yz1X+rXaSxiuEm86PA==}
+  react-hook-form@7.72.0:
+    resolution: {integrity: sha512-V4v6jubaf6JAurEaVnT9aUPKFbNtDgohj5CIgVGyPHvT9wRx5OZHVjz31GsxnPNI278XMu+ruFz+wGOscHaLKw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -6412,10 +6412,10 @@ snapshots:
       react: 19.2.0
       react-native: 0.83.4(@babel/core@7.28.3)(@types/react@19.2.14)(react@19.2.0)
 
-  '@hookform/resolvers@5.2.2(react-hook-form@7.71.2(react@19.2.0))':
+  '@hookform/resolvers@5.2.2(react-hook-form@7.72.0(react@19.2.0))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.71.2(react@19.2.0)
+      react-hook-form: 7.72.0(react@19.2.0)
 
   '@isaacs/balanced-match@4.0.1': {}
 
@@ -10030,7 +10030,7 @@ snapshots:
     dependencies:
       react: 19.2.0
 
-  react-hook-form@7.71.2(react@19.2.0):
+  react-hook-form@7.72.0(react@19.2.0):
     dependencies:
       react: 19.2.0
 
