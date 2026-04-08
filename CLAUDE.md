@@ -77,6 +77,8 @@ Validators use `zod` (v4) via `convex-helpers/server/zod4` (`zodToConvex`, `zid`
 
 **Biome:** 120-char line width, single quotes, 2-space indent, trailing commas (ES5). Config in `biome.json`.
 
+**Convex query return values:** always parse the return value through a Zod model (e.g. `return puzzlePublicModel.parse(doc)`). Zod strips unknown fields by default, which prevents sensitive DB fields from leaking to the client. Define client-safe models in `models.ts` alongside the DB schema (e.g. `puzzlePublicModel` omits `solvedBy`).
+
 **Convex mutations:** always use `generateUseMutationHook` — it provides consistent loading state and PostHog error capture. Do not call `useMutation` directly in components.
 
 **Convex queries:** always use `generateUseQueryHook` unless query requires a timestamp — it provides consistent loading state. Do not call `useQuery` directly in components.

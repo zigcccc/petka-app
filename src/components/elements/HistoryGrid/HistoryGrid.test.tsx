@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react-native';
 import dayjs, { type Dayjs } from 'dayjs';
 
 import type { Id } from '@/convex/_generated/dataModel';
-import { type Puzzle, puzzleType } from '@/convex/puzzles/models';
+import { type PuzzleListItem, puzzleType } from '@/convex/puzzles/models';
 
 import { HistoryGrid } from './HistoryGrid';
 
@@ -15,7 +15,7 @@ const testPuzzle = {
   day: 1,
   type: puzzleType.enum.daily,
   solution: 'apple',
-  solvedBy: [],
+  isSolvedByUser: false,
   attempts: [],
 };
 
@@ -38,7 +38,7 @@ function getPuzzleWithDate(date: Dayjs, overrides = {}) {
     month: date.month() + 1,
     day: date.date(),
     ...overrides,
-  } satisfies Puzzle;
+  } satisfies PuzzleListItem;
 }
 
 describe('<HistoryGrid />', () => {
@@ -57,38 +57,38 @@ describe('<HistoryGrid />', () => {
   });
 
   it('shows solution for non-daily puzzle if solved', () => {
-    const puzzle = { ...testPuzzle, type: puzzleType.enum.training, solvedBy: ['user1'] };
-    render(<HistoryGrid puzzle={puzzle} userId="user1" />);
+    const puzzle = { ...testPuzzle, type: puzzleType.enum.training, isSolvedByUser: true };
+    render(<HistoryGrid puzzle={puzzle} />);
 
     expect(screen.getByText(/Rešitev:/)).toBeOnTheScreen();
     expect(screen.getByText(puzzle.solution)).toBeOnTheScreen();
   });
 
-  it('shows solution for (active) unsolved puzzle if it is failed (attempts.length = 6 and puzzle.solvedBy does not include userId)', () => {
-    const puzzle = getPuzzleWithDate(today, { attempts: failedPuzzleAttempts, solvedBy: [] });
-    render(<HistoryGrid puzzle={puzzle} userId="user1" />);
+  it('shows solution for (active) unsolved puzzle if it is failed (attempts.length = 6 and isSolvedByUser is false)', () => {
+    const puzzle = getPuzzleWithDate(today, { attempts: failedPuzzleAttempts, isSolvedByUser: false });
+    render(<HistoryGrid puzzle={puzzle} />);
 
     expect(screen.getByText(/Rešitev:/)).toBeOnTheScreen();
     expect(screen.getByText(puzzle.solution)).toBeOnTheScreen();
   });
 
   it('shows overlay for unsolved daily puzzle', () => {
-    const puzzle = getPuzzleWithDate(today, { solvedBy: [] });
-    render(<HistoryGrid puzzle={puzzle} userId="user1" />);
+    const puzzle = getPuzzleWithDate(today, { isSolvedByUser: false });
+    render(<HistoryGrid puzzle={puzzle} />);
 
     expect(screen.getByText(/Dnevnega izziva še nisi rešil/)).toBeOnTheScreen();
   });
 
   it('shows overlay for unsolved daily puzzle in the past', () => {
-    const puzzle = getPuzzleWithDate(yesterday, { solvedBy: [] });
-    render(<HistoryGrid puzzle={puzzle} userId="user1" />);
+    const puzzle = getPuzzleWithDate(yesterday, { isSolvedByUser: false });
+    render(<HistoryGrid puzzle={puzzle} />);
 
     expect(screen.getByText(/Izziv je ostal ne rešen/)).toBeOnTheScreen();
   });
 
   it('does not show an overlay for a failed daily puzzle', () => {
-    const puzzle = getPuzzleWithDate(today, { attempts: failedPuzzleAttempts, solvedBy: [] });
-    render(<HistoryGrid puzzle={puzzle} userId="user1" />);
+    const puzzle = getPuzzleWithDate(today, { attempts: failedPuzzleAttempts, isSolvedByUser: false });
+    render(<HistoryGrid puzzle={puzzle} />);
 
     expect(screen.queryByText(/Dnevnega izziva še nisi rešil/)).not.toBeOnTheScreen();
     expect(screen.queryByText(/Izziv je ostal ne rešen/)).not.toBeOnTheScreen();
@@ -131,7 +131,7 @@ describe('<HistoryGrid />', () => {
   });
 
   it('renders without userId', () => {
-    const puzzle = getPuzzleWithDate(today, { solvedBy: [] });
+    const puzzle = getPuzzleWithDate(today, { isSolvedByUser: false });
     render(<HistoryGrid puzzle={puzzle} />);
     expect(screen.getByText(today.format('dddd, DD. MMM YYYY'))).toBeOnTheScreen();
   });
