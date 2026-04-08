@@ -34,7 +34,7 @@ export default function TrainingChallengesHistoryScreen() {
       extraData={{ user }}
       keyExtractor={(item) => item._id}
       onEndReached={handleEndReached}
-      renderItem={({ item }) => <HistoryGrid cellWidth={cellWidth} puzzle={item} userId={user?._id} />}
+      renderItem={({ item }) => <HistoryGrid cellWidth={cellWidth} puzzle={item} />}
     />
   );
 }

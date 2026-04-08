@@ -6,26 +6,24 @@ import { StyleSheet } from 'react-native-unistyles';
 
 import { Text } from '@/components/ui';
 import type { PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
-import { type PuzzleWithAttempts, puzzleType } from '@/convex/puzzles/models';
+import { type PuzzleListItem, puzzleType } from '@/convex/puzzles/models';
 import { getDateObjectFromPuzzle } from '@/utils/puzzles';
 
 import { GuessGrid } from '../GuessGrid';
 
 type Props = {
   style?: StyleProp<ViewStyle>;
-  puzzle: PuzzleWithAttempts;
-  userId?: string;
+  puzzle: PuzzleListItem;
   cellWidth?: number;
 };
 
-export function HistoryGrid({ puzzle, userId, style, cellWidth }: Readonly<Props>) {
+export function HistoryGrid({ puzzle, style, cellWidth }: Readonly<Props>) {
   const { getMappingKey } = useMappingHelper();
   const puzzleCreatedDate = getDateObjectFromPuzzle(puzzle);
 
   const isInPast = puzzleCreatedDate.isBefore(dayjs(), 'day');
-  const isSolvedByUser = !!userId && puzzle.solvedBy.includes(userId);
-  const isFailedByUser = !!userId && puzzle.attempts?.length === 6 && !isSolvedByUser;
-  const isSolvedOrFailedByUser = isSolvedByUser || isFailedByUser;
+  const isFailedByUser = puzzle.attempts?.length === 6 && !puzzle.isSolvedByUser;
+  const isSolvedOrFailedByUser = puzzle.isSolvedByUser || isFailedByUser;
   const shouldShowSolution =
     puzzle.type === puzzleType.enum.daily ? isInPast || isSolvedOrFailedByUser : isSolvedOrFailedByUser;
   const shouldShowOverlay = !isSolvedOrFailedByUser && puzzle.type === puzzleType.enum.daily;
