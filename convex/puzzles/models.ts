@@ -19,10 +19,17 @@ export const puzzleModel = getBaseDbModel('puzzles').extend({
 });
 export type Puzzle = z.infer<typeof puzzleModel>;
 
-export const puzzleWithAttemptsModel = puzzleModel.extend({
+// Client-safe puzzle shape — solvedBy stripped
+export const puzzlePublicModel = puzzleModel.omit({ solvedBy: true });
+export type PuzzlePublic = z.infer<typeof puzzlePublicModel>;
+
+// Shape returned by the list query — includes solved status + attempts
+export const puzzleListItemModel = z.object({
+  ...puzzlePublicModel.shape,
+  isSolvedByUser: z.boolean(),
   attempts: z.array(puzzleGuessAttemptModel).optional(),
 });
-export type PuzzleWithAttempts = z.infer<typeof puzzleWithAttemptsModel>;
+export type PuzzleListItem = z.infer<typeof puzzleListItemModel>;
 
 export const puzzleStatisticsModel = z.object({
   attemptsDistribution: z.record(z.string(), z.number()),

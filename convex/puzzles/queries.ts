@@ -8,7 +8,7 @@ import { isAttemptCorrect } from '../puzzleGuessAttempts/helpers';
 import { checkedLetterStatus } from '../puzzleGuessAttempts/models';
 import { paginationOptsValidator } from '../shared/models';
 import { mutation, query } from '../shared/queries';
-import { puzzleType } from './models';
+import { puzzleListItemModel, puzzleType } from './models';
 
 export const read = query({
   args: { id: z.string() },
@@ -21,7 +21,9 @@ export const read = query({
 
     const puzzle = await ctx.db.get(puzzleId);
 
-    return puzzle;
+    if (!puzzle) return null;
+    const { solvedBy: _solvedBy, ...rest } = puzzle;
+    return rest;
   },
 });
 
@@ -59,7 +61,13 @@ export const list = query({
 
     return {
       ...puzzles,
-      page: puzzles.page.map((puzzle) => ({ ...puzzle, attempts: attemptsByPuzzleId.get(puzzle._id) })),
+      page: puzzles.page.map((puzzle) =>
+        puzzleListItemModel.parse({
+          ...puzzle,
+          isSolvedByUser: puzzle.solvedBy.includes(normalizedUserId),
+          attempts: attemptsByPuzzleId.get(puzzle._id),
+        })
+      ),
     };
   },
 });
@@ -79,7 +87,9 @@ export const readUserActiveTrainingPuzzle = query({
       .order('desc')
       .first();
 
-    return userTrainingPuzzle;
+    if (!userTrainingPuzzle) return null;
+    const { solvedBy: _solvedBy, ...rest } = userTrainingPuzzle;
+    return rest;
   },
 });
 
@@ -97,8 +107,9 @@ export const readActiveDailyPuzzle = query({
           .eq('day', date.getDate())
       )
       .first();
-
-    return dailyPuzzle;
+    if (!dailyPuzzle) return null;
+    const { solvedBy: _solvedBy, ...rest } = dailyPuzzle;
+    return rest;
   },
 });
 
