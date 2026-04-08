@@ -8,7 +8,7 @@ import { isAttemptCorrect } from '../puzzleGuessAttempts/helpers';
 import { checkedLetterStatus } from '../puzzleGuessAttempts/models';
 import { paginationOptsValidator } from '../shared/models';
 import { mutation, query } from '../shared/queries';
-import { puzzleListItemModel, puzzleType } from './models';
+import { puzzleListItemModel, puzzlePublicModel, puzzleType } from './models';
 
 export const read = query({
   args: { id: z.string() },
@@ -22,8 +22,7 @@ export const read = query({
     const puzzle = await ctx.db.get(puzzleId);
 
     if (!puzzle) return null;
-    const { solvedBy: _solvedBy, ...rest } = puzzle;
-    return rest;
+    return puzzlePublicModel.parse(puzzle);
   },
 });
 
@@ -88,8 +87,8 @@ export const readUserActiveTrainingPuzzle = query({
       .first();
 
     if (!userTrainingPuzzle) return null;
-    const { solvedBy: _solvedBy, ...rest } = userTrainingPuzzle;
-    return rest;
+
+    return puzzlePublicModel.parse(userTrainingPuzzle);
   },
 });
 
@@ -107,9 +106,10 @@ export const readActiveDailyPuzzle = query({
           .eq('day', date.getDate())
       )
       .first();
+
     if (!dailyPuzzle) return null;
-    const { solvedBy: _solvedBy, ...rest } = dailyPuzzle;
-    return rest;
+
+    return puzzlePublicModel.parse(dailyPuzzle);
   },
 });
 
