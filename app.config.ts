@@ -58,7 +58,7 @@ const config: ExpoConfig = {
     'expo-asset',
     'expo-web-browser',
     [
-      '@sentry/react-native',
+      '@sentry/react-native/expo',
       {
         url: 'https://sentry.io/',
         project: 'petka-mobile-app',
