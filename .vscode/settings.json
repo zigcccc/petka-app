@@ -1,18 +1,39 @@
 {
-  "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
-  "prettier.configPath": "./prettier.config.js",
-  "prettier.requireConfig": true,
-  "eslint.useFlatConfig": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.action.useSortedAttributes.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
   "[ignore]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
   },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "always"
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
   },
-  "[dotenv]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
   },
-  "[properties]": {
-    "editor.defaultFormatter": "foxundermoon.shell-format"
+  "[html]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "biomejs.biome"
   }
 }
