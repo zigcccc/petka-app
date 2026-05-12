@@ -1,6 +1,10 @@
 packages:
   - '**'
 
+allowBuilds:
+  '@sentry/cli': true
+  esbuild: true
+
 ignoredBuiltDependencies:
   - unrs-resolver
 
