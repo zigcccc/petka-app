@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 0
 
       # 2️⃣  Install PNPM (no auto‑install yet)
-      - uses: pnpm/action-setup@v4 #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
+      - uses: pnpm/action-setup@v5 #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
         with:
           run_install: false
 
