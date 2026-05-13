@@ -14,17 +14,17 @@ jobs:
 
     steps:
       # 1️⃣  Pull the source
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       # 2️⃣  Install PNPM (no auto‑install yet)
-      - uses: pnpm/action-setup@v4 #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
+      - uses: pnpm/action-setup@v6 #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
         with:
           run_install: false
 
       # 3️⃣ Set up Node + cache PNPM store
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
@@ -47,7 +47,7 @@ jobs:
 
       # 8️⃣  Upload coverage artefact
       - name: Upload coverage artefact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage
           path: coverage
@@ -62,12 +62,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Download coverage artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: coverage
           path: ./coverage
@@ -95,16 +95,16 @@ jobs:
           fi
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4 #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
+      - uses: pnpm/action-setup@v6 #  [oai_citation:1‡github.com](https://github.com/pnpm/action-setup)
         with:
           run_install: false
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm

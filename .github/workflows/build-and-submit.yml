@@ -70,7 +70,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Checkout commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ steps.get-commit.outputs.sha }}
@@ -80,10 +80,10 @@ jobs:
           jq ".version = \"${{ steps.version.outputs.version }}\"" package.json > tmp && mv tmp package.json
           echo "package.json updated to version ${{ steps.version.outputs.version }}"
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
         with:
           run_install: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: pnpm
