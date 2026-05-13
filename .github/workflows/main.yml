@@ -147,8 +147,11 @@ jobs:
           node-version: 24
           cache: pnpm
 
+      - name: Check pnpm version
+        run: pnpm --version
+
       - name: Configure pnpm build scripts
-        run: echo "ignored-build-scripts=dtrace-provider" >> ~/.npmrc
+        run: echo "ignored-build-scripts[]=dtrace-provider" >> ~/.npmrc
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
