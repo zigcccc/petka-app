@@ -87,6 +87,10 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
+
+      - name: Configure pnpm build scripts
+        run: pnpm config set ignored-build-scripts dtrace-provider
+
       - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
