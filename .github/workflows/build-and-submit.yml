@@ -88,15 +88,13 @@ jobs:
           node-version: 24
           cache: pnpm
 
-      - name: Configure pnpm build scripts
-        run: echo "ignored-build-scripts=dtrace-provider" >> ~/.npmrc
-
       - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
-          packager: pnpm
+          packager: npm
+
       - run: pnpm install --frozen-lockfile
       - name: Build & Submit
         run: |

@@ -73,7 +73,7 @@ jobs:
           path: ./coverage
 
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v6
+        uses: sonarsource/sonarqube-scan-action@v8
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -109,15 +109,12 @@ jobs:
           node-version: 24
           cache: pnpm
 
-      - name: Configure pnpm build scripts
-        run: echo "ignored-build-scripts=dtrace-provider" >> ~/.npmrc
-
       - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
-          packager: pnpm
+          packager: npm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
