@@ -160,7 +160,7 @@ jobs:
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
-          packager: pnpm
+          packager: npm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
