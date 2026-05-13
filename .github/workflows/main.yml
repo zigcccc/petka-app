@@ -155,6 +155,8 @@ jobs:
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
+        env:
+          npm_config_ignore_scripts: "true"
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
@@ -202,7 +204,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{steps.version.outputs.version}}
           name: Release v${{steps.version.outputs.version}}
