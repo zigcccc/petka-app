@@ -110,7 +110,7 @@ jobs:
           cache: pnpm
 
       - name: Configure pnpm build scripts
-        run: pnpm config set ignored-build-scripts dtrace-provider
+        run: echo "ignored-build-scripts=dtrace-provider" >> ~/.npmrc
 
       - name: Setup EAS
         uses: expo/expo-github-action@v8
