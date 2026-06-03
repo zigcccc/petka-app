@@ -8,7 +8,7 @@ describe('pickRandomWord', () => {
   ];
 
   beforeEach(() => {
-    jest.spyOn(global.Math, 'random');
+    jest.spyOn(Math, 'random');
   });
 
   afterEach(() => {

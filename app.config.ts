@@ -69,6 +69,7 @@ const config: ExpoConfig = {
     'expo-image',
     'expo-localization',
     'expo-notifications',
+    'expo-status-bar',
     [
       'expo-tracking-transparency',
       {

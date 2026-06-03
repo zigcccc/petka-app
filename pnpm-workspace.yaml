@@ -4,6 +4,7 @@ packages:
 allowBuilds:
   '@sentry/cli': true
   esbuild: true
+  msgpackr-extract: true
 
 ignoredBuiltDependencies:
   - unrs-resolver

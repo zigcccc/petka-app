@@ -32,6 +32,4 @@ class BottomSheetModal extends Component<PropsWithChildren<{ onDismiss?: () => v
   }
 }
 
-module.exports = {
-  BottomSheetModal,
-};
+export { BottomSheetModal };
