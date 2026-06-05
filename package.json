@@ -1,7 +1,7 @@
 {
   "name": "petka-app",
   "main": "index.ts",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "type": "module",
   "scripts": {
     "start": "expo start",
@@ -23,6 +23,7 @@
     "@convex-dev/expo-push-notifications": "0.3.1",
     "@convex-dev/migrations": "^0.3.5",
     "@convex-dev/presence": "^0.3.0",
+    "@expo/dom-webview": "~56.0.5",
     "@expo/metro-runtime": "~56.0.13",
     "@gorhom/bottom-sheet": "^5.2.14",
     "@hookform/resolvers": "^5.4.0",
