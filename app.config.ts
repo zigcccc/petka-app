@@ -55,6 +55,14 @@ const config: ExpoConfig = {
         },
       },
     ],
+    [
+      'expo-build-properties',
+      {
+        android: {
+          extraProguardRules: '-keep class expo.modules.kotlin.** { *; }',
+        },
+      },
+    ],
     'expo-asset',
     'expo-web-browser',
     [
