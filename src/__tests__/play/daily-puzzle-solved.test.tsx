@@ -59,14 +59,14 @@ describe('Daily puzzle solved screen', () => {
     jest.clearAllMocks();
   });
 
-  it('should trigger puzzle statistics query with "daily" as a puzzle type param', () => {
-    render(<DailyPuzzleSolvedScreen />);
+  it('should trigger puzzle statistics query with "daily" as a puzzle type param', async () => {
+    await render(<DailyPuzzleSolvedScreen />);
     expect(usePuzzleStatisticsSpy).toHaveBeenCalledWith(puzzleType.enum.daily);
   });
 
-  it('should render correct title and subtile when isFailed=false', () => {
+  it('should render correct title and subtile when isFailed=false', async () => {
     useDailyPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, isFailed: false });
-    render(<DailyPuzzleSolvedScreen />);
+    await render(<DailyPuzzleSolvedScreen />);
 
     expect(screen.queryByText('Čestitke 🥳')).toBeOnTheScreen();
     expect(screen.queryByText('Uspešno si opravil/a dnevni izziv.')).toBeOnTheScreen();
@@ -75,9 +75,9 @@ describe('Daily puzzle solved screen', () => {
     expect(screen.queryByText('Tokrat ti ni uspelo rešiti izziva.')).not.toBeOnTheScreen();
   });
 
-  it('should render correct title and subtile when isFailed=true', () => {
+  it('should render correct title and subtile when isFailed=true', async () => {
     useDailyPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, isFailed: true });
-    render(<DailyPuzzleSolvedScreen />);
+    await render(<DailyPuzzleSolvedScreen />);
 
     expect(screen.queryByText('Čestitke 🥳')).not.toBeOnTheScreen();
     expect(screen.queryByText('Uspešno si opravil/a dnevni izziv.')).not.toBeOnTheScreen();
@@ -86,34 +86,34 @@ describe('Daily puzzle solved screen', () => {
     expect(screen.queryByText('Tokrat ti ni uspelo rešiti izziva.')).toBeOnTheScreen();
   });
 
-  it('should render loading indicator if statistics data is loading', () => {
+  it('should render loading indicator if statistics data is loading', async () => {
     usePuzzleStatisticsSpy.mockReturnValue({ isLoading: true, data: undefined });
-    render(<DailyPuzzleSolvedScreen />);
+    await render(<DailyPuzzleSolvedScreen />);
 
     expect(screen.queryByRole('progressbar', { name: 'Nalagam statistiko dnevnih izzivov...' })).toBeOnTheScreen();
     expect(screen.queryByText('Statistika dnevnih izzivov')).not.toBeOnTheScreen();
   });
 
-  it('should render puzzle solution and explanation when explanation is available', () => {
-    render(<DailyPuzzleSolvedScreen />);
+  it('should render puzzle solution and explanation when explanation is available', async () => {
+    await render(<DailyPuzzleSolvedScreen />);
 
     expect(screen.queryByText('Rešitev: "CLOTH"')).toBeOnTheScreen();
     expect(screen.queryByText(/Test solution explanation/)).toBeOnTheScreen();
     expect(screen.queryByRole('link', { name: /SSKJ/ })).toBeOnTheScreen();
   });
 
-  it('should render puzzle solution and link to official dictionary explanation when explanation is not available', () => {
+  it('should render puzzle solution and link to official dictionary explanation when explanation is not available', async () => {
     useDictionaryEntrySpy.mockReturnValue({ explanation: null });
-    render(<DailyPuzzleSolvedScreen />);
+    await render(<DailyPuzzleSolvedScreen />);
 
     expect(screen.queryByText('Rešitev: "CLOTH"')).toBeOnTheScreen();
     expect(screen.queryByText(/Razlaga besede na voljo v Fran slovarju/)).toBeOnTheScreen();
     expect(screen.queryByRole('link', { name: /SSKJ/ })).toBeOnTheScreen();
   });
 
-  it('should render puzzle solution without explanation when explanation data is loading', () => {
+  it('should render puzzle solution without explanation when explanation data is loading', async () => {
     useDictionaryEntrySpy.mockReturnValue({ isLoading: true });
-    render(<DailyPuzzleSolvedScreen />);
+    await render(<DailyPuzzleSolvedScreen />);
 
     expect(screen.queryByText('Rešitev: "CLOTH"')).toBeOnTheScreen();
     expect(screen.queryByRole('link', { name: /SSKJ/ })).toBeOnTheScreen();
@@ -121,9 +121,9 @@ describe('Daily puzzle solved screen', () => {
     expect(screen.queryByText(/Razlaga besede na voljo v Fran slovarju/)).not.toBeOnTheScreen();
   });
 
-  it('should render daily puzzle statistics when data is not loading', () => {
+  it('should render daily puzzle statistics when data is not loading', async () => {
     usePuzzleStatisticsSpy.mockReturnValue({ isLoading: false, data: testPuzzleStatistics1 });
-    render(<DailyPuzzleSolvedScreen />);
+    await render(<DailyPuzzleSolvedScreen />);
 
     expect(screen.queryByRole('progressbar', { name: 'Nalagam statistiko dnevnih izzivov...' })).not.toBeOnTheScreen();
 
@@ -134,26 +134,26 @@ describe('Daily puzzle solved screen', () => {
     expect(screen.getByTestId('current-streak')).toHaveTextContent(/Niz rešenih2/);
   });
 
-  it('should trigger share results action on "Deli" button press', () => {
-    render(<DailyPuzzleSolvedScreen />);
+  it('should trigger share results action on "Deli" button press', async () => {
+    await render(<DailyPuzzleSolvedScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: /Deli/ }));
+    await fireEvent.press(screen.getByRole('button', { name: /Deli/ }));
 
     expect(defaultDailyPuzzleOptions.onShareResults).toHaveBeenCalled();
   });
 
-  it('should trigger router back action on "Nazaj" button press', () => {
-    render(<DailyPuzzleSolvedScreen />);
+  it('should trigger router back action on "Nazaj" button press', async () => {
+    await render(<DailyPuzzleSolvedScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: /Nazaj/ }));
+    await fireEvent.press(screen.getByRole('button', { name: /Nazaj/ }));
 
     expect(mockBack).toHaveBeenCalled();
   });
 
-  it('should trigger router navigate action on "Lestvica" button press', () => {
-    render(<DailyPuzzleSolvedScreen />);
+  it('should trigger router navigate action on "Lestvica" button press', async () => {
+    await render(<DailyPuzzleSolvedScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: /Lestvica/ }));
+    await fireEvent.press(screen.getByRole('button', { name: /Lestvica/ }));
 
     expect(mockNavigate).toHaveBeenCalledWith('/leaderboards/weekly-leaderboard');
   });

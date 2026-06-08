@@ -24,10 +24,10 @@ describe('generateUseQueryHook', () => {
     jest.clearAllMocks();
   });
 
-  it('returns loading state when data is undefined', () => {
+  it('returns loading state when data is undefined', async () => {
     mockUseQuery.mockReturnValueOnce(undefined);
 
-    const { result } = renderHook(() => useUserQuery({ id: 'abc' }));
+    const { result } = await renderHook(() => useUserQuery({ id: 'abc' }));
     expect(result.current).toEqual({
       isLoading: true,
       isNotFound: false,
@@ -35,10 +35,10 @@ describe('generateUseQueryHook', () => {
     });
   });
 
-  it('returns not-found state when data is null', () => {
+  it('returns not-found state when data is null', async () => {
     mockUseQuery.mockReturnValueOnce(null);
 
-    const { result } = renderHook(() => useUserQuery({ id: 'abc' }));
+    const { result } = await renderHook(() => useUserQuery({ id: 'abc' }));
     expect(result.current).toEqual({
       isLoading: false,
       isNotFound: true,
@@ -46,7 +46,7 @@ describe('generateUseQueryHook', () => {
     });
   });
 
-  it('returns empty array state when data is null for array return type', () => {
+  it('returns empty array state when data is null for array return type', async () => {
     type ListQuery = FunctionReference<'query'> & {
       _args: { filter?: string };
       _returnType: { name: string }[] | null;
@@ -56,7 +56,7 @@ describe('generateUseQueryHook', () => {
 
     mockUseQuery.mockReturnValueOnce([]);
 
-    const { result } = renderHook(() => useListQuery({ filter: 'test' }));
+    const { result } = await renderHook(() => useListQuery({ filter: 'test' }));
     expect(result.current).toEqual({
       isLoading: false,
       isNotFound: false,
@@ -64,11 +64,11 @@ describe('generateUseQueryHook', () => {
     });
   });
 
-  it('returns data when query succeeds', () => {
+  it('returns data when query succeeds', async () => {
     const response = { name: 'Alice' };
     mockUseQuery.mockReturnValueOnce(response);
 
-    const { result } = renderHook(() => useUserQuery({ id: 'abc' }));
+    const { result } = await renderHook(() => useUserQuery({ id: 'abc' }));
     expect(result.current).toEqual({
       isLoading: false,
       isNotFound: false,
@@ -76,10 +76,10 @@ describe('generateUseQueryHook', () => {
     });
   });
 
-  it('passes "skip" straight through to useQuery', () => {
+  it('passes "skip" straight through to useQuery', async () => {
     mockUseQuery.mockReturnValueOnce(undefined);
 
-    renderHook(() => useUserQuery('skip'));
+    await renderHook(() => useUserQuery('skip'));
     expect(mockUseQuery).toHaveBeenCalledWith(userQueryFn, 'skip');
   });
 });
@@ -98,13 +98,13 @@ describe('generateUseQueryHookWithTimestampArg', () => {
     jest.useRealTimers();
   });
 
-  it('injects a timestamp and keeps it stable across renders', () => {
+  it('injects a timestamp and keeps it stable across renders', async () => {
     const start = new Date('2025-07-04T12:00:00Z');
     jest.setSystemTime(start);
 
     /* first render – loading */
     mockUseQuery.mockReturnValueOnce(undefined);
-    const { rerender } = renderHook((props) => useUserQueryWithTs(props), { initialProps: { id: 'abc' } });
+    const { rerender } = await renderHook((props) => useUserQueryWithTs(props), { initialProps: { id: 'abc' } });
 
     expect(mockUseQuery).toHaveBeenCalledWith(userQueryFn, {
       id: 'abc',
@@ -114,7 +114,7 @@ describe('generateUseQueryHookWithTimestampArg', () => {
     /* second render – data arrives, timestamp must stay the same */
     jest.setSystemTime(start.getTime() + 10_000);
     mockUseQuery.mockReturnValueOnce({ name: 'Alice' });
-    rerender({ id: 'abc' });
+    await rerender({ id: 'abc' });
 
     expect(mockUseQuery).toHaveBeenLastCalledWith(userQueryFn, {
       id: 'abc',
@@ -122,14 +122,14 @@ describe('generateUseQueryHookWithTimestampArg', () => {
     });
   });
 
-  it('passes "skip" straight through to useQuery', () => {
+  it('passes "skip" straight through to useQuery', async () => {
     mockUseQuery.mockReturnValueOnce(undefined);
 
-    renderHook(() => useUserQueryWithTs('skip'));
+    await renderHook(() => useUserQueryWithTs('skip'));
     expect(mockUseQuery).toHaveBeenCalledWith(userQueryFn, 'skip');
   });
 
-  it('accepts no args when timestamp is the only argument', () => {
+  it('accepts no args when timestamp is the only argument', async () => {
     type PingQuery = FunctionReference<'query'> & {
       _args: { timestamp: number };
       _returnType: string;
@@ -141,7 +141,7 @@ describe('generateUseQueryHookWithTimestampArg', () => {
     jest.setSystemTime(now);
     mockUseQuery.mockReturnValueOnce('pong');
 
-    renderHook(() => usePing({}));
+    await renderHook(() => usePing({}));
 
     expect(mockUseQuery).toHaveBeenCalledWith(pingQueryFn, {
       timestamp: Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),

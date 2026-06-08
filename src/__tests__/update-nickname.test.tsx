@@ -64,8 +64,8 @@ describe('Update Nickname Screen', () => {
     await AsyncStorage.clear();
   });
 
-  it('should render update nickname screen elements', () => {
-    render(<UpdateNicknameScreen />);
+  it('should render update nickname screen elements', async () => {
+    await render(<UpdateNicknameScreen />);
 
     expect(screen.queryByText('Posodobi svoj vzdevek')).toBeOnTheScreen();
     expect(screen.queryByPlaceholderText('Tvoj vzdevek')).toBeOnTheScreen();
@@ -76,7 +76,7 @@ describe('Update Nickname Screen', () => {
     await AsyncStorage.setItem('userId', testUser1._id);
     mockQuery.mockResolvedValue(testUser1);
 
-    render(<UpdateNicknameScreen />);
+    await render(<UpdateNicknameScreen />);
 
     await waitFor(() => {
       expect(mockQuery).toHaveBeenCalledWith(api.users.queries.read, { id: testUser1._id });
@@ -89,7 +89,7 @@ describe('Update Nickname Screen', () => {
     await AsyncStorage.removeItem('userId');
     mockQuery.mockResolvedValue(testUser1);
 
-    render(<UpdateNicknameScreen />);
+    await render(<UpdateNicknameScreen />);
 
     expect(mockQuery).not.toHaveBeenCalled();
 
@@ -100,55 +100,47 @@ describe('Update Nickname Screen', () => {
     await AsyncStorage.setItem('userId', testUser1._id);
     mockQuery.mockResolvedValue(null);
 
-    render(<UpdateNicknameScreen />);
+    await render(<UpdateNicknameScreen />);
 
-    expect(mockQuery).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockQuery).toHaveBeenCalledWith(api.users.queries.read, { id: testUser1._id });
+    });
 
     expect(screen.getByPlaceholderText('Tvoj vzdevek')).not.toHaveDisplayValue(testUser1.nickname);
   });
 
   it('should reject account creation if inputted nickname is less than 3 characters long', async () => {
-    render(<UpdateNicknameScreen />);
+    await render(<UpdateNicknameScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'AB');
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'AB');
     expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).toBeDisabled();
+      expect(screen.queryByText('Vzdevek mora vsebovati vsaj 3 znake.')).toBeOnTheScreen();
     });
-
-    expect(screen.queryByText('Vzdevek mora vsebovati vsaj 3 znake.')).toBeOnTheScreen();
     expect(mockToast).toHaveBeenCalledWith('Popravite napake', { intent: 'error' });
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
-    });
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
+    expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
   });
 
   it('should reject account creation if inputted nickname is more than 20 characters long', async () => {
-    render(<UpdateNicknameScreen />);
+    await render(<UpdateNicknameScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'AB'.repeat(20));
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'AB'.repeat(20));
     expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).toBeDisabled();
+      expect(screen.queryByText('Vzdevek lahko vsebuje največ 20 znakov.')).toBeOnTheScreen();
     });
-
-    expect(screen.queryByText('Vzdevek lahko vsebuje največ 20 znakov.')).toBeOnTheScreen();
     expect(mockToast).toHaveBeenCalledWith('Popravite napake', { intent: 'error' });
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
-    });
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
+    expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
   });
 
   it.each([
@@ -156,55 +148,45 @@ describe('Update Nickname Screen', () => {
     'http://something.com',
     'someone@gmail.com',
   ])('should reject account creation if inputted nickname includes web address (%s)', async (input) => {
-    render(<UpdateNicknameScreen />);
+    await render(<UpdateNicknameScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), input);
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), input);
     expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).toBeDisabled();
+      expect(screen.queryByText('Vzdevek ne sme vsebovati spletnih ali e-poštnih naslovov.')).toBeOnTheScreen();
     });
-
-    expect(screen.queryByText('Vzdevek ne sme vsebovati spletnih ali e-poštnih naslovov.')).toBeOnTheScreen();
     expect(mockToast).toHaveBeenCalledWith('Popravite napake', { intent: 'error' });
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
-    });
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
+    expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
   });
 
   it('should reject account creation if inputted nickname includes only symbols wihout any letters/numbers', async () => {
-    render(<UpdateNicknameScreen />);
+    await render(<UpdateNicknameScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), '?!..!?');
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), '?!..!?');
     expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).toBeDisabled();
+      expect(screen.queryByText('Vzdevek mora vsebovati vsaj eno črko ali številko.')).toBeOnTheScreen();
     });
-
-    expect(screen.queryByText('Vzdevek mora vsebovati vsaj eno črko ali številko.')).toBeOnTheScreen();
     expect(mockToast).toHaveBeenCalledWith('Popravite napake', { intent: 'error' });
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
-    });
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
+    expect(screen.getByRole('button', { name: 'Posodobi vzdevek' })).not.toBeDisabled();
   });
 
   it('should trigger updateUser API request with valid data - success scenario', async () => {
     mockUpdateUser.mockResolvedValue(null);
-    render(<UpdateNicknameScreen />);
+    await render(<UpdateNicknameScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'Tyson');
-    fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'Tyson');
+    await fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
 
     await waitFor(() => {
       expect(mockUpdateUser).toHaveBeenCalledWith({ nickname: 'Tyson' });
@@ -219,10 +201,10 @@ describe('Update Nickname Screen', () => {
 
   it('should trigger updateUser API request with valid data - error scenario, nickname already taken', async () => {
     mockUpdateUser.mockRejectedValue(new ConvexError({ code: 409 }));
-    render(<UpdateNicknameScreen />);
+    await render(<UpdateNicknameScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'Tyson');
-    fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'Tyson');
+    await fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
 
     await waitFor(() => {
       expect(mockUpdateUser).toHaveBeenCalledWith({ nickname: 'Tyson' });
@@ -241,10 +223,10 @@ describe('Update Nickname Screen', () => {
 
   it('should trigger updateUser API request with valid data - error scenario, unknown error', async () => {
     mockUpdateUser.mockRejectedValue(new Error('ups'));
-    render(<UpdateNicknameScreen />);
+    await render(<UpdateNicknameScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'Tyson');
-    fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'Tyson');
+    await fireEvent.press(screen.getByRole('button', { name: 'Posodobi vzdevek' }));
 
     await waitFor(() => {
       expect(mockUpdateUser).toHaveBeenCalledWith({ nickname: 'Tyson' });

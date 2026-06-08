@@ -21,7 +21,7 @@ describe('useGameplaySettings', () => {
   it('should load default values if no saved settings', async () => {
     (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(null);
 
-    const { result } = renderHook(() => useGameplaySettings());
+    const { result } = await renderHook(() => useGameplaySettings());
 
     // Wait for async load
     await waitFor(() => {
@@ -41,7 +41,7 @@ describe('useGameplaySettings', () => {
     };
     (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(JSON.stringify(saved));
 
-    const { result } = renderHook(() => useGameplaySettings());
+    const { result } = await renderHook(() => useGameplaySettings());
 
     await waitFor(() => {
       expect(result.current.autosubmitPuzzleAttempt).toBe(false);
@@ -54,7 +54,7 @@ describe('useGameplaySettings', () => {
   it('should fall back to defaults if saved settings are invalid', async () => {
     (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(JSON.stringify({ invalid: 'data' }));
 
-    const { result } = renderHook(() => useGameplaySettings());
+    const { result } = await renderHook(() => useGameplaySettings());
 
     await waitFor(() => {
       expect(result.current.autosubmitPuzzleAttempt).toBe(true);
@@ -66,7 +66,7 @@ describe('useGameplaySettings', () => {
   it('should update settings and save to storage', async () => {
     (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(null);
 
-    const { result } = renderHook(() => useGameplaySettings());
+    const { result } = await renderHook(() => useGameplaySettings());
 
     await waitFor(() => {
       expect(result.current.autosubmitPuzzleAttempt).toBe(true);
@@ -94,7 +94,7 @@ describe('useGameplaySettings', () => {
     };
     (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(JSON.stringify(saved));
 
-    const { result } = renderHook(() => useGameplaySettings());
+    const { result } = await renderHook(() => useGameplaySettings());
 
     await waitFor(() => {
       expect(result.current.autosubmitPuzzleAttempt).toBe(false);

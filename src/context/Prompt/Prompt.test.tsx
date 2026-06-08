@@ -48,18 +48,20 @@ describe('<PromptProvider />', () => {
     jest.clearAllMocks();
   });
 
-  it('should throw if usePrompt is not used within PromptProvider', () => {
-    expect(() => render(<TestComponent />)).toThrow('usePrompt() must be used within <PromptProvider /> component.');
+  it('should throw if usePrompt is not used within PromptProvider', async () => {
+    expect(async () => await render(<TestComponent />)).rejects.toThrow(
+      'usePrompt() must be used within <PromptProvider /> component.'
+    );
   });
 
-  it('should present the native Alert.prompt when Platform.OS=ios', () => {
+  it('should present the native Alert.prompt when Platform.OS=ios', async () => {
     const spy = jest.spyOn(Alert, 'prompt').mockImplementation(() => null);
 
     setOS('ios');
 
     const buttons: AlertButton[] = [{ text: 'Press me', isPreferred: true, style: 'destructive' }];
 
-    render(
+    await render(
       <PromptProvider>
         <TestComponent buttons={buttons} message="iOS Message" title="iOS Title" />
       </PromptProvider>,
@@ -68,7 +70,7 @@ describe('<PromptProvider />', () => {
 
     expect(screen.queryByText('Child')).toBeOnTheScreen();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Present' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Present' }));
 
     expect(spy).toHaveBeenCalledWith('iOS Title', 'iOS Message', buttons);
     spy.mockRestore();
@@ -81,7 +83,7 @@ describe('<PromptProvider />', () => {
     const mockOnDelete = jest.fn();
     const mockOnConfirm = jest.fn();
 
-    render(
+    await render(
       <PromptProvider>
         <TestComponent
           buttons={[
@@ -102,7 +104,7 @@ describe('<PromptProvider />', () => {
     expect(screen.queryByText('Android message')).not.toBeOnTheScreen();
     expect(screen.queryAllByRole('button', { name: /Prompt -/ }).length).toBe(0);
 
-    fireEvent.press(screen.getByRole('button', { name: 'PRESENT' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'PRESENT' }));
 
     await waitFor(() => {
       expect(screen.queryByText('Android title')).toBeOnTheScreen();
@@ -110,18 +112,18 @@ describe('<PromptProvider />', () => {
     expect(screen.queryByText('Android message')).toBeOnTheScreen();
     expect(screen.queryAllByRole('button', { name: /Prompt -/ }).length).toBe(3);
 
-    fireEvent.changeText(screen.getByTestId('prompt-input'), 'Input');
+    await fireEvent.changeText(screen.getByTestId('prompt-input'), 'Input');
 
-    fireEvent.press(screen.getByRole('button', { name: 'Prompt - Cancel' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Prompt - Cancel' }));
     expect(mockOnConfirm).not.toHaveBeenCalled();
     expect(mockOnDelete).not.toHaveBeenCalled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'PRESENT' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'PRESENT' }));
 
-    fireEvent.press(screen.getByRole('button', { name: 'Prompt - Delete' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Prompt - Delete' }));
     expect(mockOnDelete).toHaveBeenCalledWith('Input');
 
-    fireEvent.press(screen.getByRole('button', { name: 'Prompt - Confirm' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Prompt - Confirm' }));
     expect(mockOnConfirm).toHaveBeenCalledWith('Input');
   });
 });

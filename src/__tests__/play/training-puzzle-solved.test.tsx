@@ -60,14 +60,14 @@ describe('Training puzzle solved screen', () => {
     jest.clearAllMocks();
   });
 
-  it('should trigger puzzle statistics query with "training" as a puzzle type param', () => {
-    render(<TrainingPuzzleSolvedScreen />);
+  it('should trigger puzzle statistics query with "training" as a puzzle type param', async () => {
+    await render(<TrainingPuzzleSolvedScreen />);
     expect(usePuzzleStatisticsSpy).toHaveBeenCalledWith(puzzleType.enum.training);
   });
 
-  it('should render correct title and subtile when isFailed=false', () => {
+  it('should render correct title and subtile when isFailed=false', async () => {
     useTrainingPuzzleSpy.mockReturnValue({ ...defaultTrainingPuzzleOptions, isFailed: false });
-    render(<TrainingPuzzleSolvedScreen />);
+    await render(<TrainingPuzzleSolvedScreen />);
 
     expect(screen.queryByText('Čestitke 🥳')).toBeOnTheScreen();
     expect(screen.queryByText('Uspešno si opravil/a trening izziv.')).toBeOnTheScreen();
@@ -76,9 +76,9 @@ describe('Training puzzle solved screen', () => {
     expect(screen.queryByText('Tokrat ti ni uspelo rešiti izziva.')).not.toBeOnTheScreen();
   });
 
-  it('should render correct title and subtile when isFailed=true', () => {
+  it('should render correct title and subtile when isFailed=true', async () => {
     useTrainingPuzzleSpy.mockReturnValue({ ...defaultTrainingPuzzleOptions, isFailed: true });
-    render(<TrainingPuzzleSolvedScreen />);
+    await render(<TrainingPuzzleSolvedScreen />);
 
     expect(screen.queryByText('Čestitke 🥳')).not.toBeOnTheScreen();
     expect(screen.queryByText('Uspešno si opravil/a trening izziv.')).not.toBeOnTheScreen();
@@ -87,34 +87,34 @@ describe('Training puzzle solved screen', () => {
     expect(screen.queryByText('Tokrat ti ni uspelo rešiti izziva.')).toBeOnTheScreen();
   });
 
-  it('should render loading indicator if statistics data is loading', () => {
+  it('should render loading indicator if statistics data is loading', async () => {
     usePuzzleStatisticsSpy.mockReturnValue({ isLoading: true, data: undefined });
-    render(<TrainingPuzzleSolvedScreen />);
+    await render(<TrainingPuzzleSolvedScreen />);
 
     expect(screen.queryByRole('progressbar', { name: 'Nalagam statistiko trening izzivov...' })).toBeOnTheScreen();
     expect(screen.queryByText('Trening statistika')).not.toBeOnTheScreen();
   });
 
-  it('should render puzzle solution and explanation when explanation is available', () => {
-    render(<TrainingPuzzleSolvedScreen />);
+  it('should render puzzle solution and explanation when explanation is available', async () => {
+    await render(<TrainingPuzzleSolvedScreen />);
 
     expect(screen.queryByText('Rešitev: "STEAK"')).toBeOnTheScreen();
     expect(screen.queryByText(/Test solution explanation/)).toBeOnTheScreen();
     expect(screen.queryByRole('link', { name: /SSKJ/ })).toBeOnTheScreen();
   });
 
-  it('should render puzzle solution and link to official dictionary explanation when explanation is not available', () => {
+  it('should render puzzle solution and link to official dictionary explanation when explanation is not available', async () => {
     useDictionaryEntrySpy.mockReturnValue({ explanation: null });
-    render(<TrainingPuzzleSolvedScreen />);
+    await render(<TrainingPuzzleSolvedScreen />);
 
     expect(screen.queryByText('Rešitev: "STEAK"')).toBeOnTheScreen();
     expect(screen.queryByText(/Razlaga besede na voljo v Fran slovarju/)).toBeOnTheScreen();
     expect(screen.queryByRole('link', { name: /SSKJ/ })).toBeOnTheScreen();
   });
 
-  it('should render puzzle solution without explanation when explanation data is loading', () => {
+  it('should render puzzle solution without explanation when explanation data is loading', async () => {
     useDictionaryEntrySpy.mockReturnValue({ isLoading: true });
-    render(<TrainingPuzzleSolvedScreen />);
+    await render(<TrainingPuzzleSolvedScreen />);
 
     expect(screen.queryByText('Rešitev: "STEAK"')).toBeOnTheScreen();
     expect(screen.queryByRole('link', { name: /SSKJ/ })).toBeOnTheScreen();
@@ -122,9 +122,9 @@ describe('Training puzzle solved screen', () => {
     expect(screen.queryByText(/Razlaga besede na voljo v Fran slovarju/)).not.toBeOnTheScreen();
   });
 
-  it('should render daily puzzle statistics when data is not loading', () => {
+  it('should render daily puzzle statistics when data is not loading', async () => {
     usePuzzleStatisticsSpy.mockReturnValue({ isLoading: false, data: testPuzzleStatistics1 });
-    render(<TrainingPuzzleSolvedScreen />);
+    await render(<TrainingPuzzleSolvedScreen />);
 
     expect(screen.queryByRole('progressbar', { name: 'Nalagam statistiko trening izzivov...' })).not.toBeOnTheScreen();
 
@@ -135,27 +135,27 @@ describe('Training puzzle solved screen', () => {
     expect(screen.getByTestId('current-streak')).toHaveTextContent(/Niz rešenih2/);
   });
 
-  it('should trigger share results action on "Deli" button press', () => {
-    render(<TrainingPuzzleSolvedScreen />);
+  it('should trigger share results action on "Deli" button press', async () => {
+    await render(<TrainingPuzzleSolvedScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: /Deli/ }));
+    await fireEvent.press(screen.getByRole('button', { name: /Deli/ }));
 
     expect(defaultTrainingPuzzleOptions.onShareResults).toHaveBeenCalled();
   });
 
-  it('should trigger router back action on "Nazaj" button press', () => {
-    render(<TrainingPuzzleSolvedScreen />);
+  it('should trigger router back action on "Nazaj" button press', async () => {
+    await render(<TrainingPuzzleSolvedScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: /Nazaj/ }));
+    await fireEvent.press(screen.getByRole('button', { name: /Nazaj/ }));
 
     expect(mockBack).toHaveBeenCalled();
   });
 
   it('should trigger router back and mark as solved actions on "Začni nov izziv" button press', async () => {
     defaultTrainingPuzzleOptions.onCreateTrainingPuzzle.mockResolvedValue(null);
-    render(<TrainingPuzzleSolvedScreen />);
+    await render(<TrainingPuzzleSolvedScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: /Začni nov izziv/ }));
+    await fireEvent.press(screen.getByRole('button', { name: /Začni nov izziv/ }));
 
     expect(defaultTrainingPuzzleOptions.onCreateTrainingPuzzle).toHaveBeenCalled();
     await waitFor(() => {

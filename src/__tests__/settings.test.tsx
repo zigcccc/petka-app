@@ -87,8 +87,8 @@ describe('Settings screen', () => {
     jest.clearAllMocks();
   });
 
-  it('should render settings screen elements', () => {
-    render(<SettingsScreen />);
+  it('should render settings screen elements', async () => {
+    await render(<SettingsScreen />);
 
     expect(screen.queryByText('Nastavitve')).toBeOnTheScreen();
 
@@ -126,47 +126,47 @@ describe('Settings screen', () => {
   });
 
   it('should toggle the state of "autosubmitPuzzleAttempt" setting on switch press', async () => {
-    render(<SettingsScreen />);
+    await render(<SettingsScreen />);
 
     expect(screen.getByRole('switch', { name: /Avtomatsko preveri besedo/ })).toHaveAccessibilityValue({ text: 'On' });
-    fireEvent(screen.getByRole('switch', { name: /Avtomatsko preveri besedo/ }), 'onValueChange', false);
+    await fireEvent(screen.getByRole('switch', { name: /Avtomatsko preveri besedo/ }), 'onValueChange', false);
 
     expect(mockUpdateSettings).toHaveBeenCalledWith({ autosubmitPuzzleAttempt: false });
   });
 
   it('should update the value of "keyboardType" setting on radio input press', async () => {
-    render(<SettingsScreen />);
+    await render(<SettingsScreen />);
 
-    fireEvent.press(screen.getByRole('radio', { name: /QWERTY tipkovnica/ }));
+    await fireEvent.press(screen.getByRole('radio', { name: /QWERTY tipkovnica/ }));
     expect(mockUpdateSettings).toHaveBeenCalledWith({ keyboardType: gameplayKeyboardType.enum.qwerty });
 
-    fireEvent.press(screen.getByRole('radio', { name: /ABCDE tipkovnica/ }));
+    await fireEvent.press(screen.getByRole('radio', { name: /ABCDE tipkovnica/ }));
     expect(mockUpdateSettings).toHaveBeenCalledWith({ keyboardType: gameplayKeyboardType.enum.abcde });
   });
 
   it('should set default settings on "Ponastavi" button press', async () => {
-    render(<SettingsScreen />);
+    await render(<SettingsScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: /Ponastavi/ }));
+    await fireEvent.press(screen.getByRole('button', { name: /Ponastavi/ }));
     expect(mockSetDefaultSettings).toHaveBeenCalled();
   });
 
-  it('should render the "Toggle push notifications" switch as disabled if not on physical device', () => {
+  it('should render the "Toggle push notifications" switch as disabled if not on physical device', async () => {
     Object.defineProperty(Device, 'isDevice', { writable: true, value: false });
 
-    render(<SettingsScreen />);
+    await render(<SettingsScreen />);
 
     expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toBeDisabled();
   });
 
-  it('should render the "Toggle push notifications" switch with value=true when status.hasToken=true', () => {
+  it('should render the "Toggle push notifications" switch with value=true when status.hasToken=true', async () => {
     usePushNotificationsSpy.mockReturnValue({
       status: { hasToken: true },
       toggle: mockTogglePushNotifications,
       systemNotificationsEnabled: true,
     });
 
-    render(<SettingsScreen />);
+    await render(<SettingsScreen />);
 
     expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', true);
     expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
@@ -177,14 +177,14 @@ describe('Settings screen', () => {
   it.each([
     null,
     { hasToken: false },
-  ])('should render the "Toggle push notifications" switch with value=false when status=%s', (status) => {
+  ])('should render the "Toggle push notifications" switch with value=false when status=%s', async (status) => {
     usePushNotificationsSpy.mockReturnValue({
       status,
       toggle: mockTogglePushNotifications,
       systemNotificationsEnabled: false,
     });
 
-    render(<SettingsScreen />);
+    await render(<SettingsScreen />);
 
     expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
     expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
@@ -196,14 +196,14 @@ describe('Settings screen', () => {
     null,
     undefined,
     false,
-  ])('should render the "Toggle push notifications" switch with value=false when systemNotificationsEnabled=%s', (systemNotificationsEnabled) => {
+  ])('should render the "Toggle push notifications" switch with value=false when systemNotificationsEnabled=%s', async (systemNotificationsEnabled) => {
     usePushNotificationsSpy.mockReturnValue({
       status: { hasToken: true },
       toggle: mockTogglePushNotifications,
       systemNotificationsEnabled,
     });
 
-    render(<SettingsScreen />);
+    await render(<SettingsScreen />);
 
     expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
     expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
@@ -211,26 +211,26 @@ describe('Settings screen', () => {
     });
   });
 
-  it('should trigger toggle push notifications action on switch press', () => {
-    render(<SettingsScreen />);
+  it('should trigger toggle push notifications action on switch press', async () => {
+    await render(<SettingsScreen />);
 
-    fireEvent(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' }), 'valueChange', true);
+    await fireEvent(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' }), 'valueChange', true);
 
     expect(mockTogglePushNotifications).toHaveBeenCalledWith(true);
   });
 
-  it('should trigger navigation event on change nickname button press', () => {
-    render(<SettingsScreen />);
+  it('should trigger navigation event on change nickname button press', async () => {
+    await render(<SettingsScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: 'Spremeni' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Spremeni' }));
 
     expect(mockNavigate).toHaveBeenCalledWith('/update-nickname');
   });
 
   it('should copy user id to clipboard on "Kopiraj" button press', async () => {
-    render(<SettingsScreen />);
+    await render(<SettingsScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: 'Kopiraj' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Kopiraj' }));
 
     expect(clipboardSetStringAsyncSpy).toHaveBeenCalledWith(testUser1._id);
     await waitFor(() => {
@@ -238,28 +238,28 @@ describe('Settings screen', () => {
     });
   });
 
-  it('should display a hint with link to system settings when systemNotificationsEnabled=false', () => {
+  it('should display a hint with link to system settings when systemNotificationsEnabled=false', async () => {
     usePushNotificationsSpy.mockReturnValue({ systemNotificationsEnabled: false });
 
-    render(<SettingsScreen />);
+    await render(<SettingsScreen />);
 
     expect(screen.queryByText('Preprečil/a si pošiljanje potisnih obvestil')).toBeOnTheScreen();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Odpri nastavitve' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Odpri nastavitve' }));
 
     expect(openSettingsSpy).toHaveBeenCalled();
   });
 
-  it('should not display a hint with link to system settings when systemNotificationsEnabled=true', () => {
+  it('should not display a hint with link to system settings when systemNotificationsEnabled=true', async () => {
     usePushNotificationsSpy.mockReturnValue({ systemNotificationsEnabled: true });
 
-    render(<SettingsScreen />);
+    await render(<SettingsScreen />);
 
     expect(screen.queryByText('Preprečil/a si pošiljanje potisnih obvestil')).not.toBeOnTheScreen();
   });
 
-  it('should render theme settings', () => {
-    render(<SettingsScreen />);
+  it('should render theme settings', async () => {
+    await render(<SettingsScreen />);
 
     expect(screen.queryByText('Nastavitve prikaza')).toBeOnTheScreen();
     expect(screen.queryByText('Tema aplikacije')).toBeOnTheScreen();

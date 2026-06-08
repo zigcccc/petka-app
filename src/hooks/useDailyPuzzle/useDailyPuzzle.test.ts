@@ -71,10 +71,10 @@ describe('useDailyPuzzle', () => {
     jest.clearAllMocks();
   });
 
-  it('should trigger puzzle attempts query with userId and puzzleId when user and puzzle data is available', () => {
+  it('should trigger puzzle attempts query with userId and puzzleId when user and puzzle data is available', async () => {
     useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: testDailyPuzzle1 });
 
-    renderHook(() => useDailyPuzzle());
+    await renderHook(() => useDailyPuzzle());
 
     expect(usePuzzleAttemptsQuerySpy).toHaveBeenCalledWith({ userId: testUser1._id, puzzleId: testDailyPuzzle1._id });
   });
@@ -82,21 +82,21 @@ describe('useDailyPuzzle', () => {
   it.each([
     { desc: 'user data is not available', user: null, puzzle: testDailyPuzzle1 },
     { desc: 'puzzle data is not available', user: testUser1, puzzle: null },
-  ])('should trigger puzzle attempts query with "skip" param when $desc', ({ user, puzzle }) => {
+  ])('should trigger puzzle attempts query with "skip" param when $desc', async ({ user, puzzle }) => {
     useUserSpy.mockReturnValue({ user });
     useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: puzzle });
 
-    renderHook(() => useDailyPuzzle());
+    await renderHook(() => useDailyPuzzle());
 
     expect(usePuzzleAttemptsQuerySpy).toHaveBeenCalledWith('skip');
   });
 
-  it('should set isSolved=true when last puzzle attempt is correct', () => {
+  it('should set isSolved=true when last puzzle attempt is correct', async () => {
     usePuzzleAttemptsQuerySpy.mockReturnValue({
       data: [testIncorrectPuzzleGuessAttempt1, testCorrectPuzzleGuessAttempt1],
     });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
     expect(result.current.isSolved).toBe(true);
   });
@@ -104,34 +104,34 @@ describe('useDailyPuzzle', () => {
   it.each([
     { desc: 'attempts data is not available', attempts: undefined },
     { desc: 'last attempts is not correct', attempts: [testIncorrectPuzzleGuessAttempt1] },
-  ])('should set isSolved=false when $desc', ({ attempts }) => {
+  ])('should set isSolved=false when $desc', async ({ attempts }) => {
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
     expect(result.current.isSolved).toBe(false);
   });
 
-  it('should set isFailed=true when length of attempts is 6 and last attempts is not correct', () => {
+  it('should set isFailed=true when length of attempts is 6 and last attempts is not correct', async () => {
     const attempts = new Array(6).fill(null).map((_, idx) => ({
       ...testIncorrectPuzzleGuessAttempt1,
       _id: `incorrectAttempt${idx}` as Id<'puzzleGuessAttempts'>,
     }));
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
     expect(result.current.isFailed).toBe(true);
   });
 
-  it('should set isFailed=false when length of attempts is 6 and last attempts is correct', () => {
+  it('should set isFailed=false when length of attempts is 6 and last attempts is correct', async () => {
     const incorrectAttempts = new Array(5).fill(null).map((_, idx) => ({
       ...testIncorrectPuzzleGuessAttempt1,
       _id: `incorrectAttempt${idx}` as Id<'puzzleGuessAttempts'>,
     }));
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: [...incorrectAttempts, testCorrectPuzzleGuessAttempt1] });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
     expect(result.current.isFailed).toBe(false);
   });
@@ -139,10 +139,10 @@ describe('useDailyPuzzle', () => {
   it.each([
     { desc: 'attempts data is not available', attempts: undefined },
     { desc: 'attempts length is not 6', attempts: [testIncorrectPuzzleGuessAttempt1] },
-  ])('should set isFailed=false when $desc', ({ attempts }) => {
+  ])('should set isFailed=false when $desc', async ({ attempts }) => {
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
     expect(result.current.isFailed).toBe(false);
   });
@@ -159,10 +159,10 @@ describe('useDailyPuzzle', () => {
         _id: `incorrectAttempt${idx}` as Id<'puzzleGuessAttempts'>,
       })),
     },
-  ])('should set isDone=true when $desc', ({ attempts }) => {
+  ])('should set isDone=true when $desc', async ({ attempts }) => {
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
     expect(result.current.isDone).toBe(true);
   });
@@ -170,10 +170,10 @@ describe('useDailyPuzzle', () => {
   it.each([
     { desc: 'attempts data is not available', attempts: undefined },
     { desc: 'attempts length is not 6', attempts: [testIncorrectPuzzleGuessAttempt1] },
-  ])('should set isDone=false when $desc', ({ attempts }) => {
+  ])('should set isDone=false when $desc', async ({ attempts }) => {
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
     expect(result.current.isDone).toBe(false);
   });
@@ -182,9 +182,9 @@ describe('useDailyPuzzle', () => {
     mockCreatePuzzleGuessAttempt.mockResolvedValue({ isCorrect: false });
     useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: testDailyPuzzle1 });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onSubmitAttempt('spawn', 1);
     });
 
@@ -213,9 +213,9 @@ describe('useDailyPuzzle', () => {
     mockCreatePuzzleGuessAttempt.mockResolvedValue({ isCorrect: true });
     useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: testDailyPuzzle1 });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onSubmitAttempt('spawn', 1);
     });
 
@@ -252,9 +252,9 @@ describe('useDailyPuzzle', () => {
     mockCreatePuzzleGuessAttempt.mockResolvedValue({ isCorrect: true });
     useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: testDailyPuzzle1 });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onSubmitAttempt('spawn', 1);
     });
 
@@ -286,9 +286,9 @@ describe('useDailyPuzzle', () => {
     mockCreatePuzzleGuessAttempt.mockResolvedValue({ isCorrect: true });
     useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: testDailyPuzzle1 });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onSubmitAttempt('spawn', 1);
     });
 
@@ -319,9 +319,9 @@ describe('useDailyPuzzle', () => {
     mockCreatePuzzleGuessAttempt.mockRejectedValue(new Error('Ups'));
     useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: testDailyPuzzle1 });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onSubmitAttempt('spawn', 1);
     });
 
@@ -343,15 +343,15 @@ describe('useDailyPuzzle', () => {
     expect(mockCaptureEvent).not.toHaveBeenCalled();
   });
 
-  it('should display share context menu on onShareMessage trigger when puzzle and attempts data is available - isFailed=false', () => {
+  it('should display share context menu on onShareMessage trigger when puzzle and attempts data is available - isFailed=false', async () => {
     useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: testDailyPuzzle1 });
     usePuzzleAttemptsQuerySpy.mockReturnValue({
       data: [testIncorrectPuzzleGuessAttempt1, testCorrectPuzzleGuessAttempt1],
     });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onShareResults();
     });
 
@@ -360,7 +360,7 @@ describe('useDailyPuzzle', () => {
     });
   });
 
-  it('should display share context menu on onShareMessage trigger when puzzle and attempts data is available - isFailed=true', () => {
+  it('should display share context menu on onShareMessage trigger when puzzle and attempts data is available - isFailed=true', async () => {
     const attempts = new Array(6).fill(null).map((_, idx) => ({
       ...testIncorrectPuzzleGuessAttempt1,
       _id: `incorrectAttempt${idx}` as Id<'puzzleGuessAttempts'>,
@@ -368,9 +368,9 @@ describe('useDailyPuzzle', () => {
     useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: testDailyPuzzle1 });
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onShareResults();
     });
 
@@ -382,13 +382,13 @@ describe('useDailyPuzzle', () => {
   it.each([
     { desc: 'puzzle data is not available', puzzle: null, attempts: [testCorrectPuzzleGuessAttempt1] },
     { desc: 'attempts data is not available', puzzle: testDailyPuzzle1, attempts: null },
-  ])('should not display share context menu on onShareMessage trigger when $desc', ({ puzzle, attempts }) => {
+  ])('should not display share context menu on onShareMessage trigger when $desc', async ({ puzzle, attempts }) => {
     useActiveDailyPuzzleQuerySpy.mockReturnValue({ data: puzzle });
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
 
-    const { result } = renderHook(() => useDailyPuzzle());
+    const { result } = await renderHook(() => useDailyPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onShareResults();
     });
 

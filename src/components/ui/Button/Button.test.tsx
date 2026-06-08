@@ -1,20 +1,21 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { AlertTriangleIcon } from 'lucide-react-native';
+import { Text } from 'react-native';
 
 import { Button } from './Button';
 
 describe('<Button />', () => {
-  it('should render button and respond to press event', () => {
+  it('should render button and respond to press event', async () => {
     const onPress = jest.fn();
-    render(<Button onPress={onPress}>Press me!</Button>);
+    await render(<Button onPress={onPress}>Press me!</Button>);
 
-    fireEvent.press(screen.getByRole('button', { name: 'Press me!' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Press me!' }));
 
     expect(onPress).toHaveBeenCalled();
   });
 
-  it('should render button loading indicator instead of text when loading=true', () => {
-    render(
+  it('should render button loading indicator instead of text when loading=true', async () => {
+    await render(
       <Button loading={true} onPress={jest.fn()}>
         Press me!
       </Button>
@@ -24,10 +25,10 @@ describe('<Button />', () => {
     expect(screen.queryByRole('progressbar')).toBeOnTheScreen();
   });
 
-  it('should add size and color props to icon wrapper in <Button.Icon>', () => {
-    render(
+  it('should add size and color props to icon wrapper in <Button.Icon>', async () => {
+    await render(
       <Button intent="danger" onPress={jest.fn()} size="lg">
-        With icon{' '}
+        <Text>With icon</Text>
         <Button.Icon>
           <AlertTriangleIcon testID="button-icon" />
         </Button.Icon>
@@ -38,10 +39,10 @@ describe('<Button />', () => {
     expect(screen.getByTestId('button-icon')).toHaveProp('color');
   });
 
-  it('should add testID and accessibilityLabel props to icon wrapper in <Button.Icon>', () => {
-    render(
+  it('should add testID and accessibilityLabel props to icon wrapper in <Button.Icon>', async () => {
+    await render(
       <Button intent="danger" onPress={jest.fn()} size="lg">
-        With icon{' '}
+        <Text>With icon</Text>
         <Button.Icon>
           <AlertTriangleIcon />
         </Button.Icon>

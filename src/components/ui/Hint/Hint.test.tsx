@@ -6,8 +6,8 @@ import { defaultTheme } from '@/styles/themes';
 import { Hint } from './Hint';
 
 describe('<Hint />', () => {
-  it('should render hint with title and content', () => {
-    render(
+  it('should render hint with title and content', async () => {
+    await render(
       <Hint title="Watch out!">
         <Text>Here I come...</Text>
       </Hint>
@@ -17,9 +17,9 @@ describe('<Hint />', () => {
     expect(screen.queryByText('Here I come...')).toBeOnTheScreen();
   });
 
-  it('should render hint with title, content, and additional action(s) if passed', () => {
+  it('should render hint with title, content, and additional action(s) if passed', async () => {
     const onPress = jest.fn();
-    render(
+    await render(
       <Hint actions={<Button onPress={onPress} title="Stop me" />} intent="info" title="Watch out!">
         <Text>Here I come...</Text>
       </Hint>
@@ -28,7 +28,7 @@ describe('<Hint />', () => {
     expect(screen.queryByText('Watch out!')).toBeOnTheScreen();
     expect(screen.queryByText('Here I come...')).toBeOnTheScreen();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Stop me' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Stop me' }));
 
     expect(onPress).toHaveBeenCalled();
   });
@@ -38,11 +38,11 @@ describe('<Hint />', () => {
     { intent: 'info', expectedIconColor: defaultTheme.colors.blue[40] },
     { intent: 'warning', expectedIconColor: defaultTheme.colors.gold[40] },
     { intent: 'danger', expectedIconColor: defaultTheme.colors.red[40] },
-  ] as const)('should render hint icon with color set to $expectedIconColor when intent=$intent', ({
+  ] as const)('should render hint icon with color set to $expectedIconColor when intent=$intent', async ({
     intent,
     expectedIconColor,
   }) => {
-    render(
+    await render(
       <Hint intent={intent} title="Watch out!">
         <Text>Here I come...</Text>
       </Hint>

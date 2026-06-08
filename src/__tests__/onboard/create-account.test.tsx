@@ -40,8 +40,8 @@ describe('Create Account Screen', () => {
     jest.clearAllMocks();
   });
 
-  it('should render create account screen elements', () => {
-    render(<CreateAccountScreen />);
+  it('should render create account screen elements', async () => {
+    await render(<CreateAccountScreen />);
 
     expect(screen.queryByText('Hej 👋')).toBeOnTheScreen();
     expect(screen.queryByText('Dobrodošel/a v Petki!')).toBeOnTheScreen();
@@ -51,12 +51,12 @@ describe('Create Account Screen', () => {
   });
 
   it('should reject account creation if inputted nickname is less than 3 characters long', async () => {
-    render(<CreateAccountScreen />);
+    await render(<CreateAccountScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'AB');
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'AB');
     expect(screen.getByRole('button', { name: 'Ustvari profil' })).not.toBeDisabled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Ustvari profil' })).toBeDisabled();
@@ -65,7 +65,7 @@ describe('Create Account Screen', () => {
     expect(screen.queryByText('Vzdevek mora vsebovati vsaj 3 znake.')).toBeOnTheScreen();
     expect(mockToast).toHaveBeenCalledWith('Popravite napake', { intent: 'error' });
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Ustvari profil' })).not.toBeDisabled();
@@ -73,12 +73,12 @@ describe('Create Account Screen', () => {
   });
 
   it('should reject account creation if inputted nickname is more than 20 characters long', async () => {
-    render(<CreateAccountScreen />);
+    await render(<CreateAccountScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'AB'.repeat(20));
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'AB'.repeat(20));
     expect(screen.getByRole('button', { name: 'Ustvari profil' })).not.toBeDisabled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Ustvari profil' })).toBeDisabled();
@@ -87,7 +87,7 @@ describe('Create Account Screen', () => {
     expect(screen.queryByText('Vzdevek lahko vsebuje največ 20 znakov.')).toBeOnTheScreen();
     expect(mockToast).toHaveBeenCalledWith('Popravite napake', { intent: 'error' });
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Ustvari profil' })).not.toBeDisabled();
@@ -99,12 +99,12 @@ describe('Create Account Screen', () => {
     'http://something.com',
     'someone@gmail.com',
   ])('should reject account creation if inputted nickname includes web address (%s)', async (input) => {
-    render(<CreateAccountScreen />);
+    await render(<CreateAccountScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), input);
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), input);
     expect(screen.getByRole('button', { name: 'Ustvari profil' })).not.toBeDisabled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Ustvari profil' })).toBeDisabled();
@@ -113,7 +113,7 @@ describe('Create Account Screen', () => {
     expect(screen.queryByText('Vzdevek ne sme vsebovati spletnih ali e-poštnih naslovov.')).toBeOnTheScreen();
     expect(mockToast).toHaveBeenCalledWith('Popravite napake', { intent: 'error' });
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Ustvari profil' })).not.toBeDisabled();
@@ -121,12 +121,12 @@ describe('Create Account Screen', () => {
   });
 
   it('should reject account creation if inputted nickname includes only symbols wihout any letters/numbers', async () => {
-    render(<CreateAccountScreen />);
+    await render(<CreateAccountScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), '?!..!?');
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), '?!..!?');
     expect(screen.getByRole('button', { name: 'Ustvari profil' })).not.toBeDisabled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Ustvari profil' })).toBeDisabled();
@@ -135,7 +135,7 @@ describe('Create Account Screen', () => {
     expect(screen.queryByText('Vzdevek mora vsebovati vsaj eno črko ali številko.')).toBeOnTheScreen();
     expect(mockToast).toHaveBeenCalledWith('Popravite napake', { intent: 'error' });
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'ABCD');
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Ustvari profil' })).not.toBeDisabled();
@@ -144,10 +144,10 @@ describe('Create Account Screen', () => {
 
   it('should trigger createUser API request with valid data - success scenario', async () => {
     mockCreateUser.mockResolvedValue(null);
-    render(<CreateAccountScreen />);
+    await render(<CreateAccountScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'Tyson');
-    fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'Tyson');
+    await fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
 
     await waitFor(() => {
       expect(mockCreateUser).toHaveBeenCalledWith({ nickname: 'Tyson' });
@@ -162,10 +162,10 @@ describe('Create Account Screen', () => {
 
   it('should trigger createUser API request with valid data - error scenario, nickname already taken', async () => {
     mockCreateUser.mockRejectedValue(new ConvexError({ code: 409 }));
-    render(<CreateAccountScreen />);
+    await render(<CreateAccountScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'Tyson');
-    fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'Tyson');
+    await fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
 
     await waitFor(() => {
       expect(mockCreateUser).toHaveBeenCalledWith({ nickname: 'Tyson' });
@@ -184,10 +184,10 @@ describe('Create Account Screen', () => {
 
   it('should trigger createUser API request with valid data - error scenario, unknown error', async () => {
     mockCreateUser.mockRejectedValue(new Error('ups'));
-    render(<CreateAccountScreen />);
+    await render(<CreateAccountScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'Tyson');
-    fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
+    await fireEvent.changeText(screen.getByPlaceholderText('Tvoj vzdevek'), 'Tyson');
+    await fireEvent.press(screen.getByRole('button', { name: 'Ustvari profil' }));
 
     await waitFor(() => {
       expect(mockCreateUser).toHaveBeenCalledWith({ nickname: 'Tyson' });

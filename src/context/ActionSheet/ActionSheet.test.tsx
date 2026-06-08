@@ -41,20 +41,20 @@ describe('<ActionSheetProvider />', () => {
     jest.clearAllMocks();
   });
 
-  it('should throw if useActionSheet is not used within ActionSheetProvider', () => {
-    expect(() => render(<TestComponent onActionPress={jest.fn()} options={{ options: [] }} />)).toThrow(
-      'useActionSheet() must be used within <ActionSheetProvider />'
-    );
+  it('should throw if useActionSheet is not used within ActionSheetProvider', async () => {
+    expect(
+      async () => await render(<TestComponent onActionPress={jest.fn()} options={{ options: [] }} />)
+    ).rejects.toThrow('useActionSheet() must be used within <ActionSheetProvider />');
   });
 
-  it('should present the native ActionSheetIOS.showActionSheetWithOptions when Platform.OS=ios', () => {
+  it('should present the native ActionSheetIOS.showActionSheetWithOptions when Platform.OS=ios', async () => {
     const spy = jest.spyOn(ActionSheetIOS, 'showActionSheetWithOptions').mockImplementation(() => null);
 
     setOS('ios');
 
     const options = { options: ['Option 1'] };
     const onActionPress = jest.fn();
-    render(
+    await render(
       <ActionSheetProvider>
         <TestComponent onActionPress={onActionPress} options={{ options: ['Option 1'] }} />
       </ActionSheetProvider>,
@@ -63,7 +63,7 @@ describe('<ActionSheetProvider />', () => {
 
     expect(screen.queryByText('Child')).toBeOnTheScreen();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Present' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Present' }));
 
     expect(spy).toHaveBeenCalledWith(options, onActionPress);
     spy.mockRestore();
@@ -75,7 +75,7 @@ describe('<ActionSheetProvider />', () => {
 
     const onActionPress = jest.fn();
 
-    render(
+    await render(
       <ActionSheetProvider>
         <TestComponent
           onActionPress={onActionPress}
@@ -97,7 +97,7 @@ describe('<ActionSheetProvider />', () => {
     expect(screen.queryByText('My message')).not.toBeOnTheScreen();
     expect(screen.queryAllByRole('button', { name: /Option/ }).length).toBe(0);
 
-    fireEvent.press(screen.getByRole('button', { name: 'PRESENT' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'PRESENT' }));
 
     expect(screen.queryByText('Actions')).toBeOnTheScreen();
     expect(screen.queryByText('My message')).toBeOnTheScreen();
@@ -105,12 +105,12 @@ describe('<ActionSheetProvider />', () => {
 
     expect(screen.getByRole('button', { name: 'Option 2' })).toBeDisabled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Option 3' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Option 3' }));
     expect(onActionPress).not.toHaveBeenCalled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'PRESENT' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'PRESENT' }));
 
-    fireEvent.press(screen.getByRole('button', { name: 'Option 1' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Option 1' }));
     expect(onActionPress).toHaveBeenCalledWith(0);
   });
 });

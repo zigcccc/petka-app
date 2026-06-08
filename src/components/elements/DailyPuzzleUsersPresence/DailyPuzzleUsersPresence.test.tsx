@@ -3,8 +3,8 @@ import { render, screen } from '@testing-library/react-native';
 import { DailyPuzzleUsersPresence } from './DailyPuzzleUsersPresence';
 
 describe('<DailyPuzzleUsersPresence />', () => {
-  it('should not render anything when there are no online users', () => {
-    const { toJSON } = render(
+  it('should not render anything when there are no online users', async () => {
+    const { toJSON } = await render(
       <DailyPuzzleUsersPresence
         currentUserNickname="notTheTarget"
         presence={[{ lastDisconnected: 1756888381508, online: false, userId: 'testUser1' }]}
@@ -13,8 +13,8 @@ describe('<DailyPuzzleUsersPresence />', () => {
     expect(toJSON()).toBeNull();
   });
 
-  it('should not render anything when the only online user is the current user', () => {
-    const { toJSON } = render(
+  it('should not render anything when the only online user is the current user', async () => {
+    const { toJSON } = await render(
       <DailyPuzzleUsersPresence
         currentUserNickname="testUser1"
         presence={[{ lastDisconnected: 1756888381508, online: true, userId: 'testUser1' }]}
@@ -23,8 +23,8 @@ describe('<DailyPuzzleUsersPresence />', () => {
     expect(toJSON()).toBeNull();
   });
 
-  it('should render list of online user badges', () => {
-    render(
+  it('should render list of online user badges', async () => {
+    await render(
       <DailyPuzzleUsersPresence
         currentUserNickname="notTheTarget"
         presence={[
@@ -39,8 +39,8 @@ describe('<DailyPuzzleUsersPresence />', () => {
     expect(screen.queryByText('2 uporabnika igrata dnevni izziv 🧠')).toBeOnTheScreen();
   });
 
-  it('should render "+X" badge when there are more than 4 users online', () => {
-    render(
+  it('should render "+X" badge when there are more than 4 users online', async () => {
+    await render(
       <DailyPuzzleUsersPresence
         currentUserNickname="notTheTarget"
         presence={[
@@ -63,14 +63,14 @@ describe('<DailyPuzzleUsersPresence />', () => {
     { numOfOnlinePlayers: 3, expectedText: '3 uporabniki igrajo' },
     { numOfOnlinePlayers: 4, expectedText: '4 uporabniki igrajo' },
     { numOfOnlinePlayers: 5, expectedText: '5 uporabnikov igra' },
-  ])('should render "$expectedText" when there are $numberOfOnlinePlayers online', ({
+  ])('should render "$expectedText" when there are $numberOfOnlinePlayers online', async ({
     expectedText,
     numOfOnlinePlayers,
   }) => {
     const presence = Array.from({ length: numOfOnlinePlayers })
       .fill(null)
       .map((_, idx) => ({ lastDisconnected: 1756888381508, online: true, userId: `user-${idx + 1}` }));
-    render(<DailyPuzzleUsersPresence currentUserNickname="notTheTarget" presence={presence} />);
+    await render(<DailyPuzzleUsersPresence currentUserNickname="notTheTarget" presence={presence} />);
 
     expect(screen.queryByText(expectedText, { exact: false })).toBeOnTheScreen();
   });

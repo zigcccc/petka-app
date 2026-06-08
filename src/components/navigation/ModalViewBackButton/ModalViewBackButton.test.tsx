@@ -20,28 +20,28 @@ describe('<ModalViewBackButton />', () => {
     jest.clearAllMocks();
   });
 
-  it('should render nothing when canGoBack is false', () => {
-    render(<ModalViewBackButton canGoBack={false} />);
+  it('should render nothing when canGoBack is false', async () => {
+    await render(<ModalViewBackButton canGoBack={false} />);
 
     expect(screen.queryByRole('button', { name: /Nazaj/ })).not.toBeOnTheScreen();
   });
 
-  it('should render nothing when canGoBack is not provided', () => {
-    render(<ModalViewBackButton />);
+  it('should render nothing when canGoBack is not provided', async () => {
+    await render(<ModalViewBackButton />);
 
     expect(screen.queryByRole('button', { name: /Nazaj/ })).not.toBeOnTheScreen();
   });
 
-  it('should render the back button when canGoBack is true', () => {
-    render(<ModalViewBackButton canGoBack />);
+  it('should render the back button when canGoBack is true', async () => {
+    await render(<ModalViewBackButton canGoBack />);
 
     expect(screen.queryByText('Nazaj')).toBeOnTheScreen();
   });
 
-  it('should call router.back when pressed', () => {
-    render(<ModalViewBackButton canGoBack />);
+  it('should call router.back when pressed', async () => {
+    await render(<ModalViewBackButton canGoBack />);
 
-    fireEvent.press(screen.getByText('Nazaj'));
+    await fireEvent.press(screen.getByText('Nazaj'));
 
     expect(mockBack).toHaveBeenCalled();
   });

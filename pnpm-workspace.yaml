@@ -13,6 +13,7 @@ minimumReleaseAgeExclude:
   - '@posthog/core@1.30.5'
   - '@posthog/types@1.379.2'
   - posthog-react-native@4.46.11
+  - react-hook-form@7.78.0
 
 nodeLinker: hoisted
 

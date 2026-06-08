@@ -132,18 +132,18 @@ describe('useLeaderboards', () => {
     jest.clearAllMocks();
   });
 
-  it('should trigger leaderboards query hook with "skip" as an argument when user object is not available', () => {
+  it('should trigger leaderboards query hook with "skip" as an argument when user object is not available', async () => {
     useUserSpy.mockReturnValue({ user: null });
 
-    renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+    await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
     expect(useLeaderboardsQuerySpy).toHaveBeenCalledWith('skip');
   });
 
-  it('should trigger leaderboards query hook with query args when user object is available', () => {
+  it('should trigger leaderboards query hook with query args when user object is available', async () => {
     useUserSpy.mockReturnValue({ user: testUser });
 
-    renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+    await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
     expect(useLeaderboardsQuerySpy).toHaveBeenCalledWith({
       userId: testUser._id,
@@ -152,18 +152,18 @@ describe('useLeaderboards', () => {
     });
   });
 
-  it('should set isLoading to true when leaderboards query is loading', () => {
+  it('should set isLoading to true when leaderboards query is loading', async () => {
     useLeaderboardsQuerySpy.mockReturnValue({ data: undefined, isLoading: true });
 
-    const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+    const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
     expect(result.current.isLoading).toBe(true);
   });
 
-  it('should set isLoading to false when leaderboards query is not loading', () => {
+  it('should set isLoading to false when leaderboards query is not loading', async () => {
     useLeaderboardsQuerySpy.mockReturnValue({ data: testLeaderboards, isLoading: false });
 
-    const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+    const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
     expect(result.current.isLoading).toBe(false);
   });
@@ -171,7 +171,7 @@ describe('useLeaderboards', () => {
   describe('join private leaderboard', () => {
     it('should trigger join private leaderboard mutation when invite code is received via prompt - success scenario', async () => {
       mockJoinPrivateLeaderboard.mockResolvedValue({ _id: 'leaderboard1' });
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onJoinPrivateLeaderboard();
 
@@ -180,7 +180,7 @@ describe('useLeaderboards', () => {
         { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
       ]);
 
-      act(() => {
+      await act(() => {
         promptSpy.mock.lastCall[2][1].onPress('invite_me');
       });
 
@@ -210,7 +210,7 @@ describe('useLeaderboards', () => {
       expectedIntent,
     }) => {
       mockJoinPrivateLeaderboard.mockRejectedValue(new ConvexError({ message: errorMessage }));
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onJoinPrivateLeaderboard();
 
@@ -219,7 +219,7 @@ describe('useLeaderboards', () => {
         { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
       ]);
 
-      act(() => {
+      await act(() => {
         promptSpy.mock.lastCall[2][1].onPress('invite_me');
       });
 
@@ -234,7 +234,7 @@ describe('useLeaderboards', () => {
 
     it('should trigger join private leaderboard mutation when invite code is received via prompt - error scenario - unknown error', async () => {
       mockJoinPrivateLeaderboard.mockRejectedValue(new Error('Ups'));
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onJoinPrivateLeaderboard();
 
@@ -243,7 +243,7 @@ describe('useLeaderboards', () => {
         { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
       ]);
 
-      act(() => {
+      await act(() => {
         promptSpy.mock.lastCall[2][1].onPress('invite_me');
       });
 
@@ -262,7 +262,7 @@ describe('useLeaderboards', () => {
       '',
     ])('should not trigger join private leaderboard mutation when invite code is not received via prompt (is %p)', async (inviteCode) => {
       mockJoinPrivateLeaderboard.mockRejectedValue(new Error('Ups'));
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onJoinPrivateLeaderboard();
 
@@ -271,7 +271,7 @@ describe('useLeaderboards', () => {
         { text: 'Pridruži se', isPreferred: true, onPress: expect.any(Function) },
       ]);
 
-      act(() => {
+      await act(() => {
         promptSpy.mock.lastCall[2][1].onPress(inviteCode);
       });
 
@@ -282,7 +282,7 @@ describe('useLeaderboards', () => {
 
     it('should not trigger join private leaderboard mutation when cancel action is triggered', async () => {
       mockJoinPrivateLeaderboard.mockRejectedValue(new Error('Ups'));
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onJoinPrivateLeaderboard();
 
@@ -300,7 +300,7 @@ describe('useLeaderboards', () => {
   describe('create private leaderboard', () => {
     it('should trigger create private leaderboard mutation when leaderboard name is received via prompt - success scenario', async () => {
       mockCreatePrivateLeaderboard.mockResolvedValue('leaderboardId');
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onCreatePrivateLeaderboard();
 
@@ -309,7 +309,7 @@ describe('useLeaderboards', () => {
         { text: 'Ustvari', isPreferred: true, onPress: expect.any(Function) },
       ]);
 
-      act(() => {
+      await act(() => {
         promptSpy.mock.lastCall[2][1].onPress('New board');
       });
 
@@ -328,7 +328,7 @@ describe('useLeaderboards', () => {
 
     it('should trigger join private leaderboard mutation when invite code is received via prompt - error scenario - unknown error', async () => {
       mockCreatePrivateLeaderboard.mockRejectedValue(new Error('Ups'));
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onCreatePrivateLeaderboard();
 
@@ -337,7 +337,7 @@ describe('useLeaderboards', () => {
         { text: 'Ustvari', isPreferred: true, onPress: expect.any(Function) },
       ]);
 
-      act(() => {
+      await act(() => {
         promptSpy.mock.lastCall[2][1].onPress('New board');
       });
 
@@ -356,7 +356,7 @@ describe('useLeaderboards', () => {
       '',
     ])('should not trigger creating private leaderboard mutation when leaderboard name is not received via prompt (is %p)', async (name) => {
       mockCreatePrivateLeaderboard.mockRejectedValue(new Error('Ups'));
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onCreatePrivateLeaderboard();
 
@@ -365,7 +365,7 @@ describe('useLeaderboards', () => {
         { text: 'Ustvari', isPreferred: true, onPress: expect.any(Function) },
       ]);
 
-      act(() => {
+      await act(() => {
         promptSpy.mock.lastCall[2][1].onPress(name);
       });
 
@@ -376,7 +376,7 @@ describe('useLeaderboards', () => {
 
     it('should not trigger creating private leaderboard mutation when cancel action is triggered', async () => {
       mockCreatePrivateLeaderboard.mockRejectedValue(new Error('Ups'));
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onCreatePrivateLeaderboard();
 
@@ -406,7 +406,7 @@ describe('useLeaderboards', () => {
       mockDeletePrivateLeaderboard.mockResolvedValue(null);
       showActionSheetWithOptionsSpy.mockImplementation((_opts, callback) => callback(0));
 
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onPresentLeaderboardActions(testLeaderboardWithCurrentUserAsCreator);
 
@@ -420,7 +420,7 @@ describe('useLeaderboards', () => {
         ]
       );
 
-      act(() => {
+      await act(() => {
         alertSpy.mock.lastCall?.[2]?.[1].onPress?.();
       });
 
@@ -450,7 +450,7 @@ describe('useLeaderboards', () => {
       mockDeletePrivateLeaderboard.mockRejectedValue(error);
       showActionSheetWithOptionsSpy.mockImplementation((_opts, callback) => callback(0));
 
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onPresentLeaderboardActions(testLeaderboardWithCurrentUserAsCreator);
 
@@ -464,7 +464,7 @@ describe('useLeaderboards', () => {
         ]
       );
 
-      act(() => {
+      await act(() => {
         alertSpy.mock.lastCall?.[2]?.[1].onPress?.();
       });
 
@@ -493,7 +493,7 @@ describe('useLeaderboards', () => {
       mockUpdateLeaderboardName.mockResolvedValue(null);
       showActionSheetWithOptionsSpy.mockImplementation((_opts, callback) => callback(1));
 
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onPresentLeaderboardActions(testLeaderboardWithCurrentUserAsCreator);
 
@@ -503,7 +503,7 @@ describe('useLeaderboards', () => {
         { isPreferred: true, text: 'Posodobi', onPress: expect.any(Function) },
       ]);
 
-      act(() => {
+      await act(() => {
         promptSpy.mock.lastCall?.[2]?.[1].onPress?.('New leaderboard name');
       });
 
@@ -534,7 +534,7 @@ describe('useLeaderboards', () => {
       mockUpdateLeaderboardName.mockRejectedValue(error);
       showActionSheetWithOptionsSpy.mockImplementation((_opts, callback) => callback(1));
 
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onPresentLeaderboardActions(testLeaderboardWithCurrentUserAsCreator);
 
@@ -544,7 +544,7 @@ describe('useLeaderboards', () => {
         { isPreferred: true, text: 'Posodobi', onPress: expect.any(Function) },
       ]);
 
-      act(() => {
+      await act(() => {
         promptSpy.mock.lastCall?.[2]?.[1].onPress?.('New leaderboard name');
       });
 
@@ -577,7 +577,7 @@ describe('useLeaderboards', () => {
       mockUpdateLeaderboardName.mockRejectedValue(new Error('Ups'));
       showActionSheetWithOptionsSpy.mockImplementation((_opts, callback) => callback(1));
 
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onPresentLeaderboardActions(testLeaderboardWithCurrentUserAsCreator);
 
@@ -587,7 +587,7 @@ describe('useLeaderboards', () => {
         { isPreferred: true, text: 'Posodobi', onPress: expect.any(Function) },
       ]);
 
-      act(() => {
+      await act(() => {
         promptSpy.mock.lastCall?.[2]?.[1].onPress?.(newLeaderboardName);
       });
 
@@ -610,7 +610,7 @@ describe('useLeaderboards', () => {
       mockUpdateLeaderboardName.mockRejectedValue(new Error('Ups'));
       showActionSheetWithOptionsSpy.mockImplementation((_opts, callback) => callback(1));
 
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onPresentLeaderboardActions(testLeaderboardWithCurrentUserAsCreator);
 
@@ -620,7 +620,7 @@ describe('useLeaderboards', () => {
         { isPreferred: true, text: 'Posodobi', onPress: expect.any(Function) },
       ]);
 
-      act(() => {
+      await act(() => {
         promptSpy.mock.lastCall?.[2]?.[0].onPress?.();
       });
 
@@ -643,7 +643,7 @@ describe('useLeaderboards', () => {
       clipboardSetStringAsyncSpy.mockResolvedValue(null);
       showActionSheetWithOptionsSpy.mockImplementation((_opts, callback) => callback(2));
 
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onPresentLeaderboardActions(testLeaderboardWithCurrentUserAsCreator);
 
@@ -653,7 +653,7 @@ describe('useLeaderboards', () => {
         { isPreferred: true, style: 'default', text: 'Kopiraj', onPress: expect.any(Function) },
       ]);
 
-      act(() => {
+      await act(() => {
         alertSpy.mock.lastCall?.[2]?.[1].onPress?.();
       });
 
@@ -679,7 +679,7 @@ describe('useLeaderboards', () => {
       clipboardSetStringAsyncSpy.mockResolvedValue(null);
       showActionSheetWithOptionsSpy.mockImplementation((_opts, callback) => callback(2));
 
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onPresentLeaderboardActions({ ...testLeaderboardWithCurrentUserAsCreator, inviteCode: null });
 
@@ -716,7 +716,7 @@ describe('useLeaderboards', () => {
       mockLeavePrivateLeaderboard.mockResolvedValue(null);
       showActionSheetWithOptionsSpy.mockImplementation((_opts, callback) => callback(0));
 
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onPresentLeaderboardActions(testLeaderboard);
 
@@ -730,7 +730,7 @@ describe('useLeaderboards', () => {
         ]
       );
 
-      act(() => {
+      await act(() => {
         alertSpy.mock.lastCall?.[2]?.[1].onPress?.();
       });
 
@@ -759,7 +759,7 @@ describe('useLeaderboards', () => {
       mockLeavePrivateLeaderboard.mockRejectedValue(error);
       showActionSheetWithOptionsSpy.mockImplementation((_opts, callback) => callback(0));
 
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onPresentLeaderboardActions(testLeaderboard);
 
@@ -773,7 +773,7 @@ describe('useLeaderboards', () => {
         ]
       );
 
-      act(() => {
+      await act(() => {
         alertSpy.mock.lastCall?.[2]?.[1].onPress?.();
       });
 
@@ -803,7 +803,7 @@ describe('useLeaderboards', () => {
       mockLeavePrivateLeaderboard.mockRejectedValue(new Error('Ups'));
       showActionSheetWithOptionsSpy.mockImplementation((_opts, callback) => callback(0));
 
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onPresentLeaderboardActions(testLeaderboard);
 
@@ -829,7 +829,7 @@ describe('useLeaderboards', () => {
       clipboardSetStringAsyncSpy.mockResolvedValue(null);
       showActionSheetWithOptionsSpy.mockImplementation((_opts, callback) => callback(1));
 
-      const { result } = renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
+      const { result } = await renderHook(({ type, range }) => useLeaderboards(type, range), { initialProps });
 
       result.current.onPresentLeaderboardActions(testLeaderboard);
 
@@ -839,7 +839,7 @@ describe('useLeaderboards', () => {
         { isPreferred: true, style: 'default', text: 'Kopiraj', onPress: expect.any(Function) },
       ]);
 
-      act(() => {
+      await act(() => {
         alertSpy.mock.lastCall?.[2]?.[1].onPress?.();
       });
 

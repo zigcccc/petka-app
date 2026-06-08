@@ -42,66 +42,66 @@ function getPuzzleWithDate(date: Dayjs, overrides = {}) {
 }
 
 describe('<HistoryGrid />', () => {
-  it('renders without crashing', () => {
-    render(<HistoryGrid puzzle={getPuzzleWithDate(today)} />);
+  it('renders without crashing', async () => {
+    await render(<HistoryGrid puzzle={getPuzzleWithDate(today)} />);
 
     expect(screen.getByText(today.format('dddd, DD. MMM YYYY'))).toBeOnTheScreen();
   });
 
-  it('shows solution for daily puzzle in the past', () => {
+  it('shows solution for daily puzzle in the past', async () => {
     const puzzle = getPuzzleWithDate(yesterday);
-    render(<HistoryGrid puzzle={puzzle} />);
+    await render(<HistoryGrid puzzle={puzzle} />);
 
     expect(screen.getByText(/Rešitev:/)).toBeOnTheScreen();
     expect(screen.getByText(puzzle.solution)).toBeOnTheScreen();
   });
 
-  it('shows solution for non-daily puzzle if solved', () => {
+  it('shows solution for non-daily puzzle if solved', async () => {
     const puzzle = { ...testPuzzle, type: puzzleType.enum.training, isSolvedByUser: true };
-    render(<HistoryGrid puzzle={puzzle} />);
+    await render(<HistoryGrid puzzle={puzzle} />);
 
     expect(screen.getByText(/Rešitev:/)).toBeOnTheScreen();
     expect(screen.getByText(puzzle.solution)).toBeOnTheScreen();
   });
 
-  it('shows solution for (active) unsolved puzzle if it is failed (attempts.length = 6 and isSolvedByUser is false)', () => {
+  it('shows solution for (active) unsolved puzzle if it is failed (attempts.length = 6 and isSolvedByUser is false)', async () => {
     const puzzle = getPuzzleWithDate(today, { attempts: failedPuzzleAttempts, isSolvedByUser: false });
-    render(<HistoryGrid puzzle={puzzle} />);
+    await render(<HistoryGrid puzzle={puzzle} />);
 
     expect(screen.getByText(/Rešitev:/)).toBeOnTheScreen();
     expect(screen.getByText(puzzle.solution)).toBeOnTheScreen();
   });
 
-  it('shows overlay for unsolved daily puzzle', () => {
+  it('shows overlay for unsolved daily puzzle', async () => {
     const puzzle = getPuzzleWithDate(today, { isSolvedByUser: false });
-    render(<HistoryGrid puzzle={puzzle} />);
+    await render(<HistoryGrid puzzle={puzzle} />);
 
     expect(screen.getByText(/Dnevnega izziva še nisi rešil/)).toBeOnTheScreen();
   });
 
-  it('shows overlay for unsolved daily puzzle in the past', () => {
+  it('shows overlay for unsolved daily puzzle in the past', async () => {
     const puzzle = getPuzzleWithDate(yesterday, { isSolvedByUser: false });
-    render(<HistoryGrid puzzle={puzzle} />);
+    await render(<HistoryGrid puzzle={puzzle} />);
 
     expect(screen.getByText(/Izziv je ostal ne rešen/)).toBeOnTheScreen();
   });
 
-  it('does not show an overlay for a failed daily puzzle', () => {
+  it('does not show an overlay for a failed daily puzzle', async () => {
     const puzzle = getPuzzleWithDate(today, { attempts: failedPuzzleAttempts, isSolvedByUser: false });
-    render(<HistoryGrid puzzle={puzzle} />);
+    await render(<HistoryGrid puzzle={puzzle} />);
 
     expect(screen.queryByText(/Dnevnega izziva še nisi rešil/)).not.toBeOnTheScreen();
     expect(screen.queryByText(/Izziv je ostal ne rešen/)).not.toBeOnTheScreen();
   });
 
-  it('renders 6 rows and 5 cells per row', () => {
+  it('renders 6 rows and 5 cells per row', async () => {
     const puzzle = getPuzzleWithDate(today);
-    render(<HistoryGrid puzzle={puzzle} />);
+    await render(<HistoryGrid puzzle={puzzle} />);
     // There should be 6*5 = 30 cells
     expect(screen.getAllByTestId(/cell-\d/).length).toBe(30);
   });
 
-  it('renders attempts if provided', () => {
+  it('renders attempts if provided', async () => {
     const attempts = [
       {
         _id: 0,
@@ -115,7 +115,7 @@ describe('<HistoryGrid />', () => {
       },
     ];
     const puzzle = getPuzzleWithDate(today, { attempts });
-    render(<HistoryGrid puzzle={puzzle} />);
+    await render(<HistoryGrid puzzle={puzzle} />);
 
     expect(screen.getByText('a')).toBeOnTheScreen();
     expect(screen.getAllByText('p').length).toBe(2);
@@ -123,16 +123,16 @@ describe('<HistoryGrid />', () => {
     expect(screen.getByText('e')).toBeOnTheScreen();
   });
 
-  it('renders with custom cellWidth', () => {
+  it('renders with custom cellWidth', async () => {
     const puzzle = getPuzzleWithDate(today);
-    render(<HistoryGrid cellWidth={42} puzzle={puzzle} />);
+    await render(<HistoryGrid cellWidth={42} puzzle={puzzle} />);
     // No error means it works; could check props if GuessGrid.Cell was not mocked
     expect(screen.getAllByTestId(/cell-\d/).length).toBe(30);
   });
 
-  it('renders without userId', () => {
+  it('renders without userId', async () => {
     const puzzle = getPuzzleWithDate(today, { isSolvedByUser: false });
-    render(<HistoryGrid puzzle={puzzle} />);
+    await render(<HistoryGrid puzzle={puzzle} />);
     expect(screen.getByText(today.format('dddd, DD. MMM YYYY'))).toBeOnTheScreen();
   });
 });

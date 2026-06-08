@@ -37,8 +37,8 @@ describe('Gameplay Settings Screen', () => {
     jest.clearAllMocks();
   });
 
-  it('should render create account screen elements', () => {
-    render(<GameplaySettingsScreen />);
+  it('should render create account screen elements', async () => {
+    await render(<GameplaySettingsScreen />);
 
     expect(screen.queryByText('Preden začneš...')).toBeOnTheScreen();
     expect(screen.queryByText('Izberi svoje preference glede načina igranja.')).toBeOnTheScreen();
@@ -63,10 +63,10 @@ describe('Gameplay Settings Screen', () => {
     expect(screen.queryByRole('button', { name: 'Potrdi preference' })).toBeOnTheScreen();
   });
 
-  it('should update gameplay setting on interaction with "Avtomatsko preveri besedo" switch', () => {
-    render(<GameplaySettingsScreen />);
+  it('should update gameplay setting on interaction with "Avtomatsko preveri besedo" switch', async () => {
+    await render(<GameplaySettingsScreen />);
 
-    fireEvent(screen.getByRole('switch', { name: /Avtomatsko preveri besedo/ }), 'valueChange', true);
+    await fireEvent(screen.getByRole('switch', { name: /Avtomatsko preveri besedo/ }), 'valueChange', true);
 
     expect(mockUpdateSettings).toHaveBeenCalledWith({ autosubmitPuzzleAttempt: true });
   });
@@ -74,10 +74,10 @@ describe('Gameplay Settings Screen', () => {
   it.each([
     { radioButton: 'QWERTY tipkovnica', keyboardType: gameplayKeyboardType.enum.qwerty },
     { radioButton: 'ABCDE tipkovnica', keyboardType: gameplayKeyboardType.enum.abcde },
-  ])('should update gameplay setting on "$radioButton" radio button press', ({ radioButton, keyboardType }) => {
-    render(<GameplaySettingsScreen />);
+  ])('should update gameplay setting on "$radioButton" radio button press', async ({ radioButton, keyboardType }) => {
+    await render(<GameplaySettingsScreen />);
 
-    fireEvent.press(screen.getByRole('radio', { name: radioButton }));
+    await fireEvent.press(screen.getByRole('radio', { name: radioButton }));
 
     expect(mockUpdateSettings).toHaveBeenCalledWith({ keyboardType });
   });
@@ -85,9 +85,9 @@ describe('Gameplay Settings Screen', () => {
   it('should set the default settings and navigate to authenticated app layout on "Potrdi preference" button press when settings are not initialised', async () => {
     useGameplaySettingsSpy.mockReturnValue({ isUninitialised: true, setDefaultSettings: mockSetDefaultSettings });
 
-    render(<GameplaySettingsScreen />);
+    await render(<GameplaySettingsScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: 'Potrdi preference' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Potrdi preference' }));
 
     await waitFor(() => {
       expect(mockSetDefaultSettings).toHaveBeenCalled();
@@ -101,9 +101,9 @@ describe('Gameplay Settings Screen', () => {
   it('should navigate to authenticated app layout on "Potrdi preference" button press without setting the default settings when settings are initialised', async () => {
     useGameplaySettingsSpy.mockReturnValue({ isUninitialised: false, setDefaultSettings: mockSetDefaultSettings });
 
-    render(<GameplaySettingsScreen />);
+    await render(<GameplaySettingsScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: 'Potrdi preference' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Potrdi preference' }));
 
     await waitFor(() => {
       expect(mockReplace).toHaveBeenCalledWith('/(authenticated)');

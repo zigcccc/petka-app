@@ -78,30 +78,30 @@ describe('usePushNotifications', () => {
     jest.clearAllMocks();
   });
 
-  it('should trigger the user notifications status query with "skip" param if userId is not passed', () => {
-    renderHook(() => usePushNotifications());
+  it('should trigger the user notifications status query with "skip" param if userId is not passed', async () => {
+    await renderHook(() => usePushNotifications());
 
     expect(useUserNotificationsStatusQuerySpy).toHaveBeenCalledWith('skip');
   });
 
-  it('should trigger the user notifications status query with received userId when it is not undefined', () => {
-    renderHook(() => usePushNotifications(testUser1._id));
+  it('should trigger the user notifications status query with received userId when it is not undefined', async () => {
+    await renderHook(() => usePushNotifications(testUser1._id));
 
     expect(useUserNotificationsStatusQuerySpy).toHaveBeenCalledWith({ userId: testUser1._id });
   });
 
-  it('should set enabled=true when status data is available, hasToken=true and paused=false', () => {
+  it('should set enabled=true when status data is available, hasToken=true and paused=false', async () => {
     useUserNotificationsStatusQuerySpy.mockReturnValue({ data: { hasToken: true, paused: false } });
 
-    const { result } = renderHook(() => usePushNotifications(testUser1._id));
+    const { result } = await renderHook(() => usePushNotifications(testUser1._id));
 
     expect(result.current.enabled).toBe(true);
   });
 
-  it('should set enabled=false when status data is not available', () => {
+  it('should set enabled=false when status data is not available', async () => {
     useUserNotificationsStatusQuerySpy.mockReturnValue({ data: null });
 
-    const { result } = renderHook(() => usePushNotifications(testUser1._id));
+    const { result } = await renderHook(() => usePushNotifications(testUser1._id));
 
     expect(result.current.enabled).toBe(false);
   });
@@ -110,10 +110,10 @@ describe('usePushNotifications', () => {
     { hasToken: false, paused: false },
     { hasToken: true, paused: true },
     { hasToken: false, paused: true },
-  ])('should set enabled=false when status.hasToken=$hasToken and status.paused=$paused', (statusData) => {
+  ])('should set enabled=false when status.hasToken=$hasToken and status.paused=$paused', async (statusData) => {
     useUserNotificationsStatusQuerySpy.mockReturnValue({ data: statusData });
 
-    const { result } = renderHook(() => usePushNotifications(testUser1._id));
+    const { result } = await renderHook(() => usePushNotifications(testUser1._id));
 
     expect(result.current.enabled).toBe(false);
   });
@@ -121,9 +121,9 @@ describe('usePushNotifications', () => {
   it('should trigger register user for push notification mutation on register action - success scenario, not currently registering', async () => {
     mockRegisterUserForPushNotifications.mockResolvedValue(null);
 
-    const { result } = renderHook(() => usePushNotifications(testUser1._id));
+    const { result } = await renderHook(() => usePushNotifications(testUser1._id));
 
-    act(() => {
+    await act(() => {
       result.current.register(testUser2._id);
     });
 
@@ -144,9 +144,9 @@ describe('usePushNotifications', () => {
     registerForPushNotificationsAsyncSpy.mockRejectedValue(error);
     mockRegisterUserForPushNotifications.mockResolvedValue(null);
 
-    const { result } = renderHook(() => usePushNotifications(testUser1._id));
+    const { result } = await renderHook(() => usePushNotifications(testUser1._id));
 
-    act(() => {
+    await act(() => {
       result.current.register(testUser2._id);
     });
 
@@ -164,9 +164,9 @@ describe('usePushNotifications', () => {
     registerForPushNotificationsAsyncSpy.mockResolvedValue(testPushToken);
     mockRegisterUserForPushNotifications.mockRejectedValue(error);
 
-    const { result } = renderHook(() => usePushNotifications(testUser1._id));
+    const { result } = await renderHook(() => usePushNotifications(testUser1._id));
 
-    act(() => {
+    await act(() => {
       result.current.register(testUser2._id);
     });
 
@@ -192,9 +192,9 @@ describe('usePushNotifications', () => {
       isLoading: true,
     });
 
-    const { result } = renderHook(() => usePushNotifications(testUser1._id));
+    const { result } = await renderHook(() => usePushNotifications(testUser1._id));
 
-    act(() => {
+    await act(() => {
       result.current.register(testUser2._id);
     });
 
@@ -207,9 +207,9 @@ describe('usePushNotifications', () => {
     registerForPushNotificationsAsyncSpy.mockResolvedValue(testPushToken);
     mockToggleUserPushNotifications.mockResolvedValue(null);
 
-    const { result } = renderHook(() => usePushNotifications(testUser1._id));
+    const { result } = await renderHook(() => usePushNotifications(testUser1._id));
 
-    act(() => {
+    await act(() => {
       result.current.toggle(true);
     });
 
@@ -234,9 +234,9 @@ describe('usePushNotifications', () => {
     registerForPushNotificationsAsyncSpy.mockResolvedValue(testPushToken);
     mockToggleUserPushNotifications.mockResolvedValue(null);
 
-    const { result } = renderHook(() => usePushNotifications(testUser1._id));
+    const { result } = await renderHook(() => usePushNotifications(testUser1._id));
 
-    act(() => {
+    await act(() => {
       result.current.toggle(false);
     });
 
@@ -258,9 +258,9 @@ describe('usePushNotifications', () => {
     registerForPushNotificationsAsyncSpy.mockRejectedValue(new Error('ups'));
     mockToggleUserPushNotifications.mockResolvedValue(null);
 
-    const { result } = renderHook(() => usePushNotifications(testUser1._id));
+    const { result } = await renderHook(() => usePushNotifications(testUser1._id));
 
-    act(() => {
+    await act(() => {
       result.current.toggle(true);
     });
 
@@ -278,9 +278,9 @@ describe('usePushNotifications', () => {
     registerForPushNotificationsAsyncSpy.mockResolvedValue(testPushToken);
     mockToggleUserPushNotifications.mockRejectedValue(new Error('ups'));
 
-    const { result } = renderHook(() => usePushNotifications(testUser1._id));
+    const { result } = await renderHook(() => usePushNotifications(testUser1._id));
 
-    act(() => {
+    await act(() => {
       result.current.toggle(true);
     });
 
@@ -301,9 +301,9 @@ describe('usePushNotifications', () => {
     registerForPushNotificationsAsyncSpy.mockResolvedValue(testPushToken);
     mockToggleUserPushNotifications.mockResolvedValue(null);
 
-    const { result } = renderHook(() => usePushNotifications());
+    const { result } = await renderHook(() => usePushNotifications());
 
-    act(() => {
+    await act(() => {
       result.current.toggle(true);
     });
 

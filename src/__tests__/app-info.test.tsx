@@ -40,8 +40,8 @@ describe('App info screen', () => {
     jest.clearAllMocks();
   });
 
-  it('should display basic app information', () => {
-    render(<AppInfoScreen />);
+  it('should display basic app information', async () => {
+    await render(<AppInfoScreen />);
 
     expect(within(screen.getByRole('header')).queryByText('Informacije')).toBeOnTheScreen();
 
@@ -59,34 +59,34 @@ describe('App info screen', () => {
     expect(screen.queryByRole('button', { name: 'Kopiraj vrednosti' })).toBeOnTheScreen();
   });
 
-  it('should open wikipedia Wordle page on wordle link press', () => {
-    render(<AppInfoScreen />);
+  it('should open wikipedia Wordle page on wordle link press', async () => {
+    await render(<AppInfoScreen />);
 
-    fireEvent.press(screen.getByRole('link', { name: '"Wordle"' }));
+    await fireEvent.press(screen.getByRole('link', { name: '"Wordle"' }));
 
     expect(safeOpenUrlSpy).toHaveBeenCalledWith('https://en.wikipedia.org/wiki/Wordle');
   });
 
-  it('should open github page on "Connect on GitHub" button press', () => {
-    render(<AppInfoScreen />);
+  it('should open github page on "Connect on GitHub" button press', async () => {
+    await render(<AppInfoScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: 'Najdi me na GitHub-u' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Najdi me na GitHub-u' }));
 
     expect(safeOpenUrlSpy).toHaveBeenCalledWith('https://github.com/zigcccc/');
   });
 
-  it('should open linkedin page on "Connect on LinkedIn" button press', () => {
-    render(<AppInfoScreen />);
+  it('should open linkedin page on "Connect on LinkedIn" button press', async () => {
+    await render(<AppInfoScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: 'Poveživa se na LinkedIn-u' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Poveživa se na LinkedIn-u' }));
 
     expect(safeOpenUrlSpy).toHaveBeenCalledWith('https://www.linkedin.com/in/zigakrasovec/');
   });
 
   it('should copy values to clipboard and display success toast on "Copy version values" button press', async () => {
-    render(<AppInfoScreen />);
+    await render(<AppInfoScreen />);
 
-    fireEvent.press(screen.getByRole('button', { name: 'Kopiraj vrednosti' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Kopiraj vrednosti' }));
 
     expect(setStringAsyncSpy).toHaveBeenCalled();
     await waitFor(() => {

@@ -37,14 +37,14 @@ describe('<UserProfileScreen />', () => {
     jest.clearAllMocks();
   });
 
-  it('should call useUserQuery with the userId from route params', () => {
-    render(<UserProfileScreen />);
+  it('should call useUserQuery with the userId from route params', async () => {
+    await render(<UserProfileScreen />);
 
     expect(useUserQuerySpy).toHaveBeenCalledWith({ id: testUser1._id });
   });
 
-  it('should call usePuzzlesStatisticsQuery with "daily" puzzle type and the userId from route params', () => {
-    render(<UserProfileScreen />);
+  it('should call usePuzzlesStatisticsQuery with "daily" puzzle type and the userId from route params', async () => {
+    await render(<UserProfileScreen />);
 
     expect(usePuzzlesStatisticsQuerySpy).toHaveBeenCalledWith({
       puzzleType: puzzleType.enum.daily,
@@ -52,9 +52,9 @@ describe('<UserProfileScreen />', () => {
     });
   });
 
-  it('should set the screen title to "Nalagam podatke..." while user data is loading', () => {
+  it('should set the screen title to "Nalagam podatke..." while user data is loading', async () => {
     useUserQuerySpy.mockReturnValue({ isLoading: true, data: undefined });
-    render(<UserProfileScreen />);
+    await render(<UserProfileScreen />);
 
     expect(StackScreenSpy).toHaveBeenCalledWith(
       expect.objectContaining({ options: expect.objectContaining({ title: 'Nalagam podatke...' }) }),
@@ -62,8 +62,8 @@ describe('<UserProfileScreen />', () => {
     );
   });
 
-  it('should set the screen title to the user nickname once loaded', () => {
-    render(<UserProfileScreen />);
+  it('should set the screen title to the user nickname once loaded', async () => {
+    await render(<UserProfileScreen />);
 
     expect(StackScreenSpy).toHaveBeenCalledWith(
       expect.objectContaining({ options: expect.objectContaining({ title: testUser1.nickname }) }),
@@ -71,31 +71,31 @@ describe('<UserProfileScreen />', () => {
     );
   });
 
-  it('should render loading indicator while user data is loading', () => {
+  it('should render loading indicator while user data is loading', async () => {
     useUserQuerySpy.mockReturnValue({ isLoading: true, data: undefined });
-    render(<UserProfileScreen />);
+    await render(<UserProfileScreen />);
 
     expect(screen.queryByRole('progressbar', { name: 'Nalagam podatke o uporabniku...' })).toBeOnTheScreen();
     expect(screen.queryByText('Statistika dnevnih izzivov')).not.toBeOnTheScreen();
   });
 
-  it('should render loading indicator while stats are loading', () => {
+  it('should render loading indicator while stats are loading', async () => {
     usePuzzlesStatisticsQuerySpy.mockReturnValue({ isLoading: true, data: undefined });
-    render(<UserProfileScreen />);
+    await render(<UserProfileScreen />);
 
     expect(screen.queryByRole('progressbar', { name: 'Nalagam podatke o uporabniku...' })).toBeOnTheScreen();
     expect(screen.queryByText('Statistika dnevnih izzivov')).not.toBeOnTheScreen();
   });
 
-  it('should render the member since date', () => {
-    render(<UserProfileScreen />);
+  it('should render the member since date', async () => {
+    await render(<UserProfileScreen />);
 
     // testUser1._creationTime = 1751328000000 (2025-07-01); dayjs sl locale → "julij 2025"
     expect(screen.queryByText(/Član od: julij 2025/)).toBeOnTheScreen();
   });
 
-  it('should render daily stats when data is loaded', () => {
-    render(<UserProfileScreen />);
+  it('should render daily stats when data is loaded', async () => {
+    await render(<UserProfileScreen />);
 
     expect(screen.queryByRole('progressbar', { name: 'Nalagam podatke o uporabniku...' })).not.toBeOnTheScreen();
     expect(screen.queryByText('Statistika dnevnih izzivov')).toBeOnTheScreen();
@@ -105,21 +105,21 @@ describe('<UserProfileScreen />', () => {
     expect(screen.getByTestId('stat-max-streak')).toHaveTextContent(/Najdaljši niz3/);
   });
 
-  it('should render win rate rounded up to nearest integer', () => {
+  it('should render win rate rounded up to nearest integer', async () => {
     usePuzzlesStatisticsQuerySpy.mockReturnValue({
       isLoading: false,
       isNotFound: false,
       data: { ...testPuzzleStatistics1, totalPlayed: 3, totalWon: 1 },
     });
-    render(<UserProfileScreen />);
+    await render(<UserProfileScreen />);
 
     // Math.ceil(1 / 3 * 100) = Math.ceil(33.33) = 34
     expect(screen.getByTestId('stat-win-rate')).toHaveTextContent(/34%/);
   });
 
-  it('should render empty state when user has no stats', () => {
+  it('should render empty state when user has no stats', async () => {
     usePuzzlesStatisticsQuerySpy.mockReturnValue({ isLoading: false, isNotFound: true, data: null });
-    render(<UserProfileScreen />);
+    await render(<UserProfileScreen />);
 
     expect(screen.queryByText('Ta igralec še ni rešil nobene uganke.')).toBeOnTheScreen();
     expect(screen.queryByText('Statistika dnevnih izzivov')).not.toBeOnTheScreen();

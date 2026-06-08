@@ -75,19 +75,19 @@ describe('DailyPuzzleScreen', () => {
     jest.clearAllMocks();
   });
 
-  it('should navigate to puzzle solved screen and set navigation options with header right element when puzzle is done', () => {
+  it('should navigate to puzzle solved screen and set navigation options with header right element when puzzle is done', async () => {
     useDailyPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, isDone: true });
 
-    render(<DailyPuzzleScreen />);
+    await render(<DailyPuzzleScreen />);
 
     expect(mockNavigate).toHaveBeenCalledWith('/play/daily-puzzle-solved');
     expect(mockSetNavigationOptions).toHaveBeenCalledWith({ headerRight: expect.any(Function) });
   });
 
-  it('should not navigate to puzzle solved screen and set navigation options with header right element set to null when puzzle is not solved', () => {
+  it('should not navigate to puzzle solved screen and set navigation options with header right element set to null when puzzle is not solved', async () => {
     useDailyPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, isDone: false });
 
-    render(<DailyPuzzleScreen />);
+    await render(<DailyPuzzleScreen />);
 
     expect(mockNavigate).not.toHaveBeenCalled();
     expect(mockSetNavigationOptions).toHaveBeenCalledWith({ headerRight: null });
@@ -96,7 +96,7 @@ describe('DailyPuzzleScreen', () => {
   it('should throw an error if puzzle is not loading and no puzzle data exists', async () => {
     useDailyPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, isLoading: false, puzzle: null });
 
-    expect(() => render(<DailyPuzzleScreen />)).toThrow('Daily puzzle not found!');
+    expect(async () => await render(<DailyPuzzleScreen />)).rejects.toThrow('Daily puzzle not found!');
 
     await waitFor(() => {
       expect(mockCapturePosthogException).toHaveBeenCalledWith(new Error('Daily puzzle not found!'));
@@ -107,55 +107,55 @@ describe('DailyPuzzleScreen', () => {
   it.each([
     { desc: 'puzzle data is available', isLoading: false, puzzle: testDailyPuzzle1 },
     { desc: 'puzzle data is loading', isLoading: true, puzzle: null },
-  ])('should not throw an error if $desc', ({ isLoading, puzzle }) => {
+  ])('should not throw an error if $desc', async ({ isLoading, puzzle }) => {
     useDailyPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, isLoading, puzzle });
 
-    expect(() => render(<DailyPuzzleScreen />)).not.toThrow();
+    expect(async () => await render(<DailyPuzzleScreen />)).not.toThrow();
 
     expect(mockCapturePosthogException).not.toHaveBeenCalled();
     expect(sentryCaptureExceptionSpy).not.toHaveBeenCalled();
   });
 
-  it('should render loading state when puzzle data is loading', () => {
+  it('should render loading state when puzzle data is loading', async () => {
     useDailyPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, isLoading: true, puzzle: null });
 
-    render(<DailyPuzzleScreen />);
+    await render(<DailyPuzzleScreen />);
 
     expect(screen.queryByText('Iščem aktivno igro...')).toBeOnTheScreen();
   });
 
-  it('should render puzzle guess grid and keyboard when puzzle data is available', () => {
+  it('should render puzzle guess grid and keyboard when puzzle data is available', async () => {
     useDailyPuzzleSpy.mockReturnValue({ ...defaultDailyPuzzleOptions, puzzle: testDailyPuzzle1 });
 
-    render(<DailyPuzzleScreen />);
+    await render(<DailyPuzzleScreen />);
 
     expect(screen.getAllByTestId(/^guess-grid--row-\d+$/).length).toBe(6);
     expect(screen.getAllByTestId(/^keyboard-key--[A-Za-z]+$/).length).toBeGreaterThan(0);
   });
 
-  it('should trigger user presence hook', () => {
-    render(<DailyPuzzleScreen />);
+  it('should trigger user presence hook', async () => {
+    await render(<DailyPuzzleScreen />);
 
     expect(usePresenceSpy).toHaveBeenCalledWith(api.presence, 'daily-puzzle', testUser1.nickname);
   });
 
-  it('should trigger user presence hook with empty string as a user id when user data is not available', () => {
+  it('should trigger user presence hook with empty string as a user id when user data is not available', async () => {
     useUserSpy.mockReturnValue({ user: null });
-    render(<DailyPuzzleScreen />);
+    await render(<DailyPuzzleScreen />);
 
     expect(usePresenceSpy).toHaveBeenCalledWith(api.presence, 'daily-puzzle', '');
   });
 });
 
 describe('DailyPuzzleScreen - ErrorBoundary', () => {
-  it('should render the daily puzzle error screen', () => {
+  it('should render the daily puzzle error screen', async () => {
     const mockRetry = jest.fn().mockResolvedValue(null);
-    render(<ErrorBoundary error={new Error('Ups')} retry={mockRetry} />);
+    await render(<ErrorBoundary error={new Error('Ups')} retry={mockRetry} />);
 
     expect(screen.queryByText('To pa je nerodno...')).toBeOnTheScreen();
     expect(screen.queryByText('Dnevne uganke nismo uspeli najti.')).toBeOnTheScreen();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Poizkusi ponovno' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Poizkusi ponovno' }));
 
     expect(mockRetry).toHaveBeenCalled();
   });

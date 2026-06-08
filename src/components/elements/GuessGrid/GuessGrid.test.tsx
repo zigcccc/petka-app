@@ -16,12 +16,12 @@ describe('<GuessGrid />', () => {
     [null, null, null, null, null],
   ];
 
-  it('should render the grid', () => {
-    render(<GuessGrid grid={testGrid} />);
+  it('should render the grid', async () => {
+    await render(<GuessGrid grid={testGrid} />);
     expect(screen.getAllByTestId(/guess-grid--row-\d--cell-\d/).length).toBe(30);
   });
 
-  it('should render the grid cells according to received attempts', () => {
+  it('should render the grid cells according to received attempts', async () => {
     const attempt1 = {
       _id: 'attemp1' as Id<'puzzleGuessAttempts'>,
       _creationTime: Date.now(),
@@ -65,7 +65,7 @@ describe('<GuessGrid />', () => {
       ],
     };
 
-    render(<GuessGrid attempts={[attempt1, attempt2, attempt3]} grid={testGrid} />);
+    await render(<GuessGrid attempts={[attempt1, attempt2, attempt3]} grid={testGrid} />);
 
     // Row 0 -> attempt 1
     expect(screen.getByTestId('guess-grid--row-0--cell-0')).toHaveStyle({

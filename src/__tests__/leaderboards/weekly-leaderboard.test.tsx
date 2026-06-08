@@ -42,41 +42,41 @@ describe('<WeeklyLeaderboardScreen />', () => {
     jest.clearAllMocks();
   });
 
-  it('should trigger global leaderboard and private leaderboards queries with "weekly" param', () => {
-    render(<WeeklyLeaderboardScreen />);
+  it('should trigger global leaderboard and private leaderboards queries with "weekly" param', async () => {
+    await render(<WeeklyLeaderboardScreen />);
 
     expect(useLeaderboardsSpy).toHaveBeenCalledWith(leaderboardType.enum.private, leaderboardRange.enum.weekly);
   });
 
-  it('should set the parent navigation option title to "Tedenska lestvica"', () => {
-    render(<WeeklyLeaderboardScreen />);
+  it('should set the parent navigation option title to "Tedenska lestvica"', async () => {
+    await render(<WeeklyLeaderboardScreen />);
 
     expect(mockSetOptions).toHaveBeenCalledWith({ title: 'Tedenska lestvica' });
   });
 
-  it('should render private leaderboards', () => {
-    render(<WeeklyLeaderboardScreen />);
+  it('should render private leaderboards', async () => {
+    await render(<WeeklyLeaderboardScreen />);
 
     expect(screen.queryByText(testPrivateLeaderboard1.name!)).toBeOnTheScreen();
   });
 
-  it('should render private leaderboards actions (join, create)', () => {
-    render(<WeeklyLeaderboardScreen />);
+  it('should render private leaderboards actions (join, create)', async () => {
+    await render(<WeeklyLeaderboardScreen />);
 
     expect(screen.getByRole('button', { name: 'Pridruži se lestvici' })).toBeOnTheScreen();
     expect(screen.getByRole('button', { name: 'Ustvari lestvico' })).toBeOnTheScreen();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Pridruži se lestvici' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Pridruži se lestvici' }));
     expect(mockJoinPrivateLeaderboard).toHaveBeenCalled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Ustvari lestvico' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Ustvari lestvico' }));
     expect(mockCreatePrivateLeaderboard).toHaveBeenCalled();
   });
 
-  it('should present private leaderboard actions on present actions trigger', () => {
-    render(<WeeklyLeaderboardScreen />);
+  it('should present private leaderboard actions on present actions trigger', async () => {
+    await render(<WeeklyLeaderboardScreen />);
 
-    fireEvent.press(screen.getByTestId('card--actions-trigger'));
+    await fireEvent.press(screen.getByTestId('card--actions-trigger'));
 
     expect(mockPresentLeaderboardActions).toHaveBeenCalledWith(testPrivateLeaderboard1);
   });
@@ -84,9 +84,9 @@ describe('<WeeklyLeaderboardScreen />', () => {
   it.each([
     null,
     [],
-  ])('should render empty state if no private leaderboards exist (private leaderboards = %p)', (leaderboards) => {
+  ])('should render empty state if no private leaderboards exist (private leaderboards = %p)', async (leaderboards) => {
     useLeaderboardsSpy.mockReturnValue({ leaderboards });
-    render(<WeeklyLeaderboardScreen />);
+    await render(<WeeklyLeaderboardScreen />);
 
     expect(screen.queryByText('Pridružen/a nisi še nobeni lestvici...')).toBeOnTheScreen();
   });

@@ -8,7 +8,7 @@ import { testUser1 } from '@/tests/fixtures/users';
 import { useCreateUserMutation, useDeleteUserMutation, usePatchUserMutation } from '../mutations';
 import { useUserQuery } from '../queries';
 import { useToaster } from '../useToaster';
-import { LOADING_USER_ID, useUser } from './useUser';
+import { useUser } from './useUser';
 
 jest.mock('posthog-react-native', () => ({
   ...jest.requireActual('posthog-react-native'),
@@ -65,39 +65,27 @@ describe('useUser', () => {
 
   it('should get the userId from local storage on mount and set it to the local value - userId exists', async () => {
     asyncStorageGetItemSpy.mockResolvedValue('mockUserId');
-    const { result } = renderHook(() => useUser());
-
-    expect(result.current.userId).toBe(LOADING_USER_ID);
-
-    await waitFor(() => expect(result.current.userId).not.toBe(LOADING_USER_ID));
+    const { result } = await renderHook(() => useUser());
 
     expect(result.current.userId).toBe('mockUserId');
   });
 
   it('should get the userId from local storage on mount and set it to the local value - userId does not exist', async () => {
     asyncStorageGetItemSpy.mockResolvedValue(null);
-    const { result } = renderHook(() => useUser());
-
-    expect(result.current.userId).toBe(LOADING_USER_ID);
-
-    await waitFor(() => expect(result.current.userId).not.toBe(LOADING_USER_ID));
+    const { result } = await renderHook(() => useUser());
 
     expect(result.current.userId).toBe(null);
   });
 
   it('should get the userId from local storage on mount and set it to the local value - call to async storage rejects', async () => {
     asyncStorageGetItemSpy.mockRejectedValue(new Error('Error'));
-    const { result } = renderHook(() => useUser());
-
-    expect(result.current.userId).toBe(LOADING_USER_ID);
-
-    await waitFor(() => expect(result.current.userId).not.toBe(LOADING_USER_ID));
+    const { result } = await renderHook(() => useUser());
 
     expect(result.current.userId).toBe(null);
   });
 
   it('should set the userId when setUserId is invoked with an id', async () => {
-    const { result } = renderHook(() => useUser());
+    const { result } = await renderHook(() => useUser());
 
     await result.current.setUserId('newUserId');
 
@@ -108,7 +96,7 @@ describe('useUser', () => {
   });
 
   it('should unset (remove) the userId when setUserId is invoked with null', async () => {
-    const { result } = renderHook(() => useUser());
+    const { result } = await renderHook(() => useUser());
 
     await result.current.setUserId(null);
 
@@ -120,9 +108,9 @@ describe('useUser', () => {
 
   it('should trigger create user mutation on createUser action', async () => {
     mockCreateUser.mockResolvedValue(testUser1._id);
-    const { result } = renderHook(() => useUser());
+    const { result } = await renderHook(() => useUser());
 
-    act(() => {
+    await act(() => {
       result.current.createUser({ nickname: 'New nickname' });
     });
 
@@ -141,9 +129,9 @@ describe('useUser', () => {
 
   it('should trigger patch user mutation on updateUser action', async () => {
     useUserQuerySpy.mockReturnValue({ data: testUser1 });
-    const { result } = renderHook(() => useUser());
+    const { result } = await renderHook(() => useUser());
 
-    act(() => {
+    await act(() => {
       result.current.updateUser({ nickname: 'New nickname' });
     });
 
@@ -161,7 +149,7 @@ describe('useUser', () => {
 
   it('should not trigger patch user mutation on updateUser action when user data is not available', async () => {
     useUserQuerySpy.mockReturnValue({ data: null });
-    const { result } = renderHook(() => useUser());
+    const { result } = await renderHook(() => useUser());
 
     await result.current.updateUser({ nickname: 'New nickname' });
 
@@ -173,9 +161,9 @@ describe('useUser', () => {
     mockDeleteUser.mockResolvedValue(null);
     useUserQuerySpy.mockReturnValue({ data: testUser1 });
 
-    const { result } = renderHook(() => useUser());
+    const { result } = await renderHook(() => useUser());
 
-    act(() => {
+    await act(() => {
       result.current.deleteUser();
     });
 
@@ -188,7 +176,7 @@ describe('useUser', () => {
       ]
     );
 
-    act(() => {
+    await act(() => {
       // @ts-expect-error
       alertSpy.mock.calls[0][2][1].onPress();
     });
@@ -214,9 +202,9 @@ describe('useUser', () => {
 
     const onDeleteCb = jest.fn();
 
-    const { result } = renderHook(() => useUser());
+    const { result } = await renderHook(() => useUser());
 
-    act(() => {
+    await act(() => {
       result.current.deleteUser(onDeleteCb);
     });
 
@@ -229,7 +217,7 @@ describe('useUser', () => {
       ]
     );
 
-    act(() => {
+    await act(() => {
       // @ts-expect-error
       alertSpy.mock.calls[0][2][1].onPress();
     });
@@ -257,9 +245,9 @@ describe('useUser', () => {
 
     const onDeleteCb = jest.fn();
 
-    const { result } = renderHook(() => useUser());
+    const { result } = await renderHook(() => useUser());
 
-    act(() => {
+    await act(() => {
       result.current.deleteUser(onDeleteCb);
     });
 
@@ -272,7 +260,7 @@ describe('useUser', () => {
       ]
     );
 
-    act(() => {
+    await act(() => {
       // @ts-expect-error
       alertSpy.mock.calls[0][2][1].onPress();
     });
@@ -293,9 +281,9 @@ describe('useUser', () => {
     mockDeleteUser.mockResolvedValue(null);
     useUserQuerySpy.mockReturnValue({ data: null });
 
-    const { result } = renderHook(() => useUser());
+    const { result } = await renderHook(() => useUser());
 
-    act(() => {
+    await act(() => {
       result.current.deleteUser();
     });
 
@@ -308,7 +296,7 @@ describe('useUser', () => {
       ]
     );
 
-    act(() => {
+    await act(() => {
       // @ts-expect-error
       alertSpy.mock.calls[0][2][1].onPress();
     });

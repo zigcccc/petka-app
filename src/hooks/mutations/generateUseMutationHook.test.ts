@@ -33,38 +33,31 @@ describe('generateUseMutationHook', () => {
     const mutationImpl = jest.fn().mockResolvedValue(true);
     mockUseMutation.mockReturnValueOnce(mutationImpl);
 
-    const { result } = renderHook(() => useUpdateUser());
+    const { result } = await renderHook(() => useUpdateUser());
 
     expect(result.current.isLoading).toBe(false);
 
-    act(() => {
-      result.current.mutate({ name: 'Alice' });
-    });
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(true);
+    await act(async () => {
+      await result.current.mutate({ name: 'Alice' });
     });
 
     expect(mutationImpl).toHaveBeenCalledWith({ name: 'Alice' });
-
-    await waitFor(() => {
-      expect(result.current.isLoading).toBe(false);
-    });
-
+    expect(result.current.isLoading).toBe(false);
     expect(mockCaptureException).not.toHaveBeenCalled();
   });
 
   it('captures exception and resets loading flag on error - componentPath exists', async () => {
-    const err = new Error('fail');
-    const mutationImpl = jest.fn().mockRejectedValue(err);
+    const mutationImpl = jest.fn().mockRejectedValue('fail');
     mockUseMutation.mockReturnValueOnce(mutationImpl);
 
-    const { result } = renderHook(() => useUpdateUser());
+    const { result } = await renderHook(() => useUpdateUser());
 
-    await expect(act(() => result.current.mutate({ name: 'Bob' }))).rejects.toThrow(err);
+    await act(async () => {
+      await expect(result.current.mutate({ name: 'Bob' })).rejects.toBe('fail');
+    });
 
     expect(result.current.isLoading).toBe(false);
-    expect(mockCaptureException).toHaveBeenCalledWith(err, {
+    expect(mockCaptureException).toHaveBeenCalledWith('fail', {
       mutation: 'src/mutations/updateUser.ts',
       args: { name: 'Bob' },
     });
@@ -72,16 +65,17 @@ describe('generateUseMutationHook', () => {
 
   it('captures exception and resets loading flag on error - componentPath does not exist', async () => {
     const useUpdateUserWithoutComponentPath = generateUseMutationHook({} as FunctionReference<'mutation'>);
-    const err = new Error('fail');
-    const mutationImpl = jest.fn().mockRejectedValue(err);
+    const mutationImpl = jest.fn().mockRejectedValue('fail');
     mockUseMutation.mockReturnValueOnce(mutationImpl);
 
-    const { result } = renderHook(() => useUpdateUserWithoutComponentPath());
+    const { result } = await renderHook(() => useUpdateUserWithoutComponentPath());
 
-    await expect(act(() => result.current.mutate({ name: 'Bob' }))).rejects.toThrow(err);
+    await act(async () => {
+      await expect(result.current.mutate({ name: 'Bob' })).rejects.toBe('fail');
+    });
 
     expect(result.current.isLoading).toBe(false);
-    expect(mockCaptureException).toHaveBeenCalledWith(err, {
+    expect(mockCaptureException).toHaveBeenCalledWith('fail', {
       mutation: 'unknown',
       args: { name: 'Bob' },
     });
@@ -94,10 +88,10 @@ describe('generateUseMutationHook', () => {
       .mockImplementationOnce(() => new Promise((resolve) => setTimeout(() => resolve(false), 50)));
     mockUseMutation.mockReturnValue(mutationImpl);
 
-    const { result } = renderHook(() => useUpdateUser());
+    const { result } = await renderHook(() => useUpdateUser());
 
     // Start two mutations concurrently
-    act(() => {
+    await act(() => {
       result.current.mutate({ name: 'Alice' });
       result.current.mutate({ name: 'Bob' });
     });
@@ -115,20 +109,20 @@ describe('generateUseMutationHook', () => {
     });
   });
 
-  it('maintains isLoading state correctly when component unmounts', () => {
+  it('maintains isLoading state correctly when component unmounts', async () => {
     const mutationImpl = jest.fn().mockReturnValue(new Promise(() => {})); // Never resolves
     mockUseMutation.mockReturnValueOnce(mutationImpl);
 
-    const { result, unmount } = renderHook(() => useUpdateUser());
+    const { result, unmount } = await renderHook(() => useUpdateUser());
 
-    act(() => {
+    await act(() => {
       result.current.mutate({ name: 'Alice' });
     });
 
     expect(result.current.isLoading).toBe(true);
 
     // Unmount while mutation is in progress
-    unmount();
+    await unmount();
 
     // Should not throw or cause issues
     expect(mutationImpl).toHaveBeenCalledWith({ name: 'Alice' });

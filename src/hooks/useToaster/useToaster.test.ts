@@ -6,16 +6,16 @@ import { useToaster } from './useToaster';
 describe('useToaster', () => {
   const toastSpy = jest.spyOn(toaster, 'toast');
 
-  it('should display toast - minimum config', () => {
-    const { result } = renderHook(() => useToaster());
+  it('should display toast - minimum config', async () => {
+    const { result } = await renderHook(() => useToaster());
 
     result.current.toast('Test toast');
 
     expect(toastSpy).toHaveBeenCalledWith({ title: 'Test toast', haptic: 'none', preset: 'none', from: 'top' });
   });
 
-  it('should display toast - full config', () => {
-    const { result } = renderHook(() => useToaster());
+  it('should display toast - full config', async () => {
+    const { result } = await renderHook(() => useToaster());
 
     result.current.toast('Test toast', { message: 'Toast message', intent: 'error', from: 'bottom' });
 
@@ -33,11 +33,11 @@ describe('useToaster', () => {
     { intent: 'success', expectedPreset: 'done' },
     { intent: 'warning', expectedPreset: 'error' },
     { intent: 'none', expectedPreset: 'none' },
-  ] as const)('should display toast - intent=$intent -> expected preset = $expectedPreset', ({
+  ] as const)('should display toast - intent=$intent -> expected preset = $expectedPreset', async ({
     intent,
     expectedPreset,
   }) => {
-    const { result } = renderHook(() => useToaster());
+    const { result } = await renderHook(() => useToaster());
 
     result.current.toast('Test toast', { message: 'Toast message', intent, from: 'bottom' });
 

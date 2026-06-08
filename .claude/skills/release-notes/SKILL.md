@@ -36,11 +36,13 @@ Write two versions — **English** and **Slovenian** — for App Store and Googl
 
 **Tone and style rules** (match exactly):
 - No emojis whatsoever
-- Dry, understated, slightly deadpan humour
+- Dry, understated, slightly deadpan humour — with a touch of fun
 - Short punchy bullet points for changes
 - Wrap with a one-line opener and a one-line closer
 - If all changes are internal/invisible to users, lean into that — acknowledge nothing changed visibly, with quiet confidence
 - Never use marketing language or hype
+- Never mention specific platforms (iOS, Android) — notes are shared across both stores
+- When describing bug fixes, **never frame them as the team's fault or as failures** — bugs are external villains that were defeated, not mistakes that were admitted. Keep the tone playful and confident, never apologetic
 
 **Example (English):**
 ```

@@ -49,8 +49,8 @@ describe('Create Account Screen', () => {
     jest.clearAllMocks();
   });
 
-  it('should render create account screen elements', () => {
-    render(<RestoreAccountScreen />);
+  it('should render create account screen elements', async () => {
+    await render(<RestoreAccountScreen />);
 
     expect(screen.queryByText('Obnovi svoj profil')).toBeOnTheScreen();
     expect(screen.queryByText('Vnesi podatke obstoječega profila.')).toBeOnTheScreen();
@@ -63,13 +63,13 @@ describe('Create Account Screen', () => {
   });
 
   it('should reject account creation if inputted id is empty', async () => {
-    render(<RestoreAccountScreen />);
+    await render(<RestoreAccountScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('ID profila'), '');
-    fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), 'vzdevek');
+    await fireEvent.changeText(screen.getByPlaceholderText('ID profila'), '');
+    await fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), 'vzdevek');
     expect(screen.getByRole('button', { name: 'Obnovi profil' })).not.toBeDisabled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Obnovi profil' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Obnovi profil' }));
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Obnovi profil' })).toBeDisabled();
@@ -77,7 +77,7 @@ describe('Create Account Screen', () => {
 
     expect(screen.queryByText('Polje je obvezno.')).toBeOnTheScreen();
 
-    fireEvent.changeText(screen.getByPlaceholderText('ID profila'), 'asd785asd65a4s67');
+    await fireEvent.changeText(screen.getByPlaceholderText('ID profila'), 'asd785asd65a4s67');
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Obnovi profil' })).not.toBeDisabled();
@@ -85,13 +85,13 @@ describe('Create Account Screen', () => {
   });
 
   it('should reject account creation if inputted nickname is empty', async () => {
-    render(<RestoreAccountScreen />);
+    await render(<RestoreAccountScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('ID profila'), 'asd785asd65a4s67');
-    fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), '');
+    await fireEvent.changeText(screen.getByPlaceholderText('ID profila'), 'asd785asd65a4s67');
+    await fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), '');
     expect(screen.getByRole('button', { name: 'Obnovi profil' })).not.toBeDisabled();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Obnovi profil' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Obnovi profil' }));
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Obnovi profil' })).toBeDisabled();
@@ -99,7 +99,7 @@ describe('Create Account Screen', () => {
 
     expect(screen.queryByText('Polje je obvezno.')).toBeOnTheScreen();
 
-    fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), 'vzdevek');
+    await fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), 'vzdevek');
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Obnovi profil' })).not.toBeDisabled();
@@ -108,12 +108,12 @@ describe('Create Account Screen', () => {
 
   it('should trigger validate account info and reject account restoration if request is not successful', async () => {
     mockValidateUserAccount.mockRejectedValue(new Error('Nope'));
-    render(<RestoreAccountScreen />);
+    await render(<RestoreAccountScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('ID profila'), 'asd785asd65a4s67');
-    fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), 'Vzdevek');
+    await fireEvent.changeText(screen.getByPlaceholderText('ID profila'), 'asd785asd65a4s67');
+    await fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), 'Vzdevek');
 
-    fireEvent.press(screen.getByRole('button', { name: 'Obnovi profil' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Obnovi profil' }));
 
     await waitFor(() => {
       expect(mockValidateUserAccount).toHaveBeenCalledWith({ id: 'asd785asd65a4s67', nickname: 'Vzdevek' });
@@ -128,12 +128,12 @@ describe('Create Account Screen', () => {
     null,
   ])('should trigger validate account info and reject account restoration if response does not include user id (response = %p)', async (response) => {
     mockValidateUserAccount.mockResolvedValue(response);
-    render(<RestoreAccountScreen />);
+    await render(<RestoreAccountScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('ID profila'), 'asd785asd65a4s67');
-    fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), 'Vzdevek');
+    await fireEvent.changeText(screen.getByPlaceholderText('ID profila'), 'asd785asd65a4s67');
+    await fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), 'Vzdevek');
 
-    fireEvent.press(screen.getByRole('button', { name: 'Obnovi profil' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Obnovi profil' }));
 
     await waitFor(() => {
       expect(mockValidateUserAccount).toHaveBeenCalledWith({ id: 'asd785asd65a4s67', nickname: 'Vzdevek' });
@@ -145,12 +145,12 @@ describe('Create Account Screen', () => {
 
   it('should trigger validate account info and restore user account when response includes user id', async () => {
     mockValidateUserAccount.mockResolvedValue(testUser1);
-    render(<RestoreAccountScreen />);
+    await render(<RestoreAccountScreen />);
 
-    fireEvent.changeText(screen.getByPlaceholderText('ID profila'), testUser1._id);
-    fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), 'Vzdevek');
+    await fireEvent.changeText(screen.getByPlaceholderText('ID profila'), testUser1._id);
+    await fireEvent.changeText(screen.getByPlaceholderText('Vzdevek profila'), 'Vzdevek');
 
-    fireEvent.press(screen.getByRole('button', { name: 'Obnovi profil' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Obnovi profil' }));
 
     await waitFor(() => {
       expect(mockValidateUserAccount).toHaveBeenCalledWith({ id: testUser1._id, nickname: 'Vzdevek' });

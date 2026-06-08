@@ -81,24 +81,24 @@ describe('useTrainingPuzzle', () => {
     jest.clearAllMocks();
   });
 
-  it('should trigger puzzle query with userId param', () => {
-    renderHook(() => useTrainingPuzzle());
+  it('should trigger puzzle query with userId param', async () => {
+    await renderHook(() => useTrainingPuzzle());
 
     expect(useActiveTrainingPuzzleQuerySpy).toHaveBeenCalledWith({ userId: testUser1._id });
   });
 
-  it('should trigger puzzle query with "skip" param when use data is not available', () => {
+  it('should trigger puzzle query with "skip" param when use data is not available', async () => {
     useUserSpy.mockReturnValue({ user: null });
-    renderHook(() => useTrainingPuzzle());
+    await renderHook(() => useTrainingPuzzle());
 
     expect(useActiveTrainingPuzzleQuerySpy).toHaveBeenCalledWith('skip');
   });
 
-  it('should trigger attempts query with userId and puzzleId params', () => {
+  it('should trigger attempts query with userId and puzzleId params', async () => {
     useUserSpy.mockReturnValue({ user: testUser1 });
     useActiveTrainingPuzzleQuerySpy.mockReturnValue({ data: testTrainingPuzzle1 });
 
-    renderHook(() => useTrainingPuzzle());
+    await renderHook(() => useTrainingPuzzle());
 
     expect(usePuzzleAttemptsQuerySpy).toHaveBeenCalledWith({
       userId: testUser1._id,
@@ -109,11 +109,11 @@ describe('useTrainingPuzzle', () => {
   it.each([
     { desc: 'user data is not available', user: null, puzzle: testTrainingPuzzle1 },
     { desc: 'puzzle data is not available', user: testUser1, puzzle: null },
-  ])('should trigger attempts query with "skip" param when $desc', ({ user, puzzle }) => {
+  ])('should trigger attempts query with "skip" param when $desc', async ({ user, puzzle }) => {
     useUserSpy.mockReturnValue({ user });
     useActiveTrainingPuzzleQuerySpy.mockReturnValue({ data: puzzle });
 
-    renderHook(() => useTrainingPuzzle());
+    await renderHook(() => useTrainingPuzzle());
 
     expect(usePuzzleAttemptsQuerySpy).toHaveBeenCalledWith('skip');
   });
@@ -122,7 +122,7 @@ describe('useTrainingPuzzle', () => {
     mockCreateTrainingPuzzle.mockResolvedValue('createdPuzzleId');
     useActiveTrainingPuzzleQuerySpy.mockReturnValue({ data: null });
 
-    renderHook(() => useTrainingPuzzle());
+    await renderHook(() => useTrainingPuzzle());
 
     expect(mockCreateTrainingPuzzle).toHaveBeenCalledWith({ userId: testUser1._id });
 
@@ -141,7 +141,7 @@ describe('useTrainingPuzzle', () => {
     mockCreateTrainingPuzzle.mockRejectedValue(new Error('Ups'));
     useActiveTrainingPuzzleQuerySpy.mockReturnValue({ data: null });
 
-    renderHook(() => useTrainingPuzzle());
+    await renderHook(() => useTrainingPuzzle());
 
     expect(mockCreateTrainingPuzzle).toHaveBeenCalledWith({ userId: testUser1._id });
 
@@ -161,17 +161,17 @@ describe('useTrainingPuzzle', () => {
     useCreateTrainingPuzzleMutationSpy.mockReturnValue({ mutate: mockCreateTrainingPuzzle, isLoading: isCreating });
     useActiveTrainingPuzzleQuerySpy.mockReturnValue({ data: puzzle });
 
-    renderHook(() => useTrainingPuzzle());
+    await renderHook(() => useTrainingPuzzle());
 
     expect(mockCreateTrainingPuzzle).not.toHaveBeenCalled();
   });
 
-  it('should set isSolved=true when last puzzle attempt is correct', () => {
+  it('should set isSolved=true when last puzzle attempt is correct', async () => {
     usePuzzleAttemptsQuerySpy.mockReturnValue({
       data: [testIncorrectPuzzleGuessAttempt1, testCorrectPuzzleGuessAttempt1],
     });
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
     expect(result.current.isSolved).toBe(true);
   });
@@ -179,34 +179,34 @@ describe('useTrainingPuzzle', () => {
   it.each([
     { desc: 'attempts data is not available', attempts: undefined },
     { desc: 'last attempts is not correct', attempts: [testIncorrectPuzzleGuessAttempt1] },
-  ])('should set isSolved=false when $desc', ({ attempts }) => {
+  ])('should set isSolved=false when $desc', async ({ attempts }) => {
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
     expect(result.current.isSolved).toBe(false);
   });
 
-  it('should set isFailed=true when length of attempts is 6 and last attempts is not correct', () => {
+  it('should set isFailed=true when length of attempts is 6 and last attempts is not correct', async () => {
     const attempts = new Array(6).fill(null).map((_, idx) => ({
       ...testIncorrectPuzzleGuessAttempt1,
       _id: `incorrectAttempt${idx}` as Id<'puzzleGuessAttempts'>,
     }));
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
     expect(result.current.isFailed).toBe(true);
   });
 
-  it('should set isFailed=false when length of attempts is 6 and last attempts is correct', () => {
+  it('should set isFailed=false when length of attempts is 6 and last attempts is correct', async () => {
     const incorrectAttempts = new Array(5).fill(null).map((_, idx) => ({
       ...testIncorrectPuzzleGuessAttempt1,
       _id: `incorrectAttempt${idx}` as Id<'puzzleGuessAttempts'>,
     }));
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: [...incorrectAttempts, testCorrectPuzzleGuessAttempt1] });
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
     expect(result.current.isFailed).toBe(false);
   });
@@ -214,10 +214,10 @@ describe('useTrainingPuzzle', () => {
   it.each([
     { desc: 'attempts data is not available', attempts: undefined },
     { desc: 'attempts length is not 6', attempts: [testIncorrectPuzzleGuessAttempt1] },
-  ])('should set isFailed=false when $desc', ({ attempts }) => {
+  ])('should set isFailed=false when $desc', async ({ attempts }) => {
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
     expect(result.current.isFailed).toBe(false);
   });
@@ -234,10 +234,10 @@ describe('useTrainingPuzzle', () => {
         _id: `incorrectAttempt${idx}` as Id<'puzzleGuessAttempts'>,
       })),
     },
-  ])('should set isDone=true when $desc', ({ attempts }) => {
+  ])('should set isDone=true when $desc', async ({ attempts }) => {
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
     expect(result.current.isDone).toBe(true);
   });
@@ -245,10 +245,10 @@ describe('useTrainingPuzzle', () => {
   it.each([
     { desc: 'attempts data is not available', attempts: undefined },
     { desc: 'attempts length is not 6', attempts: [testIncorrectPuzzleGuessAttempt1] },
-  ])('should set isDone=false when $desc', ({ attempts }) => {
+  ])('should set isDone=false when $desc', async ({ attempts }) => {
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
     expect(result.current.isDone).toBe(false);
   });
@@ -257,9 +257,9 @@ describe('useTrainingPuzzle', () => {
     useActiveTrainingPuzzleQuerySpy.mockReturnValue({ data: testTrainingPuzzle1 });
     mockMarkPuzzleAsSolved.mockResolvedValue(null);
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onMarkAsSolved();
     });
 
@@ -280,9 +280,9 @@ describe('useTrainingPuzzle', () => {
     useActiveTrainingPuzzleQuerySpy.mockReturnValue({ data: testTrainingPuzzle1 });
     mockCreatePuzzleGuessAttempt.mockResolvedValue({ isCorrect: false });
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onSubmitAttempt('shake', 1);
     });
 
@@ -311,9 +311,9 @@ describe('useTrainingPuzzle', () => {
     useActiveTrainingPuzzleQuerySpy.mockReturnValue({ data: testTrainingPuzzle1 });
     mockCreatePuzzleGuessAttempt.mockResolvedValue({ isCorrect: true });
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onSubmitAttempt('shake', 1);
     });
 
@@ -342,9 +342,9 @@ describe('useTrainingPuzzle', () => {
     useActiveTrainingPuzzleQuerySpy.mockReturnValue({ data: testTrainingPuzzle1 });
     mockCreatePuzzleGuessAttempt.mockRejectedValue(new Error('Ups'));
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onSubmitAttempt('shake', 1);
     });
 
@@ -363,14 +363,14 @@ describe('useTrainingPuzzle', () => {
     });
   });
 
-  it('should display share context menu on onShareMessage trigger when attempts data is available - isFailed=false', () => {
+  it('should display share context menu on onShareMessage trigger when attempts data is available - isFailed=false', async () => {
     usePuzzleAttemptsQuerySpy.mockReturnValue({
       data: [testIncorrectPuzzleGuessAttempt1, testCorrectPuzzleGuessAttempt1],
     });
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onShareResults();
     });
 
@@ -379,16 +379,16 @@ describe('useTrainingPuzzle', () => {
     });
   });
 
-  it('should display share context menu on onShareMessage trigger when attempts data is available - isFailed=true', () => {
+  it('should display share context menu on onShareMessage trigger when attempts data is available - isFailed=true', async () => {
     const attempts = new Array(6).fill(null).map((_, idx) => ({
       ...testIncorrectPuzzleGuessAttempt1,
       _id: `incorrectAttempt${idx}` as Id<'puzzleGuessAttempts'>,
     }));
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: attempts });
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onShareResults();
     });
 
@@ -397,12 +397,12 @@ describe('useTrainingPuzzle', () => {
     });
   });
 
-  it('should not display share context menu on onShareMessage trigger when attempts data is not available', () => {
+  it('should not display share context menu on onShareMessage trigger when attempts data is not available', async () => {
     usePuzzleAttemptsQuerySpy.mockReturnValue({ data: null });
 
-    const { result } = renderHook(() => useTrainingPuzzle());
+    const { result } = await renderHook(() => useTrainingPuzzle());
 
-    act(() => {
+    await act(() => {
       result.current.onShareResults();
     });
 

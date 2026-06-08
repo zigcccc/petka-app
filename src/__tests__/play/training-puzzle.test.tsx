@@ -48,10 +48,10 @@ describe('TrainingPuzzleScreen', () => {
     jest.clearAllMocks();
   });
 
-  it('should display loading indicator if there is no training puzzle data available - isCreating=false', () => {
+  it('should display loading indicator if there is no training puzzle data available - isCreating=false', async () => {
     useTrainingPuzzleSpy.mockReturnValue({ ...defaultTrainingPuzzleOptions, puzzle: null, isCreating: false });
 
-    render(<TrainingPuzzleScreen />);
+    await render(<TrainingPuzzleScreen />);
 
     expect(screen.queryByText('Iščem aktivno igro...')).toBeOnTheScreen();
 
@@ -59,10 +59,10 @@ describe('TrainingPuzzleScreen', () => {
     expect(screen.queryAllByTestId(/^guess-grid--row-\d+$/).length).toBe(0);
   });
 
-  it('should display loading indicator if there is no training puzzle data available - isCreating=true', () => {
+  it('should display loading indicator if there is no training puzzle data available - isCreating=true', async () => {
     useTrainingPuzzleSpy.mockReturnValue({ ...defaultTrainingPuzzleOptions, puzzle: null, isCreating: true });
 
-    render(<TrainingPuzzleScreen />);
+    await render(<TrainingPuzzleScreen />);
 
     expect(screen.queryByText('Ustvarjam novo igro...')).toBeOnTheScreen();
 
@@ -70,28 +70,28 @@ describe('TrainingPuzzleScreen', () => {
     expect(screen.queryAllByTestId(/^guess-grid--row-\d+$/).length).toBe(0);
   });
 
-  it('should navigate to puzzle solved screen and set navigation options with header right element when puzzle is done', () => {
+  it('should navigate to puzzle solved screen and set navigation options with header right element when puzzle is done', async () => {
     useTrainingPuzzleSpy.mockReturnValue({ ...defaultTrainingPuzzleOptions, isDone: true });
 
-    render(<TrainingPuzzleScreen />);
+    await render(<TrainingPuzzleScreen />);
 
     expect(mockNavigate).toHaveBeenCalledWith('/play/training-puzzle-solved');
     expect(mockSetNavigationOptions).toHaveBeenCalledWith({ headerRight: expect.any(Function) });
   });
 
-  it('should not navigate to puzzle solved screen and set navigation options with header right element set to null when puzzle is not solved', () => {
+  it('should not navigate to puzzle solved screen and set navigation options with header right element set to null when puzzle is not solved', async () => {
     useTrainingPuzzleSpy.mockReturnValue({ ...defaultTrainingPuzzleOptions, isDone: false });
 
-    render(<TrainingPuzzleScreen />);
+    await render(<TrainingPuzzleScreen />);
 
     expect(mockNavigate).not.toHaveBeenCalled();
     expect(mockSetNavigationOptions).toHaveBeenCalledWith({ headerRight: null });
   });
 
-  it('should render puzzle guess grid and keyboard when puzzle data is available', () => {
+  it('should render puzzle guess grid and keyboard when puzzle data is available', async () => {
     useTrainingPuzzleSpy.mockReturnValue({ ...defaultTrainingPuzzleOptions, puzzle: testTrainingPuzzle1 });
 
-    render(<TrainingPuzzleScreen />);
+    await render(<TrainingPuzzleScreen />);
 
     expect(screen.getAllByTestId(/^guess-grid--row-\d+$/).length).toBe(6);
     expect(screen.getAllByTestId(/^keyboard-key--[A-Za-z]+$/).length).toBeGreaterThan(0);

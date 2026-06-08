@@ -5,8 +5,8 @@ import { RadioInputContext, useRadioInputContext } from './RadioInput.context';
 import type { RadioInputContextProps } from './RadioInput.types';
 
 describe('RadioInput', () => {
-  it('renders all items with separators between them', () => {
-    render(
+  it('renders all items with separators between them', async () => {
+    await render(
       <RadioInput onChange={jest.fn()} value="first">
         <RadioInput.Item label="First" value="first" />
         <RadioInput.Item label="Second" value="second" />
@@ -24,8 +24,8 @@ describe('RadioInput', () => {
     expect(screen.getByTestId('radio-input-separator--1')).toBeOnTheScreen();
   });
 
-  it('marks the selected item with a check icon and semibold text', () => {
-    render(
+  it('marks the selected item with a check icon and semibold text', async () => {
+    await render(
       <RadioInput onChange={jest.fn()} value="first">
         <RadioInput.Item label="First" value="first" />
         <RadioInput.Item label="Second" value="second" />
@@ -42,23 +42,23 @@ describe('RadioInput', () => {
     ).toBeOnTheScreen();
   });
 
-  it('calls onChange with correct value when item is pressed', () => {
+  it('calls onChange with correct value when item is pressed', async () => {
     const handleChange = jest.fn();
 
-    render(
+    await render(
       <RadioInput onChange={handleChange} value="first">
         <RadioInput.Item label="First" value="first" />
         <RadioInput.Item label="Second" value="second" />
       </RadioInput>
     );
 
-    fireEvent.press(screen.getByRole('radio', { name: 'Second' }));
+    await fireEvent.press(screen.getByRole('radio', { name: 'Second' }));
 
     expect(handleChange).toHaveBeenCalledWith('second');
   });
 
-  it('updates selection visually when value changes', () => {
-    const { rerender } = render(
+  it('updates selection visually when value changes', async () => {
+    const { rerender } = await render(
       <RadioInput onChange={jest.fn()} value="first">
         <RadioInput.Item label="First" value="first" />
         <RadioInput.Item label="Second" value="second" />
@@ -69,7 +69,7 @@ describe('RadioInput', () => {
     expect(screen.getByRole('radio', { name: 'First' }).props.accessibilityState.selected).toBe(true);
 
     // Change selection
-    rerender(
+    await rerender(
       <RadioInput onChange={jest.fn()} value="second">
         <RadioInput.Item label="First" value="first" />
         <RadioInput.Item label="Second" value="second" />
@@ -84,13 +84,13 @@ describe('RadioInput', () => {
 });
 
 describe('useRadioInputContext', () => {
-  it('returns the context value when used inside the provider', () => {
+  it('returns the context value when used inside the provider', async () => {
     const mockContext: RadioInputContextProps = {
       value: 'test',
       onChange: jest.fn(),
     };
 
-    const { result } = renderHook(() => useRadioInputContext(), {
+    const { result } = await renderHook(() => useRadioInputContext(), {
       wrapper: ({ children }) => (
         <RadioInputContext.Provider value={mockContext}>{children}</RadioInputContext.Provider>
       ),
@@ -100,8 +100,8 @@ describe('useRadioInputContext', () => {
   });
 
   it('throws an error when used outside the provider', () => {
-    expect(() => {
-      renderHook(() => useRadioInputContext());
-    }).toThrow('useRadioInputContext hook must be used inside of the <RadioInput /> component.');
+    expect(async () => {
+      await renderHook(() => useRadioInputContext());
+    }).rejects.toThrow('useRadioInputContext hook must be used inside of the <RadioInput /> component.');
   });
 });
