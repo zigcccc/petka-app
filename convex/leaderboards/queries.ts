@@ -5,12 +5,14 @@ import { z } from 'zod';
 
 import { internal } from '../_generated/api';
 import type { DataModel, Id } from '../_generated/dataModel';
+import { leaderboardEntryModel } from '../leaderboardEntries/model';
 import { generateRandomString, weekBounds, windowAround } from '../shared/helpers';
 import { internalMutation, mutation, query } from '../shared/queries';
 import type { User } from '../users/models';
 import {
   createLeaderboardModel,
   type LeaderboardWithScores,
+  leaderboardModel,
   leaderboardRange,
   leaderboardType,
   updateLeaderboardModel,
@@ -53,12 +55,19 @@ export const list = query({
         })
         .collect();
 
-      const usersScoreMap = leaderboard.users
-        ? new Map(leaderboard.users.map((userId) => [userId, 0]))
-        : new Map([[normalizedUserId, 0]]);
+      const parsedLeaderboard = leaderboardModel.parse(leaderboard);
+
+      const usersScoreMap = new Map<Id<'users'>, number>(
+        parsedLeaderboard.users
+          ? parsedLeaderboard.users.map((uid) => [ctx.db.normalizeId('users', uid)!, 0])
+          : [[normalizedUserId, 0]]
+      );
 
       for (const entry of leaderboardEntries) {
-        usersScoreMap.set(entry.userId, (usersScoreMap.get(entry.userId) ?? 0) + entry.score);
+        const { userId: entryUserId, score: entryScore } = leaderboardEntryModel.parse(entry);
+        const normalizedEntryUserId = ctx.db.normalizeId('users', entryUserId);
+        if (!normalizedEntryUserId) continue;
+        usersScoreMap.set(normalizedEntryUserId, (usersScoreMap.get(normalizedEntryUserId) ?? 0) + entryScore);
       }
 
       const scoresToReport = Array.from(usersScoreMap.entries())
@@ -70,16 +79,14 @@ export const list = query({
           position: idx + 1,
         }));
 
-      const usersForScores = await Promise.all(
-        scoresToReport.map((score) => ctx.db.get(ctx.db.normalizeId('users', score.userId)!))
-      );
+      const usersForScores = await Promise.all(scoresToReport.map((score) => ctx.db.get(score.userId)));
       const usersById = new Map(usersForScores.filter((user) => !!user).map((user) => [user._id, user]));
 
       leaderboardsWithScores.push({
-        ...leaderboard,
+        ...parsedLeaderboard,
         scores: scoresToReport.map(({ userId, ...score }) => ({
           ...score,
-          user: usersById.get(userId as Id<'users'>)!,
+          user: usersById.get(userId)!,
         })),
       });
     }
@@ -135,7 +142,10 @@ export const readGlobalLeaderboard = query({
     };
 
     for (const entry of leaderboardEntries) {
-      usersScoreMap[entry.userId] = (usersScoreMap[entry.userId] ?? 0) + entry.score;
+      const { userId: entryUserId, score: entryScore } = leaderboardEntryModel.parse(entry);
+      const normalizedEntryUserId = ctx.db.normalizeId('users', entryUserId);
+      if (!normalizedEntryUserId) continue;
+      usersScoreMap[normalizedEntryUserId] = (usersScoreMap[normalizedEntryUserId] ?? 0) + entryScore;
     }
 
     const [topScore, ...scores] = Object.entries(usersScoreMap)
