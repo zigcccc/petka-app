@@ -9,7 +9,7 @@ module.exports = {
   },
   setupFiles: ['./jest.setup.tsx', 'react-native-unistyles/mocks', './src/styles/unistyles.ts'],
   transformIgnorePatterns: [
-    '/node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|@sentry/react-native|native-base|react-native-svg|lucide-react-native|convex-helpers|@convex-dev|convex|convex\\/react/|@gorhom/bottom-sheet)',
+    '/node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|@sentry/react-native|native-base|react-native-svg|lucide-react-native|convex-helpers|@convex-dev|convex|convex\\/react/|@gorhom/bottom-sheet|standard-navigation)',
     '/node_modules/react-native-reanimated/plugin/',
   ],
 };
