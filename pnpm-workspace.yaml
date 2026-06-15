@@ -9,6 +9,9 @@ allowBuilds:
 ignoredBuiltDependencies:
   - unrs-resolver
 
+minimumReleaseAgeExclude:
+  - fast-xml-parser@5.9.0
+
 nodeLinker: hoisted
 
 onlyBuiltDependencies:
