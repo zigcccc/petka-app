@@ -11,6 +11,23 @@ ignoredBuiltDependencies:
 
 minimumReleaseAgeExclude:
   - fast-xml-parser@5.9.0
+  - '@expo/cli@56.1.16'
+  - '@expo/config-plugins@56.0.9'
+  - '@expo/config-types@56.0.6'
+  - '@expo/inline-modules@0.0.12'
+  - '@expo/prebuild-config@56.0.16'
+  - expo-font@56.0.7
+  - expo-modules-autolinking@56.0.16
+  - expo-modules-core@56.0.17
+  - expo-modules-jsi@56.0.10
+  - expo@56.0.12
+  - '@expo/ui@56.0.18'
+  - expo-build-properties@56.0.19
+  - expo-notifications@56.0.18
+  - expo-router@56.2.11
+  - '@posthog/core@1.32.5'
+  - '@posthog/types@1.386.4'
+  - posthog-react-native@4.47.2
 
 nodeLinker: hoisted
 
