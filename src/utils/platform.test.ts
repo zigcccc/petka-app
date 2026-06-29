@@ -7,8 +7,8 @@ jest.mock('react-native', () => ({
 }));
 
 describe('getOsMajorVersion', () => {
-  beforeEach(() => {
-    jest.resetModules();
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('returns major version when Platform.Version is a string with dots', () => {
@@ -36,7 +36,9 @@ describe('getOsMajorVersion', () => {
       get: () => {
         throw new Error('Platform error');
       },
+      configurable: true,
     });
     expect(getOsMajorVersion()).toBe(0);
+    Object.defineProperty(Platform, 'Version', { value: undefined, configurable: true, writable: true });
   });
 });

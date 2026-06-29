@@ -28,6 +28,7 @@ minimumReleaseAgeExclude:
   - '@posthog/core@1.32.5'
   - '@posthog/types@1.386.4'
   - posthog-react-native@4.47.2
+  - lucide-react-native@1.22.0
 
 nodeLinker: hoisted
 
