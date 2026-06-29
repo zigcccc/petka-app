@@ -46,7 +46,7 @@ export function DailyPuzzleUsersPresence({ currentUserNickname, presence }: Read
         {onlineUsers.length > numItemsToDisplay && (
           <View style={styles.badge(numItemsToDisplay)}>
             <Text size="xs" style={styles.badgeText} weight="bold">
-              +{onlineUsers.length - numItemsToDisplay}
+              +{Math.min(onlineUsers.length - numItemsToDisplay, 99)}
             </Text>
           </View>
         )}
