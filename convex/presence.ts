@@ -21,9 +21,9 @@ export const list = query({
 });
 
 export const listRoom = query({
-  args: { roomId: v.string(), onlineOnly: v.boolean() },
+  args: { roomId: v.string(), onlineOnly: v.boolean(), limit: v.optional(v.number()) },
   async handler(ctx, args) {
-    return await presence.listRoom(ctx, args.roomId, args.onlineOnly);
+    return await presence.listRoom(ctx, args.roomId, args.onlineOnly, args.limit ?? 500);
   },
 });
 
