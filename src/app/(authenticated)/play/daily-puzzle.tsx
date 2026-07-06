@@ -58,6 +58,15 @@ function HeaderRightAction() {
   );
 }
 
+// Registers presence for the daily-puzzle room. Kept as its own component so the
+// heartbeat only runs while mounted — never with an empty nickname (which would
+// pile orphaned sessions onto a single presence row) and never after the puzzle
+// is solved.
+function PresenceHeartbeat({ nickname }: Readonly<{ nickname: string }>) {
+  usePresence(api.presence, 'daily-puzzle', nickname);
+  return null;
+}
+
 export default function DailyPuzzleScreen() {
   const { theme } = useUnistyles();
   const router = useRouter();
@@ -66,8 +75,6 @@ export default function DailyPuzzleScreen() {
   const { user } = useUser();
   const { attempts, puzzle, isLoading, isDone, onSubmitAttempt } = useDailyPuzzle();
   const { grid, onInput, isValidating, allCheckedLetters } = useGuessGrid({ attempts, onSubmitAttempt });
-
-  usePresence(api.presence, 'daily-puzzle', user?.nickname ?? '');
 
   useEffect(() => {
     if (isDone) {
@@ -98,6 +105,7 @@ export default function DailyPuzzleScreen() {
 
   return (
     <View style={styles.container}>
+      {user?.nickname && !isDone && <PresenceHeartbeat nickname={user.nickname} />}
       <View style={styles.content}>
         <GuessGrid attempts={attempts} grid={grid} isValidating={isValidating} />
       </View>
