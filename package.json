@@ -1,7 +1,7 @@
 {
   "name": "petka-app",
   "main": "index.ts",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "type": "module",
   "scripts": {
     "start": "expo start",
@@ -59,16 +59,16 @@
     "expo-tracking-transparency": "^56.0.5",
     "expo-updates": "~56.0.20",
     "expo-web-browser": "~56.0.5",
-    "lucide-react-native": "^1.22.0",
-    "posthog-react-native": "^4.53.3",
+    "lucide-react-native": "^1.23.0",
+    "posthog-react-native": "^4.54.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "react-hook-form": "^7.80.0",
+    "react-hook-form": "^7.81.0",
     "react-native": "0.85.3",
     "react-native-edge-to-edge": "1.7.0",
     "react-native-gesture-handler": "~2.31.2",
-    "react-native-mmkv": "^4.3.1",
-    "react-native-nitro-modules": "^0.35.9",
+    "react-native-mmkv": "^4.3.2",
+    "react-native-nitro-modules": "^0.36.1",
     "react-native-reanimated": "~4.3.1",
     "react-native-safe-area-context": "5.7.0",
     "react-native-screens": "~4.25.2",
@@ -84,7 +84,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
-    "@biomejs/biome": "2.5.1",
+    "@biomejs/biome": "2.5.2",
     "@sentry/cli": "^2.53.0",
     "@testing-library/react-native": "^14.0.1",
     "@types/jest": "^29.5.14",
@@ -101,5 +101,5 @@
     "typescript": "~6.0.3"
   },
   "private": true,
-  "packageManager": "pnpm@11.9.0"
+  "packageManager": "pnpm@11.10.0"
 }
