@@ -133,17 +133,18 @@ describe('DailyPuzzleScreen', () => {
     expect(screen.getAllByTestId(/^keyboard-key--[A-Za-z]+$/).length).toBeGreaterThan(0);
   });
 
-  it('should trigger user presence hook', async () => {
+  it('should trigger user presence hook with the nickname when user data is available', async () => {
+    useUserSpy.mockReturnValue({ user: testUser1 });
     await render(<DailyPuzzleScreen />);
 
     expect(usePresenceSpy).toHaveBeenCalledWith(api.presence, 'daily-puzzle', testUser1.nickname);
   });
 
-  it('should trigger user presence hook with empty string as a user id when user data is not available', async () => {
+  it('should not trigger user presence hook when user data is not available', async () => {
     useUserSpy.mockReturnValue({ user: null });
     await render(<DailyPuzzleScreen />);
 
-    expect(usePresenceSpy).toHaveBeenCalledWith(api.presence, 'daily-puzzle', '');
+    expect(usePresenceSpy).not.toHaveBeenCalled();
   });
 });
 
