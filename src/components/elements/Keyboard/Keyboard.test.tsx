@@ -78,13 +78,13 @@ describe('<Keyboard />', () => {
   it.each([
     { keyboardType: gameplayKeyboardType.enum.abcde, expectedFirstKey: 'a' },
     { keyboardType: gameplayKeyboardType.enum.qwerty, expectedFirstKey: 'e' },
-  ])('should render "$expectedFirstKey" as the first key when keyboard layout is $keyboardType', async ({
-    keyboardType,
-    expectedFirstKey,
-  }) => {
-    useGameplaySettingsSpy.mockReturnValue({ keyboardType });
-    await render(<Keyboard checkedLetters={[]} isDisabled={false} onKeyPress={() => {}} />);
+  ])(
+    'should render "$expectedFirstKey" as the first key when keyboard layout is $keyboardType',
+    async ({ keyboardType, expectedFirstKey }) => {
+      useGameplaySettingsSpy.mockReturnValue({ keyboardType });
+      await render(<Keyboard checkedLetters={[]} isDisabled={false} onKeyPress={() => {}} />);
 
-    expect(screen.getAllByTestId(/keyboard-key--*/)[0]).toHaveTextContent(expectedFirstKey);
-  });
+      expect(screen.getAllByTestId(/keyboard-key--*/)[0]).toHaveTextContent(expectedFirstKey);
+    }
+  );
 });

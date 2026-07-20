@@ -137,17 +137,16 @@ describe('Home screen', () => {
     expect(screen.queryByText('1 uporabnik igra dnevni izziv 🧠')).toBeOnTheScreen();
   });
 
-  it.each([
-    undefined,
-    [],
-    [{ userId: 'onlineUserId', online: false }],
-  ])('should not render currenty online users playing daily puzzle if there are not any (users=%s)', async (onlineUsers) => {
-    useDailyPuzzlePresenceListSpy.mockReturnValue(onlineUsers);
+  it.each([undefined, [], [{ userId: 'onlineUserId', online: false }]])(
+    'should not render currenty online users playing daily puzzle if there are not any (users=%s)',
+    async (onlineUsers) => {
+      useDailyPuzzlePresenceListSpy.mockReturnValue(onlineUsers);
 
-    await render(<HomeScreen />);
+      await render(<HomeScreen />);
 
-    expect(screen.queryByText('dnevni izziv 🧠', { exact: false })).not.toBeOnTheScreen();
-  });
+      expect(screen.queryByText('dnevni izziv 🧠', { exact: false })).not.toBeOnTheScreen();
+    }
+  );
 
   it('should not render currenty online users playing daily puzzle if the only current user data is not available', async () => {
     useUserSpy.mockReturnValue({ user: null });

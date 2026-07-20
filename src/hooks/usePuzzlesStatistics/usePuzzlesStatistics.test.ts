@@ -49,17 +49,17 @@ describe('usePuzzleStatistics', () => {
     { isLoading: true, isNotFound: false },
     { isLoading: false, isNotFound: true },
     { isLoading: true, isNotFound: true },
-  ])('should set isLoading=true and data=null when query.isLoading=$isLoading and query.isNotFound=$isNotFound', async ({
-    isLoading,
-    isNotFound,
-  }) => {
-    usePuzzlesStatisticsQuerySpy.mockReturnValue({ data: testPuzzleStatistics1, isLoading, isNotFound });
+  ])(
+    'should set isLoading=true and data=null when query.isLoading=$isLoading and query.isNotFound=$isNotFound',
+    async ({ isLoading, isNotFound }) => {
+      usePuzzlesStatisticsQuerySpy.mockReturnValue({ data: testPuzzleStatistics1, isLoading, isNotFound });
 
-    const { result } = await renderHook(() => usePuzzleStatistics(puzzleType.enum.daily));
+      const { result } = await renderHook(() => usePuzzleStatistics(puzzleType.enum.daily));
 
-    expect(result.current.isLoading).toBe(true);
-    expect(result.current.data).toBe(null);
-  });
+      expect(result.current.isLoading).toBe(true);
+      expect(result.current.data).toBe(null);
+    }
+  );
 
   it('should set isLoading=false and data to query data when query.isLoading=false and query.isNotFound=false', async () => {
     usePuzzlesStatisticsQuerySpy.mockReturnValue({ data: testPuzzleStatistics1, isLoading: false, isNotFound: false });

@@ -174,42 +174,41 @@ describe('Settings screen', () => {
     });
   });
 
-  it.each([
-    null,
-    { hasToken: false },
-  ])('should render the "Toggle push notifications" switch with value=false when status=%s', async (status) => {
-    usePushNotificationsSpy.mockReturnValue({
-      status,
-      toggle: mockTogglePushNotifications,
-      systemNotificationsEnabled: false,
-    });
+  it.each([null, { hasToken: false }])(
+    'should render the "Toggle push notifications" switch with value=false when status=%s',
+    async (status) => {
+      usePushNotificationsSpy.mockReturnValue({
+        status,
+        toggle: mockTogglePushNotifications,
+        systemNotificationsEnabled: false,
+      });
 
-    await render(<SettingsScreen />);
+      await render(<SettingsScreen />);
 
-    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
-    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
-      text: 'Off',
-    });
-  });
+      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
+      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
+        text: 'Off',
+      });
+    }
+  );
 
-  it.each([
-    null,
-    undefined,
-    false,
-  ])('should render the "Toggle push notifications" switch with value=false when systemNotificationsEnabled=%s', async (systemNotificationsEnabled) => {
-    usePushNotificationsSpy.mockReturnValue({
-      status: { hasToken: true },
-      toggle: mockTogglePushNotifications,
-      systemNotificationsEnabled,
-    });
+  it.each([null, undefined, false])(
+    'should render the "Toggle push notifications" switch with value=false when systemNotificationsEnabled=%s',
+    async (systemNotificationsEnabled) => {
+      usePushNotificationsSpy.mockReturnValue({
+        status: { hasToken: true },
+        toggle: mockTogglePushNotifications,
+        systemNotificationsEnabled,
+      });
 
-    await render(<SettingsScreen />);
+      await render(<SettingsScreen />);
 
-    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
-    expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
-      text: 'Off',
-    });
-  });
+      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveProp('value', false);
+      expect(screen.getByRole('switch', { name: 'Dovoli pošiljanje potisnih obvestil' })).toHaveAccessibilityValue({
+        text: 'Off',
+      });
+    }
+  );
 
   it('should trigger toggle push notifications action on switch press', async () => {
     await render(<SettingsScreen />);
