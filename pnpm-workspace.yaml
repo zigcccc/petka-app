@@ -10,10 +10,7 @@ ignoredBuiltDependencies:
   - unrs-resolver
 
 minimumReleaseAgeExclude:
-  - convex-helpers@0.1.121
-  - '@posthog/core@1.46.4'
-  - '@posthog/types@1.400.0'
-  - posthog-react-native@4.61.4
+  - lucide-react-native@1.31.0
 
 nodeLinker: hoisted
 
