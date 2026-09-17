@@ -12,7 +12,8 @@ export const puzzleModel = getBaseDbModel('puzzles').extend({
   type: puzzleType,
   solution: z.string().min(5).max(5),
   creatorId: z.string().nullable(),
-  solvedBy: z.array(z.string()),
+  // Deprecated: no longer written. Kept optional until `unsetPuzzleSolvedBy` migration has run in prod, then remove.
+  solvedBy: z.array(z.string()).optional(),
   year: z.number(),
   month: z.number(),
   day: z.number(),

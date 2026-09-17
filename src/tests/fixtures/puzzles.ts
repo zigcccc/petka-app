@@ -11,7 +11,6 @@ export const testDailyPuzzle1: Puzzle = {
   month: 7,
   year: 2025,
   solution: 'cloth',
-  solvedBy: [],
   type: puzzleType.enum.daily,
 };
 
@@ -23,6 +22,5 @@ export const testTrainingPuzzle1: Puzzle = {
   month: 7,
   year: 2025,
   solution: 'steak',
-  solvedBy: [],
   type: puzzleType.enum.training,
 };

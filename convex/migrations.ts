@@ -8,6 +8,7 @@ export const run = migrations.runner();
 export const runAll = migrations.runner([
   internal.migrations.setDefaultNumberOfTimesUsedOnDictonaryEntry,
   internal.migrations.backfillLeaderboardEntriesRecordedAt,
+  internal.migrations.unsetPuzzleSolvedBy,
 ]);
 
 export const setDefaultNumberOfTimesUsedOnDictonaryEntry = migrations.define({
@@ -24,6 +25,17 @@ export const backfillLeaderboardEntriesRecordedAt = migrations.define({
   async migrateOne(ctx, doc) {
     if (!doc.recordedAt) {
       await ctx.db.patch(doc._id, { recordedAt: doc._creationTime });
+    }
+  },
+});
+
+// `solvedBy` grew by one user ID per solve, making the daily puzzle doc huge and re-firing every subscribed
+// `readActiveDailyPuzzle` on every solve. It is no longer written; drop it from existing docs.
+export const unsetPuzzleSolvedBy = migrations.define({
+  table: 'puzzles',
+  async migrateOne(ctx, doc) {
+    if (doc.solvedBy !== undefined) {
+      await ctx.db.patch(doc._id, { solvedBy: undefined });
     }
   },
 });

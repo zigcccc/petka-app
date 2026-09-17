@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { pickRandomWord } from '@/utils/words';
 
 import { isAttemptCorrect } from '../puzzleGuessAttempts/helpers';
-import { checkedLetterStatus } from '../puzzleGuessAttempts/models';
 import { paginationOptsValidator } from '../shared/models';
 import { mutation, query } from '../shared/queries';
 import { puzzleListItemModel, puzzlePublicModel, puzzleType } from './models';
@@ -60,13 +59,14 @@ export const list = query({
 
     return {
       ...puzzles,
-      page: puzzles.page.map((puzzle) =>
-        puzzleListItemModel.parse({
+      page: puzzles.page.map((puzzle) => {
+        const attempts = attemptsByPuzzleId.get(puzzle._id);
+        return puzzleListItemModel.parse({
           ...puzzle,
-          isSolvedByUser: puzzle.solvedBy.includes(normalizedUserId),
-          attempts: attemptsByPuzzleId.get(puzzle._id),
-        })
-      ),
+          isSolvedByUser: isAttemptCorrect(attempts?.at(-1)),
+          attempts,
+        });
+      }),
     };
   },
 });
@@ -113,6 +113,10 @@ export const readActiveDailyPuzzle = query({
   },
 });
 
+/**
+ * @deprecated Replaced by `userPuzzleStatistics.queries.readUserPuzzleStatistics` in 1.13.0. Kept for older
+ * clients, but served from the aggregated `userPuzzleStatistics` table instead of scanning every puzzle + attempt.
+ */
 export const readUserPuzzlesStatistics = query({
   args: { userId: z.string(), type: puzzleType },
   async handler(ctx, { userId, type }) {
@@ -122,68 +126,38 @@ export const readUserPuzzlesStatistics = query({
       throw new ConvexError({ message: 'Invalid user id provided.', code: 400 });
     }
 
-    const basePuzzlesQuery =
-      type === puzzleType.enum.daily
-        ? ctx.db.query('puzzles').withIndex('by_type', (q) => q.eq('type', type))
-        : ctx.db.query('puzzles').withIndex('by_type_creator', (q) => q.eq('type', type).eq('creatorId', userId));
+    const statistics = await ctx.db
+      .query('userPuzzleStatistics')
+      .withIndex('by_user_puzzle_type', (q) => q.eq('userId', normalizedUserId).eq('puzzleType', type))
+      .first();
 
-    const allPuzzles = await basePuzzlesQuery.order('desc').collect();
-    const allPuzzlesAttempts = await Promise.all(
-      allPuzzles.map((puzzle) =>
-        ctx.db
-          .query('puzzleGuessAttempts')
-          .withIndex('by_user_puzzle', (q) => q.eq('userId', normalizedUserId).eq('puzzleId', puzzle._id))
-          .order('asc')
-          .collect()
-      )
-    );
-    const startedPuzzleAttempts = allPuzzlesAttempts.filter((attempts) => attempts.length > 0);
-    const failedPuzzlesAttempts = allPuzzlesAttempts.filter(
-      (attempts) => attempts.length === 6 && !isAttemptCorrect(attempts.at(-1))
-    );
-    const numOfSolvedPuzzles = startedPuzzleAttempts.length - (failedPuzzlesAttempts?.length ?? 0);
-    const solvedPercentage = Math.floor((numOfSolvedPuzzles / startedPuzzleAttempts.length) * 100);
-
-    const attemptsDistribution: Record<number, number> = {
-      1: 0,
-      2: 0,
-      3: 0,
-      4: 0,
-      5: 0,
-      6: 0,
-    };
-
-    let currentStreak = 0;
-    const streaks = [];
-
-    for (const attempts of allPuzzlesAttempts) {
-      const numOfAttempts = attempts.length;
-      const lastAttempt = attempts.at(-1);
-      const isLastAttemptCorrect = lastAttempt?.checkedLetters.every(
-        (checkedLetter) => checkedLetter.status === checkedLetterStatus.enum.correct
-      );
-
-      if (isLastAttemptCorrect) {
-        currentStreak = currentStreak + 1;
-      } else {
-        streaks.push(currentStreak);
-        currentStreak = 0;
-      }
-
-      if (numOfAttempts > 0 && isLastAttemptCorrect) {
-        attemptsDistribution[numOfAttempts] = (attemptsDistribution[numOfAttempts] ?? 0) + 1;
-      }
+    if (!statistics) {
+      return {
+        attemptsDistribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 },
+        numberOfAllPuzzles: 0,
+        numberOfSolvedPuzzles: 0,
+        solvedPercentage: 0,
+        streak: 0,
+        maxStreak: 0,
+      };
     }
 
-    streaks.push(currentStreak);
+    const { distribution, totalPlayed, totalWon, currentStreak, maxStreak } = statistics;
 
     return {
-      attemptsDistribution,
-      numberOfAllPuzzles: startedPuzzleAttempts.length,
-      numberOfSolvedPuzzles: numOfSolvedPuzzles,
-      solvedPercentage,
-      streak: streaks[0],
-      maxStreak: Math.max(...streaks),
+      attemptsDistribution: {
+        1: distribution._1,
+        2: distribution._2,
+        3: distribution._3,
+        4: distribution._4,
+        5: distribution._5,
+        6: distribution._6,
+      },
+      numberOfAllPuzzles: totalPlayed,
+      numberOfSolvedPuzzles: totalWon,
+      solvedPercentage: totalPlayed > 0 ? Math.floor((totalWon / totalPlayed) * 100) : 0,
+      streak: currentStreak,
+      maxStreak,
     };
   },
 });
@@ -205,7 +179,6 @@ export const createTrainingPuzzle = mutation({
       type: puzzleType.enum.training,
       creatorId: userId,
       solution: word,
-      solvedBy: [],
       year: today.getFullYear(),
       month: today.getMonth() + 1,
       day: today.getDate(),
@@ -230,8 +203,6 @@ export const markAsSolved = mutation({
     if (!puzzle) {
       throw new ConvexError({ message: `Puzzle for id ${puzzleId} not found.`, code: 404 });
     }
-
-    await ctx.db.patch(normalizedPuzzleId, { solvedBy: [...puzzle.solvedBy, userId] });
 
     let userPuzzleStatistics = await ctx.db
       .query('userPuzzleStatistics')
@@ -283,6 +254,8 @@ export const markAsSolved = mutation({
     }
 
     if (puzzle.type === puzzleType.enum.daily) {
+      // The global leaderboard is no longer displayed, but its entries double as the "finished today's puzzle"
+      // record used by `sendReminderForDailyChallenge` (via `by_leaderboard_puzzle`), so keep writing them.
       const globalLeaderboard = await ctx.db
         .query('leaderboards')
         .withIndex('by_type', (q) => q.eq('type', 'global'))
