@@ -1,11 +1,10 @@
-import { usePresence } from '@convex-dev/presence/react-native';
 import { captureException } from '@sentry/react-native';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { useNavigation, useRouter } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
 
 import DailyPuzzleScreen, { ErrorBoundary } from '@/app/(authenticated)/play/daily-puzzle';
-import { api } from '@/convex/_generated/api';
+import { usePresenceHeartbeat } from '@/hooks/presence';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
 import { useUser } from '@/hooks/useUser';
 import { testDailyPuzzle1 } from '@/tests/fixtures/puzzles';
@@ -27,9 +26,9 @@ jest.mock('@/hooks/useDailyPuzzle', () => ({
   useDailyPuzzle: jest.fn().mockReturnValue({}),
 }));
 
-jest.mock('@convex-dev/presence/react-native', () => ({
-  ...jest.requireActual('@convex-dev/presence/react-native'),
-  usePresence: jest.fn().mockReturnValue({}),
+jest.mock('@/hooks/presence', () => ({
+  ...jest.requireActual('@/hooks/presence'),
+  usePresenceHeartbeat: jest.fn(),
 }));
 
 jest.mock('@/hooks/useUser', () => ({
@@ -51,7 +50,7 @@ describe('DailyPuzzleScreen', () => {
   const useNavigationSpy = useNavigation as jest.Mock;
   const useRouterSpy = useRouter as jest.Mock;
   const usePostHogSpy = usePostHog as jest.Mock;
-  const usePresenceSpy = usePresence as jest.Mock;
+  const usePresenceHeartbeatSpy = usePresenceHeartbeat as jest.Mock;
   const useUserSpy = useUser as jest.Mock;
 
   const defaultDailyPuzzleOptions = {
@@ -137,14 +136,14 @@ describe('DailyPuzzleScreen', () => {
     useUserSpy.mockReturnValue({ user: testUser1 });
     await render(<DailyPuzzleScreen />);
 
-    expect(usePresenceSpy).toHaveBeenCalledWith(api.presence, 'daily-puzzle', testUser1.nickname);
+    expect(usePresenceHeartbeatSpy).toHaveBeenCalledWith('daily-puzzle', testUser1.nickname);
   });
 
   it('should not trigger user presence hook when user data is not available', async () => {
     useUserSpy.mockReturnValue({ user: null });
     await render(<DailyPuzzleScreen />);
 
-    expect(usePresenceSpy).not.toHaveBeenCalled();
+    expect(usePresenceHeartbeatSpy).not.toHaveBeenCalled();
   });
 });
 

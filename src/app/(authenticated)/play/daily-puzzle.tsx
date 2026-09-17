@@ -1,4 +1,3 @@
-import { usePresence } from '@convex-dev/presence/react-native';
 import * as Sentry from '@sentry/react-native';
 import { type ErrorBoundaryProps, Link, useNavigation, useRouter } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
@@ -8,7 +7,7 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { GuessGrid, Keyboard, useGuessGrid } from '@/components/elements';
 import { Button, Text } from '@/components/ui';
-import { api } from '@/convex/_generated/api';
+import { usePresenceHeartbeat } from '@/hooks/presence';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
 import { useUser } from '@/hooks/useUser';
 import { getOsMajorVersion } from '@/utils/platform';
@@ -63,7 +62,7 @@ function HeaderRightAction() {
 // pile orphaned sessions onto a single presence row) and never after the puzzle
 // is solved.
 function PresenceHeartbeat({ nickname }: Readonly<{ nickname: string }>) {
-  usePresence(api.presence, 'daily-puzzle', nickname);
+  usePresenceHeartbeat('daily-puzzle', nickname);
   return null;
 }
 
