@@ -60,13 +60,14 @@ export const list = query({
 
     return {
       ...puzzles,
-      page: puzzles.page.map((puzzle) =>
-        puzzleListItemModel.parse({
+      page: puzzles.page.map((puzzle) => {
+        const attempts = attemptsByPuzzleId.get(puzzle._id);
+        return puzzleListItemModel.parse({
           ...puzzle,
-          isSolvedByUser: puzzle.solvedBy.includes(normalizedUserId),
-          attempts: attemptsByPuzzleId.get(puzzle._id),
-        })
-      ),
+          isSolvedByUser: isAttemptCorrect(attempts?.at(-1)),
+          attempts,
+        });
+      }),
     };
   },
 });
@@ -205,7 +206,6 @@ export const createTrainingPuzzle = mutation({
       type: puzzleType.enum.training,
       creatorId: userId,
       solution: word,
-      solvedBy: [],
       year: today.getFullYear(),
       month: today.getMonth() + 1,
       day: today.getDate(),
@@ -230,8 +230,6 @@ export const markAsSolved = mutation({
     if (!puzzle) {
       throw new ConvexError({ message: `Puzzle for id ${puzzleId} not found.`, code: 404 });
     }
-
-    await ctx.db.patch(normalizedPuzzleId, { solvedBy: [...puzzle.solvedBy, userId] });
 
     let userPuzzleStatistics = await ctx.db
       .query('userPuzzleStatistics')
@@ -283,6 +281,8 @@ export const markAsSolved = mutation({
     }
 
     if (puzzle.type === puzzleType.enum.daily) {
+      // The global leaderboard is no longer displayed, but its entries double as the "finished today's puzzle"
+      // record used by `sendReminderForDailyChallenge` (via `by_leaderboard_puzzle`), so keep writing them.
       const globalLeaderboard = await ctx.db
         .query('leaderboards')
         .withIndex('by_type', (q) => q.eq('type', 'global'))

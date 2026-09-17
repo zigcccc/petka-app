@@ -2,7 +2,9 @@ import { ConvexError } from 'convex/values';
 
 import { pickRandomWord } from '@/utils/words';
 
+import type { Id } from '../_generated/dataModel';
 import { internalMutation } from '../_generated/server';
+import { leaderboardType } from '../leaderboards/models';
 import { pushNotifications } from '../notifications/services';
 import { puzzleType } from './models';
 
@@ -24,7 +26,6 @@ export const createDailyPuzzle = internalMutation({
       type: puzzleType.enum.daily,
       creatorId: null,
       solution: word,
-      solvedBy: [],
       year: nextYear,
       month: nextMonth,
       day: nextDay,
@@ -58,12 +59,33 @@ export const sendReminderForDailyChallenge = internalMutation({
       throw new ConvexError({ message: 'Daily puzzle not found', code: 404 });
     }
 
-    const users = await ctx.db.query('users').collect();
-    const userIds = users.map((user) => user._id);
+    // Every finished daily puzzle (solved or failed) records a global leaderboard entry, so the entries for
+    // today's puzzle are exactly the users who don't need a reminder.
+    const globalLeaderboard = await ctx.db
+      .query('leaderboards')
+      .withIndex('by_type', (q) => q.eq('type', leaderboardType.enum.global))
+      .unique();
 
-    const idsToNotify = new Set(userIds).difference(new Set(puzzle.solvedBy));
+    if (!globalLeaderboard) {
+      throw new ConvexError({ message: 'Global leaderboard not found', code: 404 });
+    }
 
-    for (const userId of idsToNotify.values()) {
+    const finishedUserIds = new Set<Id<'users'>>();
+    const finishedEntriesQuery = ctx.db
+      .query('leaderboardEntries')
+      .withIndex('by_leaderboard_puzzle', (q) =>
+        q.eq('leaderboardId', globalLeaderboard._id).eq('puzzleId', puzzle._id)
+      );
+
+    for await (const entry of finishedEntriesQuery) {
+      finishedUserIds.add(entry.userId);
+    }
+
+    for await (const user of ctx.db.query('users')) {
+      const userId = user._id;
+
+      if (finishedUserIds.has(userId)) continue;
+
       const { hasToken } = await pushNotifications.getStatusForUser(ctx, { userId });
       if (hasToken) {
         await pushNotifications.sendPushNotification(ctx, {
