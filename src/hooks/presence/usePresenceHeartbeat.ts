@@ -65,6 +65,8 @@ export function usePresenceHeartbeat(roomId: string, userId: string, interval = 
   // A newer effect may adopt the same session when only `interval` changes.
   const activeSessionIdRef = useRef<string | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // A heartbeat that resolves after the app was backgrounded must not be kept alive.
+  const isAppBackgroundedRef = useRef(AppState.currentState === 'background');
 
   const heartbeat = useSingleFlight(useMutation(api.presence.heartbeat));
 
@@ -94,9 +96,20 @@ export function usePresenceHeartbeat(roomId: string, userId: string, interval = 
     };
 
     const sendHeartbeat = async () => {
-      const result = await heartbeat({ roomId, userId, sessionId, interval });
+      let result: Awaited<ReturnType<typeof heartbeat>>;
+      try {
+        result = await heartbeat({ roomId, userId, sessionId, interval });
+      } catch {
+        // Presence is best-effort; the next scheduled heartbeat retries.
+        return;
+      }
       if (canceled) {
         disconnectIfOrphaned(result.sessionToken);
+        return;
+      }
+      if (isAppBackgroundedRef.current) {
+        // The background handler ran while this request was in flight, so it had no token to disconnect.
+        fireAndForgetDisconnect(result.sessionToken);
         return;
       }
       sessionTokenRef.current = result.sessionToken;
@@ -107,9 +120,11 @@ export function usePresenceHeartbeat(roomId: string, userId: string, interval = 
 
     const subscription = AppState.addEventListener('change', (state) => {
       if (state === 'background') {
+        isAppBackgroundedRef.current = true;
         if (intervalRef.current) clearInterval(intervalRef.current);
         if (sessionTokenRef.current) fireAndForgetDisconnect(sessionTokenRef.current);
       } else if (state === 'active') {
+        isAppBackgroundedRef.current = false;
         void sendHeartbeat();
         // iOS can go inactive -> active without entering the background.
         if (intervalRef.current) clearInterval(intervalRef.current);
