@@ -60,25 +60,25 @@ export const sendReminderForDailyChallenge = internalMutation({
     }
 
     // Every finished daily puzzle (solved or failed) records a global leaderboard entry, so the entries for
-    // today's puzzle are exactly the users who don't need a reminder.
+    // today's puzzle are exactly the users who don't need a reminder. `markAsSolved` tolerates a missing global
+    // leaderboard (it just skips the entry), so do the same here and remind everyone rather than no one.
     const globalLeaderboard = await ctx.db
       .query('leaderboards')
       .withIndex('by_type', (q) => q.eq('type', leaderboardType.enum.global))
       .unique();
 
-    if (!globalLeaderboard) {
-      throw new ConvexError({ message: 'Global leaderboard not found', code: 404 });
-    }
-
     const finishedUserIds = new Set<Id<'users'>>();
-    const finishedEntriesQuery = ctx.db
-      .query('leaderboardEntries')
-      .withIndex('by_leaderboard_puzzle', (q) =>
-        q.eq('leaderboardId', globalLeaderboard._id).eq('puzzleId', puzzle._id)
-      );
 
-    for await (const entry of finishedEntriesQuery) {
-      finishedUserIds.add(entry.userId);
+    if (globalLeaderboard) {
+      const finishedEntriesQuery = ctx.db
+        .query('leaderboardEntries')
+        .withIndex('by_leaderboard_puzzle', (q) =>
+          q.eq('leaderboardId', globalLeaderboard._id).eq('puzzleId', puzzle._id)
+        );
+
+      for await (const entry of finishedEntriesQuery) {
+        finishedUserIds.add(entry.userId);
+      }
     }
 
     for await (const user of ctx.db.query('users')) {
