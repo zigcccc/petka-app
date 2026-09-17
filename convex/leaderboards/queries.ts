@@ -1,14 +1,12 @@
-import type { NamedTableInfo, Query } from 'convex/server';
 import { ConvexError } from 'convex/values';
 import { zid } from 'convex-helpers/server/zod4';
 import { z } from 'zod';
 
 import { internal } from '../_generated/api';
-import type { DataModel, Id } from '../_generated/dataModel';
+import type { Id } from '../_generated/dataModel';
 import { leaderboardEntryModel } from '../leaderboardEntries/model';
-import { generateRandomString, weekBounds, windowAround } from '../shared/helpers';
+import { generateRandomString, weekBounds } from '../shared/helpers';
 import { internalMutation, mutation, query } from '../shared/queries';
-import type { User } from '../users/models';
 import {
   createLeaderboardModel,
   type LeaderboardWithScores,
@@ -96,11 +94,12 @@ export const list = query({
 });
 
 /**
- * @deprecated Removed with version 1.1.40
+ * @deprecated Removed with version 1.1.40. Still called by older clients — the global leaderboard has >32k entries
+ * so scanning them exceeds the read limit. Returns an empty leaderboard instead.
  */
 export const readGlobalLeaderboard = query({
   args: { range: leaderboardRange, userId: z.string(), timestamp: z.number() },
-  async handler(ctx, { range, userId, timestamp }) {
+  async handler(ctx, { userId }) {
     const normalizedUserId = ctx.db.normalizeId('users', userId);
 
     if (!normalizedUserId) {
@@ -116,71 +115,7 @@ export const readGlobalLeaderboard = query({
       throw new ConvexError({ message: 'Global leaderboard not found.', code: 400 });
     }
 
-    let leaderboardEntriesBaseQuery: Query<NamedTableInfo<DataModel, 'leaderboardEntries'>>;
-
-    if (range === leaderboardRange.enum.weekly) {
-      const { lastMonday, nextSunday } = weekBounds(timestamp);
-
-      leaderboardEntriesBaseQuery = ctx.db
-        .query('leaderboardEntries')
-        .withIndex('by_leaderboard', (q) =>
-          q
-            .eq('leaderboardId', globalLeaderboard._id)
-            .gte('_creationTime', lastMonday.getTime())
-            .lte('_creationTime', nextSunday.getTime())
-        );
-    } else {
-      leaderboardEntriesBaseQuery = ctx.db
-        .query('leaderboardEntries')
-        .withIndex('by_leaderboard', (q) => q.eq('leaderboardId', globalLeaderboard._id));
-    }
-
-    const leaderboardEntries = await leaderboardEntriesBaseQuery.collect();
-
-    const usersScoreMap: Record<string, number> = {
-      [normalizedUserId]: 0,
-    };
-
-    for (const entry of leaderboardEntries) {
-      const { userId: entryUserId, score: entryScore } = leaderboardEntryModel.parse(entry);
-      const normalizedEntryUserId = ctx.db.normalizeId('users', entryUserId);
-      if (!normalizedEntryUserId) continue;
-      usersScoreMap[normalizedEntryUserId] = (usersScoreMap[normalizedEntryUserId] ?? 0) + entryScore;
-    }
-
-    const [topScore, ...scores] = Object.entries(usersScoreMap)
-      .sort((a, b) => b[1] - a[1])
-      .map(([userId, score], idx) => ({
-        userId,
-        score,
-        isForCurrentUser: userId === normalizedUserId,
-        position: idx + 1,
-      }));
-
-    const scoresToReport = windowAround(scores, (score) => score.isForCurrentUser);
-
-    if (topScore) {
-      scoresToReport.unshift(topScore);
-    }
-
-    const usersForScores = await Promise.all(
-      scoresToReport.map((score) => ctx.db.get(ctx.db.normalizeId('users', score.userId)!))
-    );
-    const usersMap = usersForScores.reduce(
-      (acc, user) => {
-        if (user) {
-          acc[user._id] = user;
-        }
-
-        return acc;
-      },
-      {} as Record<string, User>
-    );
-
-    return {
-      ...globalLeaderboard,
-      scores: scoresToReport.map(({ userId, ...score }) => ({ ...score, user: usersMap[userId] })),
-    };
+    return { ...globalLeaderboard, scores: [] };
   },
 });
 
