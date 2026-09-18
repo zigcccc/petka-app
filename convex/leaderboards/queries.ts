@@ -14,6 +14,7 @@ import {
 } from '../leaderboardMembers/helpers';
 import { generateRandomString, weekBounds } from '../shared/helpers';
 import { internalMutation, mutation, query } from '../shared/queries';
+import { userModel } from '../users/models';
 import {
   createLeaderboardModel,
   type LeaderboardWithScores,
@@ -75,24 +76,20 @@ export const list = query({
         }
       }
 
-      const scoresToReport = Array.from(usersScoreMap.entries())
-        .sort((a, b) => b[1] - a[1])
-        .map(([userId, score], idx) => ({
-          userId,
+      // Resolve users first so that a member whose account is gone doesn't leave a gap in the positions.
+      const usersForScores = await Promise.all(Array.from(usersScoreMap.keys(), (userId) => ctx.db.get(userId)));
+      const scores = usersForScores
+        .filter((user) => !!user)
+        .map((user) => ({ user: userModel.parse(user), score: usersScoreMap.get(user._id) ?? 0 }))
+        .sort((a, b) => b.score - a.score)
+        .map(({ user, score }, idx) => ({
+          user,
           score,
-          isForCurrentUser: userId === normalizedUserId,
+          isForCurrentUser: user._id === normalizedUserId,
           position: idx + 1,
         }));
 
-      const usersForScores = await Promise.all(scoresToReport.map((score) => ctx.db.get(score.userId)));
-      const usersById = new Map(usersForScores.filter((user) => !!user).map((user) => [user._id, user]));
-
-      leaderboardsWithScores.push({
-        ...leaderboardModel.parse(leaderboard),
-        scores: scoresToReport
-          .filter(({ userId }) => usersById.has(userId))
-          .map(({ userId, ...score }) => ({ ...score, user: usersById.get(userId)! })),
-      });
+      leaderboardsWithScores.push({ ...leaderboardModel.parse(leaderboard), scores });
     }
 
     return leaderboardsWithScores;
