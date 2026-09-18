@@ -4,6 +4,7 @@ import { z } from 'zod';
 
 import { pickRandomWord } from '@/utils/words';
 
+import { addScoreToMembership, listUserMemberships } from '../leaderboardMembers/helpers';
 import { isAttemptCorrect } from '../puzzleGuessAttempts/helpers';
 import { paginationOptsValidator } from '../shared/models';
 import { mutation, query } from '../shared/queries';
@@ -260,24 +261,28 @@ export const markAsSolved = mutation({
         .query('leaderboards')
         .withIndex('by_type', (q) => q.eq('type', 'global'))
         .unique();
-      const privateLeaderboards = await ctx.db
-        .query('leaderboards')
-        .withIndex('by_type', (q) => q.eq('type', 'private'))
-        .collect();
-      const userLeaderboards = privateLeaderboards.filter((leaderboard) =>
-        leaderboard.users?.includes(normalizedUserId)
-      );
-      const leaderboardsToUpdate = globalLeaderboard ? [globalLeaderboard, ...userLeaderboards] : userLeaderboards;
       const puzzleScore = isFailed ? 0 : 7 - puzzleAttempts.length;
+      const recordedAt = Date.now();
 
-      for (const leaderboard of leaderboardsToUpdate) {
+      if (globalLeaderboard) {
         await ctx.db.insert('leaderboardEntries', {
-          leaderboardId: leaderboard._id,
+          leaderboardId: globalLeaderboard._id,
           userId: normalizedUserId,
           puzzleId: normalizedPuzzleId,
           score: puzzleScore,
-          recordedAt: Date.now(),
+          recordedAt,
         });
+      }
+
+      for (const membership of await listUserMemberships(ctx, normalizedUserId)) {
+        await ctx.db.insert('leaderboardEntries', {
+          leaderboardId: membership.leaderboardId,
+          userId: normalizedUserId,
+          puzzleId: normalizedPuzzleId,
+          score: puzzleScore,
+          recordedAt,
+        });
+        await addScoreToMembership(ctx, membership._id, puzzleScore);
       }
     }
   },

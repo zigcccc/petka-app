@@ -12,6 +12,8 @@ import type * as crons from "../crons.js";
 import type * as dictionary_models from "../dictionary/models.js";
 import type * as dictionary_queries from "../dictionary/queries.js";
 import type * as leaderboardEntries_model from "../leaderboardEntries/model.js";
+import type * as leaderboardMembers_helpers from "../leaderboardMembers/helpers.js";
+import type * as leaderboardMembers_model from "../leaderboardMembers/model.js";
 import type * as leaderboards_models from "../leaderboards/models.js";
 import type * as leaderboards_queries from "../leaderboards/queries.js";
 import type * as migrations from "../migrations.js";
@@ -44,6 +46,8 @@ declare const fullApi: ApiFromModules<{
   "dictionary/models": typeof dictionary_models;
   "dictionary/queries": typeof dictionary_queries;
   "leaderboardEntries/model": typeof leaderboardEntries_model;
+  "leaderboardMembers/helpers": typeof leaderboardMembers_helpers;
+  "leaderboardMembers/model": typeof leaderboardMembers_model;
   "leaderboards/models": typeof leaderboards_models;
   "leaderboards/queries": typeof leaderboards_queries;
   migrations: typeof migrations;

@@ -3,7 +3,7 @@ import { zid } from 'convex-helpers/server/zod4';
 import { z } from 'zod';
 
 import { internal } from '../_generated/api';
-import { leaderboardType } from '../leaderboards/models';
+import { deleteLeaderboardMemberships, listUserMemberships } from '../leaderboardMembers/helpers';
 import { puzzleType } from '../puzzles/models';
 import { internalMutation, mutation, query } from '../shared/queries';
 import { createUserModel, patchUserModel } from './models';
@@ -79,16 +79,17 @@ export const cleanupUserData = internalMutation({
       await ctx.db.delete(entry._id);
     }
 
+    // Leaderboards the user created go away entirely, together with the other members' memberships.
     const leaderboardsQuery = ctx.db.query('leaderboards').withIndex('by_creator_id', (q) => q.eq('creatorId', id));
     for await (const leaderboard of leaderboardsQuery) {
+      await deleteLeaderboardMemberships(ctx, leaderboard._id);
       await ctx.db.delete(leaderboard._id);
     }
 
-    const joinedLeaderboardsQuery = ctx.db
-      .query('leaderboards')
-      .withIndex('by_type', (q) => q.eq('type', leaderboardType.enum.private));
-    for await (const joinedLeaderboard of joinedLeaderboardsQuery) {
-      await ctx.db.patch(joinedLeaderboard._id, { users: joinedLeaderboard.users?.filter((userId) => userId !== id) });
+    // Memberships in leaderboards created by others. The stale ID left in those leaderboards' `users` array is
+    // harmless: nothing reads it anymore and the field is slated for removal.
+    for (const membership of await listUserMemberships(ctx, id)) {
+      await ctx.db.delete(membership._id);
     }
 
     const puzzleGuessAttemptsQuery = ctx.db
