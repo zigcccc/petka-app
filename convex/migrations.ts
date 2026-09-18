@@ -44,8 +44,12 @@ export const unsetPuzzleSolvedBy = migrations.define({
 
 // Creates a `leaderboardMembers` row for every user in a private leaderboard's `users` array, with `totalScore`
 // summed from the member's existing entries. Idempotent: members that already have a row are skipped.
+// One leaderboard per transaction: a private leaderboard holds a copy of every member's full daily history
+// (see `populateLeaderboardWithExistingRecords`), so the default batch of 100 exceeded the per-transaction
+// operation limit in prod ("Your request timed out performing too many system operations", PET-55).
 export const backfillLeaderboardMembers = migrations.define({
   table: 'leaderboards',
+  batchSize: 1,
   async migrateOne(ctx, doc) {
     if (doc.type !== 'private') return;
 
