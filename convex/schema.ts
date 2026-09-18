@@ -2,6 +2,7 @@ import { defineSchema } from 'convex/server';
 
 import { dictionaryEntriesTable } from './dictionary/models';
 import { leaderboardEntriesTable } from './leaderboardEntries/model';
+import { leaderboardMembersTable } from './leaderboardMembers/model';
 import { leaderboardsTable } from './leaderboards/models';
 import { puzzleGuessAttemptsTable } from './puzzleGuessAttempts/models';
 import { puzzlesTable } from './puzzles/models';
@@ -20,6 +21,9 @@ export default defineSchema({
     .index('by_leaderboard_user', ['leaderboardId', 'userId'])
     .index('by_leaderboard_puzzle', ['leaderboardId', 'puzzleId'])
     .index('by_leaderboard_recordedAt', ['leaderboardId', 'recordedAt']),
+  leaderboardMembers: leaderboardMembersTable
+    .index('by_user', ['userId'])
+    .index('by_leaderboard_user', ['leaderboardId', 'userId']),
   puzzles: puzzlesTable
     .index('by_type', ['type'])
     .index('by_type_creator', ['type', 'creatorId'])

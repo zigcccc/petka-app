@@ -5,8 +5,16 @@ import { z } from 'zod';
 import { internal } from '../_generated/api';
 import type { Id } from '../_generated/dataModel';
 import { leaderboardEntryModel } from '../leaderboardEntries/model';
+import {
+  addScoreToMembership,
+  deleteLeaderboardMemberships,
+  getMembership,
+  listLeaderboardMemberships,
+  listUserMemberships,
+} from '../leaderboardMembers/helpers';
 import { generateRandomString, weekBounds } from '../shared/helpers';
 import { internalMutation, mutation, query } from '../shared/queries';
+import { userModel } from '../users/models';
 import {
   createLeaderboardModel,
   type LeaderboardWithScores,
@@ -25,68 +33,63 @@ export const list = query({
       throw new ConvexError({ message: 'Invalid user ID provided.', code: 400 });
     }
 
-    const leaderboards = await ctx.db
-      .query('leaderboards')
-      .withIndex('by_type', (q) => q.eq('type', type))
-      .collect();
-
-    const userJoinedLeaderboards =
-      type === leaderboardType.enum.private
-        ? leaderboards.filter((leaderboard) => leaderboard.users?.includes(userId))
-        : leaderboards;
+    // The global leaderboard has no memberships and is no longer ranked (see `readGlobalLeaderboard`).
+    if (type === leaderboardType.enum.global) {
+      const globalLeaderboard = await ctx.db
+        .query('leaderboards')
+        .withIndex('by_type', (q) => q.eq('type', leaderboardType.enum.global))
+        .unique();
+      return globalLeaderboard ? [{ ...leaderboardModel.parse(globalLeaderboard), scores: [] }] : [];
+    }
 
     const leaderboardsWithScores: LeaderboardWithScores[] = [];
 
-    for (const leaderboard of userJoinedLeaderboards) {
-      const leaderboardEntries = await ctx.db
-        .query('leaderboardEntries')
-        .withIndex('by_leaderboard_recordedAt', (q) => {
-          if (range === leaderboardRange.enum.weekly) {
-            const { lastMonday, nextSunday } = weekBounds(timestamp);
-            return q
+    for (const membership of await listUserMemberships(ctx, normalizedUserId)) {
+      const leaderboard = await ctx.db.get(membership.leaderboardId);
+      if (!leaderboard) continue;
+
+      const members = await listLeaderboardMemberships(ctx, leaderboard._id);
+      const usersScoreMap = new Map<Id<'users'>, number>();
+
+      if (range === leaderboardRange.enum.alltime) {
+        for (const member of members) {
+          usersScoreMap.set(member.userId, member.totalScore);
+        }
+      } else {
+        const { lastMonday, nextSunday } = weekBounds(timestamp);
+        const weeklyEntries = await ctx.db
+          .query('leaderboardEntries')
+          .withIndex('by_leaderboard_recordedAt', (q) =>
+            q
               .eq('leaderboardId', leaderboard._id)
               .gte('recordedAt', lastMonday.getTime())
-              .lte('recordedAt', nextSunday.getTime());
-          }
+              .lte('recordedAt', nextSunday.getTime())
+          )
+          .collect();
 
-          return q.eq('leaderboardId', leaderboard._id);
-        })
-        .collect();
-
-      const parsedLeaderboard = leaderboardModel.parse(leaderboard);
-
-      const usersScoreMap = new Map<Id<'users'>, number>(
-        parsedLeaderboard.users
-          ? parsedLeaderboard.users.map((uid) => [ctx.db.normalizeId('users', uid)!, 0])
-          : [[normalizedUserId, 0]]
-      );
-
-      for (const entry of leaderboardEntries) {
-        const { userId: entryUserId, score: entryScore } = leaderboardEntryModel.parse(entry);
-        const normalizedEntryUserId = ctx.db.normalizeId('users', entryUserId);
-        if (!normalizedEntryUserId) continue;
-        usersScoreMap.set(normalizedEntryUserId, (usersScoreMap.get(normalizedEntryUserId) ?? 0) + entryScore);
+        for (const member of members) {
+          usersScoreMap.set(member.userId, 0);
+        }
+        for (const entry of weeklyEntries) {
+          const { userId: entryUserId, score: entryScore } = leaderboardEntryModel.parse(entry);
+          usersScoreMap.set(entryUserId, (usersScoreMap.get(entryUserId) ?? 0) + entryScore);
+        }
       }
 
-      const scoresToReport = Array.from(usersScoreMap.entries())
-        .sort((a, b) => b[1] - a[1])
-        .map(([userId, score], idx) => ({
-          userId,
+      // Resolve users first so that a member whose account is gone doesn't leave a gap in the positions.
+      const usersForScores = await Promise.all(Array.from(usersScoreMap.keys(), (userId) => ctx.db.get(userId)));
+      const scores = usersForScores
+        .filter((user) => !!user)
+        .map((user) => ({ user: userModel.parse(user), score: usersScoreMap.get(user._id) ?? 0 }))
+        .sort((a, b) => b.score - a.score)
+        .map(({ user, score }, idx) => ({
+          user,
           score,
-          isForCurrentUser: userId === normalizedUserId,
+          isForCurrentUser: user._id === normalizedUserId,
           position: idx + 1,
         }));
 
-      const usersForScores = await Promise.all(scoresToReport.map((score) => ctx.db.get(score.userId)));
-      const usersById = new Map(usersForScores.filter((user) => !!user).map((user) => [user._id, user]));
-
-      leaderboardsWithScores.push({
-        ...parsedLeaderboard,
-        scores: scoresToReport.map(({ userId, ...score }) => ({
-          ...score,
-          user: usersById.get(userId)!,
-        })),
-      });
+      leaderboardsWithScores.push({ ...leaderboardModel.parse(leaderboard), scores });
     }
 
     return leaderboardsWithScores;
@@ -133,6 +136,8 @@ export const populateLeaderboardWithExistingRecords = internalMutation({
       .query('leaderboardEntries')
       .withIndex('by_leaderboard_user', (q) => q.eq('leaderboardId', globalLeaderboard._id).eq('userId', userId));
 
+    let copiedScore = 0;
+
     for await (const entry of existingLeaderboardEntriesQuery) {
       await ctx.db.insert('leaderboardEntries', {
         leaderboardId: leaderboardId,
@@ -141,6 +146,12 @@ export const populateLeaderboardWithExistingRecords = internalMutation({
         score: entry.score,
         recordedAt: entry.recordedAt,
       });
+      copiedScore += entry.score;
+    }
+
+    const membership = await getMembership(ctx, leaderboardId, userId);
+    if (membership && copiedScore > 0) {
+      await addScoreToMembership(ctx, membership._id, copiedScore);
     }
   },
 });
@@ -170,6 +181,11 @@ export const createPrivateLeaderboard = mutation({
         creatorId: normalizedUserId,
         users: [normalizedUserId],
         inviteCode,
+      });
+      await ctx.db.insert('leaderboardMembers', {
+        leaderboardId: createdLeaderboardId,
+        userId: normalizedUserId,
+        totalScore: 0,
       });
 
       ctx.scheduler.runAfter(0, internal.leaderboards.queries.populateLeaderboardWithExistingRecords, {
@@ -202,10 +218,16 @@ export const joinPrivateLeaderboard = mutation({
       throw new ConvexError({ message: 'Invalid invite code.', code: 400 });
     }
 
-    if (leaderboard.users?.includes(normalizedUserId)) {
+    if (await getMembership(ctx, leaderboard._id, normalizedUserId)) {
       throw new ConvexError({ message: 'Already joined this leaderboard.', code: 400 });
     }
 
+    await ctx.db.insert('leaderboardMembers', {
+      leaderboardId: leaderboard._id,
+      userId: normalizedUserId,
+      totalScore: 0,
+    });
+    // `users` is kept in sync only until the `backfillLeaderboardMembers` migration has run everywhere.
     await ctx.db.patch(leaderboard._id, {
       users: leaderboard.users ? [...leaderboard.users, normalizedUserId] : [normalizedUserId],
     });
@@ -283,6 +305,8 @@ export const deletePrivateLeaderboard = mutation({
       await ctx.db.delete(entry._id);
     }
 
+    await deleteLeaderboardMemberships(ctx, normalizedLeaderboardId);
+
     return await ctx.db.delete(normalizedLeaderboardId);
   },
 });
@@ -322,6 +346,11 @@ export const leavePrivateLeaderboard = mutation({
 
     for await (const entry of userLeaderboardEntriesQuery) {
       await ctx.db.delete(entry._id);
+    }
+
+    const membership = await getMembership(ctx, normalizedLeaderboardId, normalizedUserId);
+    if (membership) {
+      await ctx.db.delete(membership._id);
     }
 
     return await ctx.db.patch(normalizedLeaderboardId, {
