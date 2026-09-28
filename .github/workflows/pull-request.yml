@@ -128,7 +128,7 @@ jobs:
           echo "EXPO_PUBLIC_POSTHOG_API_KEY=${{secrets.POSTHOG_API_KEY}}" >> .env
 
       - name: Create preview
-        uses: expo/expo-github-action/preview@v8
+        uses: expo/expo-github-action/preview@v9
         with:
           command: eas update --environment preview --branch ${{ github.event.pull_request.head.ref }} --message "${{ github.event.pull_request.title }}"
 
