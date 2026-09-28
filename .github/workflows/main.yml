@@ -10,7 +10,7 @@ permissions:
 jobs:
   lint-test:
     name: Lint, test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Let the job post results back to the PR (Sonar, test checks, …)
     permissions:
       contents: read
@@ -59,7 +59,7 @@ jobs:
   sonar:
     name: Sonar analysis
     needs: lint-test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       pull-requests: write
       contents: read
@@ -85,7 +85,7 @@ jobs:
   convex:
     name: Convex Deployment
     needs: lint-test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code
@@ -118,7 +118,7 @@ jobs:
   expo:
     name: Deploy to Production
     needs: convex
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       pull-requests: write
       contents: write

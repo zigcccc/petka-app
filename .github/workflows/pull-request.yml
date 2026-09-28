@@ -6,7 +6,7 @@ on:
 jobs:
   lint-test:
     name: Lint, test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Let the job post results back to the PR (Sonar, test checks, …)
     permissions:
       contents: read
@@ -55,7 +55,7 @@ jobs:
   sonar:
     name: Sonar analysis
     needs: lint-test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       pull-requests: write
       contents: read
@@ -80,7 +80,7 @@ jobs:
 
   expo-preview:
     needs: lint-test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Publish Expo Preview
     permissions:
       pull-requests: write
@@ -128,7 +128,7 @@ jobs:
           echo "EXPO_PUBLIC_POSTHOG_API_KEY=${{secrets.POSTHOG_API_KEY}}" >> .env
 
       - name: Create preview
-        uses: expo/expo-github-action/preview@v8
+        uses: expo/expo-github-action/preview@v9
         with:
           command: eas update --environment preview --branch ${{ github.event.pull_request.head.ref }} --message "${{ github.event.pull_request.title }}"
 

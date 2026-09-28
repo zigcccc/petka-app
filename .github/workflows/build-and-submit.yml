@@ -6,7 +6,7 @@ on:
 jobs:
   build-submit:
     name: Build and Submit to stores
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       # 1️⃣ Get latest successful run ID of main-deploy.yml on main branch
       - name: Get latest run ID
@@ -31,10 +31,10 @@ jobs:
 
       # 2️⃣ Download version.txt artifact from that run
       - name: Download version artifact
-        uses: dawidd6/action-download-artifact@v2
+        uses: actions/download-artifact@v8
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          run_id: ${{ steps.get-run.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.get-run.outputs.run_id }}
           name: version
           path: .
 
