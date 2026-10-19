@@ -15,7 +15,7 @@ module.exports = {
     '^expo/src/winter(.*)$': '<rootDir>/src/tests/mocks/expoWinter.ts',
   },
   transformIgnorePatterns: [
-    '/node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|@sentry/react-native|native-base|react-native-svg|lucide-react-native|convex-helpers|@convex-dev|convex|convex\\/react/|@gorhom/bottom-sheet|standard-navigation)',
+    '/node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|@sentry/react-native|native-base|react-native-svg|lucide-react-native|convex-helpers|@convex-dev|convex|convex\\/react/|@gorhom/bottom-sheet|@shopify/flash-list|standard-navigation)',
     '/node_modules/react-native-reanimated/plugin/',
   ],
 };
