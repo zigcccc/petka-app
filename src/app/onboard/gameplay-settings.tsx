@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native-unistyles';
 
 import { Button, Card, Hint, RadioInput, Text } from '@/components/ui';
 import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
+import { horizontalSafePadding } from '@/styles/insets';
 import { getOsMajorVersion } from '@/utils/platform';
 
 export default function GameplaySettingsScreen() {
@@ -90,7 +91,7 @@ const styles = StyleSheet.create((theme, rt) => ({
       ios: getOsMajorVersion() > 18 ? theme.spacing[8] : theme.spacing[2],
       android: theme.spacing[2],
     }),
-    paddingHorizontal: theme.spacing[6],
+    ...horizontalSafePadding(rt.insets, theme.spacing[6]),
     paddingBottom: {
       xs: rt.insets.bottom + rt.insets.ime,
       md: rt.insets.bottom + theme.spacing[6],

@@ -5,6 +5,7 @@ import { Alert, type AlertButton, Platform, useWindowDimensions, View } from 're
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Button, Text, TextInput } from '@/components/ui';
+import { horizontalSafePadding } from '@/styles/insets';
 
 import { PromptContext } from './Prompt.context';
 
@@ -112,13 +113,13 @@ export function PromptProvider({ children }: Readonly<PropsWithChildren>) {
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
   container: {
     backgroundColor: theme.colors.background,
     borderRadius: 4,
   },
   contentContainer: {
-    paddingHorizontal: theme.spacing[5],
+    ...horizontalSafePadding(rt.insets, theme.spacing[5]),
     paddingVertical: theme.spacing[4],
   },
   input: {

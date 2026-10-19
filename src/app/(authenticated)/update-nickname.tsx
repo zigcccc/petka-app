@@ -13,6 +13,7 @@ import { api } from '@/convex/_generated/api';
 import { type CreateUser, createUserModel } from '@/convex/users/models';
 import { useToaster } from '@/hooks/useToaster';
 import { useUser } from '@/hooks/useUser';
+import { horizontalSafePadding } from '@/styles/insets';
 
 export default function UpdateNicknameScreen() {
   const router = useRouter();
@@ -99,7 +100,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
     paddingTop: Platform.select({ android: theme.spacing[2], ios: theme.spacing[8] }),
-    paddingHorizontal: theme.spacing[6],
+    ...horizontalSafePadding(rt.insets, theme.spacing[6]),
     paddingBottom: {
       xs: rt.insets.bottom + rt.insets.ime,
       md: rt.insets.bottom + theme.spacing[6],

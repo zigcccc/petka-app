@@ -7,6 +7,7 @@ import { AttemptsDistributionGraph } from '@/components/elements';
 import { Card, Text } from '@/components/ui';
 import { puzzleType } from '@/convex/puzzles/models';
 import { usePuzzlesStatisticsQuery, useUserQuery } from '@/hooks/queries';
+import { horizontalSafePadding } from '@/styles/insets';
 
 export default function UserProfileScreen() {
   const { userId } = useLocalSearchParams<{ userId: string }>();
@@ -108,7 +109,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flexGrow: 1,
     paddingTop: 0,
-    paddingHorizontal: theme.spacing[6],
+    ...horizontalSafePadding(rt.insets, theme.spacing[6]),
     paddingBottom: rt.insets.bottom + theme.spacing[6],
     gap: theme.spacing[6],
   },

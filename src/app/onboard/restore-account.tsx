@@ -9,6 +9,7 @@ import { Button, Text, TextInput } from '@/components/ui';
 import { useValidateUserAccount } from '@/hooks/mutations';
 import { useToaster } from '@/hooks/useToaster';
 import { useUser } from '@/hooks/useUser';
+import { horizontalSafePadding } from '@/styles/insets';
 import { getOsMajorVersion } from '@/utils/platform';
 
 const restoreAccountModel = z.object({
@@ -124,7 +125,7 @@ const styles = StyleSheet.create((theme, rt) => ({
       ios: getOsMajorVersion() > 18 ? theme.spacing[8] : theme.spacing[2],
       android: theme.spacing[2],
     }),
-    paddingHorizontal: theme.spacing[6],
+    ...horizontalSafePadding(rt.insets, theme.spacing[6]),
     paddingBottom: {
       xs: Platform.select({
         ios: getOsMajorVersion() > 18 ? rt.insets.ime : rt.insets.bottom + rt.insets.ime,

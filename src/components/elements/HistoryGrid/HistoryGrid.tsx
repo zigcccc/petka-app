@@ -7,6 +7,7 @@ import { StyleSheet } from 'react-native-unistyles';
 import { Text } from '@/components/ui';
 import type { PuzzleGuessAttempt } from '@/convex/puzzleGuessAttempts/models';
 import { type PuzzleListItem, puzzleType } from '@/convex/puzzles/models';
+import { horizontalSafePadding } from '@/styles/insets';
 import { getDateObjectFromPuzzle } from '@/utils/puzzles';
 
 import { GuessGrid } from '../GuessGrid';
@@ -89,6 +90,7 @@ export function HistoryGrid({ puzzle, style, cellWidth }: Readonly<Props>) {
 const styles = StyleSheet.create((theme, rt) => ({
   container: {
     padding: theme.spacing[8],
+    ...horizontalSafePadding(rt.insets, theme.spacing[8]),
   },
   header: {
     flexDirection: 'row',

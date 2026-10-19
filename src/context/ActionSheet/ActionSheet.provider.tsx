@@ -4,6 +4,7 @@ import { ActionSheetIOS, type ActionSheetIOSOptions, ActivityIndicator, Platform
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Button, Text } from '@/components/ui';
+import { horizontalSafePadding } from '@/styles/insets';
 
 import { ActionSheetContext } from './ActionSheet.context';
 import type { ActionSheetPressCallback } from './ActionSheet.types';
@@ -126,7 +127,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
     paddingBottom: rt.insets.bottom,
-    paddingHorizontal: theme.spacing[3],
+    ...horizontalSafePadding(rt.insets, theme.spacing[3]),
   },
   headerContainer: {
     gap: theme.spacing[1],
