@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useRouter } from 'expo-router';
 import { Controller, type SubmitHandler, useForm } from 'react-hook-form';
-import { Platform, View } from 'react-native';
+import { Platform, ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 import { z } from 'zod';
 
@@ -52,84 +52,100 @@ export default function RestoreAccountScreen() {
   const submitForm = () => handleSubmit(onSubmit)();
 
   return (
-    <View style={styles.container}>
-      <Text size="2xl" weight="bold">
-        Obnovi svoj profil
-      </Text>
-      <Text size="lg">Vnesi podatke obstoječega profila.</Text>
-      <View style={styles.content}>
-        <Text color="grey70" size="sm">
-          ID in uporabniško ime profila lahko najdeš na obstoječi napravi, v razdelku &quot;Nastavitve&quot;.
+    <View style={styles.screen}>
+      <ScrollView
+        alwaysBounceVertical={false}
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text size="2xl" weight="bold">
+          Obnovi svoj profil
         </Text>
-        <Controller
-          control={control}
-          name="id"
-          render={({ field, fieldState }) => (
-            <TextInput
-              autoCapitalize="none"
-              autoFocus
-              error={fieldState.error?.message}
-              label="ID"
-              onBlur={field.onBlur}
-              onChangeText={field.onChange}
-              onSubmitEditing={() => setFocus('nickname')}
-              placeholder="ID profila"
-              ref={field.ref}
-              returnKeyType="next"
-              value={field.value}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="nickname"
-          render={({ field, fieldState }) => (
-            <TextInput
-              autoCapitalize="none"
-              error={fieldState.error?.message}
-              label="Vzdevek"
-              onBlur={field.onBlur}
-              onChangeText={field.onChange}
-              onSubmitEditing={submitForm}
-              placeholder="Vzdevek profila"
-              ref={field.ref}
-              returnKeyType="go"
-              submitBehavior="submit"
-              value={field.value}
-            />
-          )}
-        />
-      </View>
-      <View style={{ flex: 1 }} />
-      <Button disabled={isSubmitted && !isValid} loading={isSubmitting} onPress={submitForm} size="lg">
-        Obnovi profil
-      </Button>
-      <View style={styles.createAccountContainer}>
-        <Text size="xs">
-          Bi raje ustvaril/a nov profil?{' '}
-          <Link href="..">
-            <Text size="xs" weight="bold">
-              Klikni tukaj.
-            </Text>
-          </Link>
-        </Text>
-      </View>
+        <Text size="lg">Vnesi podatke obstoječega profila.</Text>
+        <View style={styles.content}>
+          <Text color="grey70" size="sm">
+            ID in uporabniško ime profila lahko najdeš na obstoječi napravi, v razdelku &quot;Nastavitve&quot;.
+          </Text>
+          <Controller
+            control={control}
+            name="id"
+            render={({ field, fieldState }) => (
+              <TextInput
+                autoCapitalize="none"
+                autoFocus
+                error={fieldState.error?.message}
+                label="ID"
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                onSubmitEditing={() => setFocus('nickname')}
+                placeholder="ID profila"
+                ref={field.ref}
+                returnKeyType="next"
+                value={field.value}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="nickname"
+            render={({ field, fieldState }) => (
+              <TextInput
+                autoCapitalize="none"
+                error={fieldState.error?.message}
+                label="Vzdevek"
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                onSubmitEditing={submitForm}
+                placeholder="Vzdevek profila"
+                ref={field.ref}
+                returnKeyType="go"
+                submitBehavior="submit"
+                value={field.value}
+              />
+            )}
+          />
+        </View>
+        <View style={styles.spacer} />
+        <Button disabled={isSubmitted && !isValid} loading={isSubmitting} onPress={submitForm} size="lg">
+          Obnovi profil
+        </Button>
+        <View style={styles.createAccountContainer}>
+          <Text size="xs">
+            Bi raje ustvaril/a nov profil?{' '}
+            <Link href="..">
+              <Text size="xs" weight="bold">
+                Klikni tukaj.
+              </Text>
+            </Link>
+          </Text>
+        </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create((theme, rt) => ({
-  container: {
+  // Runtime-dependent padding (keyboard height, safe area) must live on `style`: Unistyles doesn't update
+  // `contentContainerStyle` natively when those values change.
+  screen: {
     flex: 1,
-    paddingTop: Platform.select({
-      ios: getOsMajorVersion() > 18 ? theme.spacing[8] : theme.spacing[2],
-      android: theme.spacing[2],
-    }),
     ...horizontalSafePadding(rt.insets, theme.spacing[6]),
     paddingBottom: Platform.select({
       ios: getOsMajorVersion() > 18 ? rt.insets.ime : rt.insets.bottom + rt.insets.ime,
       android: rt.insets.bottom + rt.insets.ime,
     }),
+  },
+  container: {
+    flexGrow: 1,
+    paddingTop: Platform.select({
+      ios: getOsMajorVersion() > 18 ? theme.spacing[8] : theme.spacing[2],
+      android: theme.spacing[2],
+    }),
+  },
+  // Keeps a gap above the button when the content overflows and the form scrolls
+  spacer: {
+    flexGrow: 1,
+    minHeight: theme.spacing[6],
   },
   content: {
     paddingTop: theme.spacing[8],
