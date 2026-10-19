@@ -12,7 +12,7 @@ const StyledTabs = withUnistyles(Tabs, (theme) => ({
 
 export default function LeaderboardsTabsLayout() {
   return (
-    <StyledTabs initialRouteName="weekly-leaderboard">
+    <StyledTabs>
       <Tabs.Screen
         name="weekly-leaderboard"
         options={{
