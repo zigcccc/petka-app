@@ -92,10 +92,7 @@ const styles = StyleSheet.create((theme, rt) => ({
       android: theme.spacing[2],
     }),
     ...horizontalSafePadding(rt.insets, theme.spacing[6]),
-    paddingBottom: {
-      xs: rt.insets.bottom + rt.insets.ime,
-      md: rt.insets.bottom + theme.spacing[6],
-    },
+    paddingBottom: rt.insets.bottom + rt.insets.ime,
   },
   content: {
     paddingTop: theme.spacing[8],

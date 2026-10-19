@@ -108,13 +108,10 @@ const styles = StyleSheet.create((theme, rt) => ({
       android: theme.spacing[2],
     }),
     ...horizontalSafePadding(rt.insets, theme.spacing[6]),
-    paddingBottom: {
-      xs: Platform.select({
-        ios: getOsMajorVersion() > 18 ? rt.insets.ime : rt.insets.bottom + rt.insets.ime,
-        android: rt.insets.bottom + rt.insets.ime,
-      }),
-      md: rt.insets.bottom + theme.spacing[6],
-    },
+    paddingBottom: Platform.select({
+      ios: getOsMajorVersion() > 18 ? rt.insets.ime : rt.insets.bottom + rt.insets.ime,
+      android: rt.insets.bottom + rt.insets.ime,
+    }),
   },
   content: {
     paddingTop: theme.spacing[8],
