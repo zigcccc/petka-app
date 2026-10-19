@@ -9,6 +9,7 @@ import { puzzleType } from '@/convex/puzzles/models';
 import { useDictionaryEntry } from '@/hooks/queries';
 import { usePuzzleStatistics } from '@/hooks/usePuzzlesStatistics';
 import { useTrainingPuzzle } from '@/hooks/useTrainingPuzzle';
+import { horizontalSafePadding } from '@/styles/insets';
 import { capitalize } from '@/utils/strings';
 
 export default function TrainingPuzzleSolvedScreen() {
@@ -131,7 +132,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
     paddingTop: Platform.select({ ios: theme.spacing[8], android: theme.spacing[2] }),
-    paddingHorizontal: theme.spacing[6],
+    ...horizontalSafePadding(rt.insets, theme.spacing[6]),
     paddingBottom: rt.insets.bottom + rt.insets.ime,
   },
   content: {

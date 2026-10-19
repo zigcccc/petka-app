@@ -5,7 +5,7 @@ import { ConvexError } from 'convex/values';
 import { useRouter } from 'expo-router';
 import { usePostHog } from 'posthog-react-native';
 import { Controller, type SubmitErrorHandler, type SubmitHandler, useForm } from 'react-hook-form';
-import { Platform, View } from 'react-native';
+import { Platform, ScrollView, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Button, Text, TextInput } from '@/components/ui';
@@ -13,6 +13,7 @@ import { api } from '@/convex/_generated/api';
 import { type CreateUser, createUserModel } from '@/convex/users/models';
 import { useToaster } from '@/hooks/useToaster';
 import { useUser } from '@/hooks/useUser';
+import { horizontalSafePadding } from '@/styles/insets';
 
 export default function UpdateNicknameScreen() {
   const router = useRouter();
@@ -61,49 +62,62 @@ export default function UpdateNicknameScreen() {
   const submitForm = () => handleSubmit(onSubmit, onValidationError)();
 
   return (
-    <View style={styles.container}>
-      <Text size="2xl" weight="bold">
-        Posodobi svoj vzdevek
-      </Text>
-      <View style={styles.content}>
-        <Controller
-          control={control}
-          name="nickname"
-          render={({ field, fieldState }) => (
-            <TextInput
-              autoCapitalize="none"
-              autoFocus
-              error={fieldState.error?.message}
-              label="Vzdevek"
-              onBlur={field.onBlur}
-              onChangeText={field.onChange}
-              onSubmitEditing={submitForm}
-              placeholder="Tvoj vzdevek"
-              ref={field.ref}
-              returnKeyType="go"
-              submitBehavior="submit"
-              value={field.value}
-            />
-          )}
-        />
-      </View>
-      <View style={{ flex: 1 }} />
-      <Button disabled={!isDirty} loading={isSubmitting} onPress={submitForm} size="lg">
-        Posodobi vzdevek
-      </Button>
+    <View style={styles.screen}>
+      <ScrollView
+        alwaysBounceVertical={false}
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text size="2xl" weight="bold">
+          Posodobi svoj vzdevek
+        </Text>
+        <View style={styles.content}>
+          <Controller
+            control={control}
+            name="nickname"
+            render={({ field, fieldState }) => (
+              <TextInput
+                autoCapitalize="none"
+                autoFocus
+                error={fieldState.error?.message}
+                label="Vzdevek"
+                onBlur={field.onBlur}
+                onChangeText={field.onChange}
+                onSubmitEditing={submitForm}
+                placeholder="Tvoj vzdevek"
+                ref={field.ref}
+                returnKeyType="go"
+                submitBehavior="submit"
+                value={field.value}
+              />
+            )}
+          />
+        </View>
+        <View style={styles.spacer} />
+        <Button disabled={!isDirty} loading={isSubmitting} onPress={submitForm} size="lg">
+          Posodobi vzdevek
+        </Button>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create((theme, rt) => ({
-  container: {
+  // Runtime-dependent padding (keyboard height, safe area) must live on `style`: Unistyles doesn't update
+  // `contentContainerStyle` natively when those values change.
+  screen: {
     flex: 1,
+    ...horizontalSafePadding(rt.insets, theme.spacing[6]),
+    paddingBottom: rt.insets.bottom + rt.insets.ime,
+  },
+  container: {
+    flexGrow: 1,
     paddingTop: Platform.select({ android: theme.spacing[2], ios: theme.spacing[8] }),
-    paddingHorizontal: theme.spacing[6],
-    paddingBottom: {
-      xs: rt.insets.bottom + rt.insets.ime,
-      md: rt.insets.bottom + theme.spacing[6],
-    },
+  },
+  // Keeps a gap above the button when the content overflows and the form scrolls
+  spacer: {
+    flexGrow: 1,
+    minHeight: theme.spacing[6],
   },
   content: {
     paddingTop: theme.spacing[8],

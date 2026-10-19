@@ -3,6 +3,8 @@ import type { PropsWithChildren } from 'react';
 import { ScrollView } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
+import { horizontalSafePadding } from '@/styles/insets';
+
 type Props = PropsWithChildren<{
   title: string;
   backText?: string;
@@ -27,12 +29,12 @@ export function GenericStackScreen({ backText = 'Nazaj', children, title }: Read
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
   back: {
     fontFamily: theme.fonts.sans.medium,
   },
   container: {
     paddingTop: theme.spacing[6],
-    paddingHorizontal: theme.spacing[6],
+    ...horizontalSafePadding(rt.insets, theme.spacing[6]),
   },
 }));

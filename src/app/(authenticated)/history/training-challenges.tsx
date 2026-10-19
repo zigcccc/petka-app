@@ -2,6 +2,7 @@ import { FlashList } from '@shopify/flash-list';
 import { usePaginatedQuery } from 'convex/react';
 import { useCallback, useRef } from 'react';
 import { useWindowDimensions } from 'react-native';
+import { useUnistyles } from 'react-native-unistyles';
 
 import { HistoryGrid } from '@/components/elements';
 import { api } from '@/convex/_generated/api';
@@ -11,6 +12,7 @@ import { breakpoints } from '@/styles/breakpoints';
 
 export default function TrainingChallengesHistoryScreen() {
   const { width } = useWindowDimensions();
+  const { rt } = useUnistyles();
   const { user } = useUser();
   const timestampRef = useRef(Date.now());
   const { results, loadMore, status } = usePaginatedQuery(
@@ -19,7 +21,8 @@ export default function TrainingChallengesHistoryScreen() {
     { initialNumItems: 7 }
   );
 
-  const cellWidth = width > breakpoints.md ? 100 : (width - 96) / 5;
+  const availableWidth = width - rt.insets.left - rt.insets.right;
+  const cellWidth = availableWidth > breakpoints.md ? 100 : (availableWidth - 96) / 5;
 
   const handleEndReached = useCallback(() => {
     if (status === 'CanLoadMore') {

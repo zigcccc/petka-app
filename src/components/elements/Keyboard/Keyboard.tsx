@@ -69,6 +69,10 @@ const styles = StyleSheet.create((theme, rt) => ({
     flexDirection: 'column',
     gap: theme.spacing[2],
     paddingHorizontal: theme.spacing[4],
+    // Keep keys a sensible width in wide (landscape / expanded) windows
+    width: '100%',
+    maxWidth: 600,
+    alignSelf: 'center',
   },
   keyboardRow: {
     flexDirection: 'row',

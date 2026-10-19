@@ -8,6 +8,7 @@ import { NoLeaderboards } from '@/components/graphics';
 import { Button, Card, Text } from '@/components/ui';
 import { leaderboardRange, leaderboardType } from '@/convex/leaderboards/models';
 import { useLeaderboards } from '@/hooks/useLeaderboards';
+import { horizontalSafePadding } from '@/styles/insets';
 
 export default function AllTimeLeaderboardScreen() {
   const navigation = useNavigation();
@@ -72,11 +73,11 @@ export default function AllTimeLeaderboardScreen() {
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flexGrow: 1,
     paddingTop: theme.spacing[6],
-    paddingHorizontal: theme.spacing[6],
+    ...horizontalSafePadding(rt.insets, theme.spacing[6]),
   },
   noLeaderboardsContainer: {
     justifyContent: 'center',

@@ -1,9 +1,10 @@
 import { useRouter } from 'expo-router';
-import { Platform, Switch, View } from 'react-native';
+import { Platform, ScrollView, Switch, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { Button, Card, Hint, RadioInput, Text } from '@/components/ui';
 import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
+import { horizontalSafePadding } from '@/styles/insets';
 import { getOsMajorVersion } from '@/utils/platform';
 
 export default function GameplaySettingsScreen() {
@@ -19,82 +20,95 @@ export default function GameplaySettingsScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text size="2xl" weight="bold">
-        Preden začneš...
-      </Text>
-      <Text size="lg">Izberi svoje preference glede načina igranja.</Text>
-      <View style={styles.content}>
-        <View style={styles.textContainer}>
-          <Text color="grey70" size="sm">
-            Za bolj prilagojeno in lažje reševanje lahko izbirate med naslednjimi nastavitvami:
-          </Text>
-          <View>
+    <View style={styles.screen}>
+      <ScrollView
+        alwaysBounceVertical={false}
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text size="2xl" weight="bold">
+          Preden začneš...
+        </Text>
+        <Text size="lg">Izberi svoje preference glede načina igranja.</Text>
+        <View style={styles.content}>
+          <View style={styles.textContainer}>
             <Text color="grey70" size="sm">
-              - razporeditev tipkovnice (qwerty ali abcde)
+              Za bolj prilagojeno in lažje reševanje lahko izbirate med naslednjimi nastavitvami:
             </Text>
-            <Text color="grey70" size="sm">
-              - avtomatsko preverjanje besed ob vnosu zadnje črke
-            </Text>
+            <View>
+              <Text color="grey70" size="sm">
+                - razporeditev tipkovnice (qwerty ali abcde)
+              </Text>
+              <Text color="grey70" size="sm">
+                - avtomatsko preverjanje besed ob vnosu zadnje črke
+              </Text>
+            </View>
           </View>
+          <Card title="Nastavitve igranja">
+            <Card.ActionRow
+              action={
+                <Switch
+                  accessibilityLabel="Avtomatsko preveri besedo"
+                  accessibilityValue={{ text: autosubmitPuzzleAttempt ? 'On' : 'Off' }}
+                  onValueChange={(newValue) => updateSettings({ autosubmitPuzzleAttempt: newValue })}
+                  value={autosubmitPuzzleAttempt}
+                />
+              }
+              title="Avtomatsko preveri besedo"
+            >
+              Beseda se preveri samodejno po vnosu 5. črke, sicer ob pritisku na &quot;Enter&quot;.
+            </Card.ActionRow>
+            <Card.ActionRow
+              extra={
+                <RadioInput
+                  onChange={(newKeyboardType) => updateSettings({ keyboardType: newKeyboardType })}
+                  style={styles.radioContainer}
+                  value={keyboardType}
+                >
+                  <RadioInput.Item label="QWERTY tipkovnica" value={gameplayKeyboardType.enum.qwerty} />
+                  <RadioInput.Item label="ABCDE tipkovnica" value={gameplayKeyboardType.enum.abcde} />
+                </RadioInput>
+              }
+              title="Razporeditev tipk"
+            >
+              Določa razporeditev črk na tipkovnici (QWERTY ali ABCDE). Ne vpliva na preverjanje besed.
+            </Card.ActionRow>
+          </Card>
+          <Hint intent="info" title="Nastavitve lahko spremeniš kadarkoli">
+            <Text color="grey70" size="xs">
+              V nastavitvah aplikacije lahko kadarkoli posodobiš svoje preference, tudi ko jih boš enkrat potrdil/a na
+              tem zaslonu.
+            </Text>
+          </Hint>
         </View>
-        <Card title="Nastavitve igranja">
-          <Card.ActionRow
-            action={
-              <Switch
-                accessibilityLabel="Avtomatsko preveri besedo"
-                accessibilityValue={{ text: autosubmitPuzzleAttempt ? 'On' : 'Off' }}
-                onValueChange={(newValue) => updateSettings({ autosubmitPuzzleAttempt: newValue })}
-                value={autosubmitPuzzleAttempt}
-              />
-            }
-            title="Avtomatsko preveri besedo"
-          >
-            Beseda se preveri samodejno po vnosu 5. črke, sicer ob pritisku na &quot;Enter&quot;.
-          </Card.ActionRow>
-          <Card.ActionRow
-            extra={
-              <RadioInput
-                onChange={(newKeyboardType) => updateSettings({ keyboardType: newKeyboardType })}
-                style={styles.radioContainer}
-                value={keyboardType}
-              >
-                <RadioInput.Item label="QWERTY tipkovnica" value={gameplayKeyboardType.enum.qwerty} />
-                <RadioInput.Item label="ABCDE tipkovnica" value={gameplayKeyboardType.enum.abcde} />
-              </RadioInput>
-            }
-            title="Razporeditev tipk"
-          >
-            Določa razporeditev črk na tipkovnici (QWERTY ali ABCDE). Ne vpliva na preverjanje besed.
-          </Card.ActionRow>
-        </Card>
-        <Hint intent="info" title="Nastavitve lahko spremeniš kadarkoli">
-          <Text color="grey70" size="xs">
-            V nastavitvah aplikacije lahko kadarkoli posodobiš svoje preference, tudi ko jih boš enkrat potrdil/a na tem
-            zaslonu.
-          </Text>
-        </Hint>
-      </View>
-      <View style={{ flex: 1 }} />
-      <Button onPress={handleConfirmSettings} size="lg">
-        Potrdi preference
-      </Button>
+        <View style={styles.spacer} />
+        <Button onPress={handleConfirmSettings} size="lg">
+          Potrdi preference
+        </Button>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create((theme, rt) => ({
-  container: {
+  // Runtime-dependent padding (keyboard height, safe area) must live on `style`: Unistyles doesn't update
+  // `contentContainerStyle` natively when those values change.
+  screen: {
     flex: 1,
+    ...horizontalSafePadding(rt.insets, theme.spacing[6]),
+    paddingBottom: rt.insets.bottom + rt.insets.ime,
+  },
+  container: {
+    flexGrow: 1,
     paddingTop: Platform.select({
       ios: getOsMajorVersion() > 18 ? theme.spacing[8] : theme.spacing[2],
       android: theme.spacing[2],
     }),
-    paddingHorizontal: theme.spacing[6],
-    paddingBottom: {
-      xs: rt.insets.bottom + rt.insets.ime,
-      md: rt.insets.bottom + theme.spacing[6],
-    },
+  },
+  // Keeps a gap above the button when the content overflows and the form scrolls
+  spacer: {
+    flexGrow: 1,
+    minHeight: theme.spacing[6],
   },
   content: {
     paddingTop: theme.spacing[8],
