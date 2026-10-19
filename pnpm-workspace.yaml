@@ -11,9 +11,6 @@ allowBuilds:
 ignoredBuiltDependencies:
   - unrs-resolver
 
-minimumReleaseAgeExclude:
-  - lucide-react-native@1.38.0
-
 nodeLinker: hoisted
 
 onlyBuiltDependencies:
