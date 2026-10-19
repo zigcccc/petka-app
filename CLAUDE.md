@@ -17,6 +17,7 @@ pnpm run format         # Biome format --write .
 pnpm test               # Jest
 pnpm test:coverage      # Jest with coverage
 pnpm test path/to/test.ts   # Single test file
+pnpm eas build --profile development --platform ios   # EAS CLI via pnpm dlx (no global install needed)
 ```
 
 For Convex backend development, run `pnpx convex dev` alongside the Expo dev server.
