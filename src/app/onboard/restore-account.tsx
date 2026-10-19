@@ -46,6 +46,10 @@ export default function RestoreAccountScreen() {
       await toaster.toast('Napačni podatki', { intent: 'error' });
     }
   };
+
+  // Invoked without the event: RN's TextInput submit event isn't assignable to react-hook-form's BaseSyntheticEvent.
+  const submitForm = () => handleSubmit(onSubmit)();
+
   return (
     <View style={styles.container}>
       <Text size="2xl" weight="bold">
@@ -85,7 +89,7 @@ export default function RestoreAccountScreen() {
               label="Vzdevek"
               onBlur={field.onBlur}
               onChangeText={field.onChange}
-              onSubmitEditing={handleSubmit(onSubmit)}
+              onSubmitEditing={submitForm}
               placeholder="Vzdevek profila"
               ref={field.ref}
               returnKeyType="go"
@@ -96,7 +100,7 @@ export default function RestoreAccountScreen() {
         />
       </View>
       <View style={{ flex: 1 }} />
-      <Button disabled={isSubmitted && !isValid} loading={isSubmitting} onPress={handleSubmit(onSubmit)} size="lg">
+      <Button disabled={isSubmitted && !isValid} loading={isSubmitting} onPress={submitForm} size="lg">
         Obnovi profil
       </Button>
       <View style={styles.createAccountContainer}>

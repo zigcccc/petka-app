@@ -144,7 +144,8 @@ function RootLayout() {
   }, [rt.themeName]);
 
   useEffect(() => {
-    posthog.screen(pathname, params);
+    // Search params can now be typed as undefined; JSON serialization drops those keys anyway.
+    posthog.screen(pathname, params as Record<string, string | string[]>);
   }, [pathname, params, posthog]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: Purposely ignoring some dependencies here
