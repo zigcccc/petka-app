@@ -66,7 +66,9 @@ describe('useTrainingPuzzle', () => {
   const useMarkPuzzleAsSolvedMutationSpy = useMarkPuzzleAsSolvedMutation as jest.Mock;
   const hapticsNotificationAsyncSpy = jest.spyOn(Haptics, 'notificationAsync');
   const hapticsImpactAsyncSpy = jest.spyOn(Haptics, 'impactAsync');
-  const shareSpy = jest.spyOn(Share, 'share').mockImplementation(() => Promise.resolve({ action: 'sharedAction' }));
+  const shareSpy = jest
+    .spyOn(Share, 'share')
+    .mockImplementation(() => Promise.resolve({ action: 'sharedAction', activityType: undefined }));
 
   beforeEach(() => {
     useCreateTrainingPuzzleMutationSpy.mockReturnValue({ mutate: mockCreateTrainingPuzzle });

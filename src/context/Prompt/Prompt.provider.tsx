@@ -95,7 +95,6 @@ export function PromptProvider({ children }: Readonly<PropsWithChildren>) {
                   button.style === 'cancel'
                     ? () => ref.current?.dismiss()
                     : () => {
-                        // @ts-expect-error Something weird with alert button onPress callback typing
                         button.onPress?.(getValues().promptInput);
                         ref.current?.dismiss();
                       }

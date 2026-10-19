@@ -7,6 +7,10 @@ import { ModalViewBackButton } from '@/components/navigation';
 import { useUser } from '@/hooks/useUser';
 import { getOsMajorVersion } from '@/utils/platform';
 
+export const unstable_settings = {
+  anchor: 'index',
+};
+
 export default function AuthenticatedLayout() {
   const { theme } = useUnistyles();
   const router = useRouter();
@@ -21,7 +25,7 @@ export default function AuthenticatedLayout() {
   );
 
   return (
-    <Stack initialRouteName="index" screenOptions={{ contentStyle: styles.content, headerStyle: styles.header }}>
+    <Stack screenOptions={{ contentStyle: styles.content, headerStyle: styles.header }}>
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="app-info" />
       <Stack.Screen

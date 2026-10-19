@@ -57,6 +57,9 @@ export default function UpdateNicknameScreen() {
     await toaster.toast(errMessage, { intent: 'error' });
   };
 
+  // Invoked without the event: RN's TextInput submit event isn't assignable to react-hook-form's BaseSyntheticEvent.
+  const submitForm = () => handleSubmit(onSubmit, onValidationError)();
+
   return (
     <View style={styles.container}>
       <Text size="2xl" weight="bold">
@@ -74,7 +77,7 @@ export default function UpdateNicknameScreen() {
               label="Vzdevek"
               onBlur={field.onBlur}
               onChangeText={field.onChange}
-              onSubmitEditing={handleSubmit(onSubmit, onValidationError)}
+              onSubmitEditing={submitForm}
               placeholder="Tvoj vzdevek"
               ref={field.ref}
               returnKeyType="go"
@@ -85,7 +88,7 @@ export default function UpdateNicknameScreen() {
         />
       </View>
       <View style={{ flex: 1 }} />
-      <Button disabled={!isDirty} loading={isSubmitting} onPress={handleSubmit(onSubmit, onValidationError)} size="lg">
+      <Button disabled={!isDirty} loading={isSubmitting} onPress={submitForm} size="lg">
         Posodobi vzdevek
       </Button>
     </View>

@@ -7,7 +7,6 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      initialRouteName="daily-challenges"
       screenOptions={{
         tabBarActiveTintColor: theme.colors.petka.green,
         sceneStyle: styles.content,

@@ -2,15 +2,14 @@ packages:
   - '**'
 
 allowBuilds:
+  '@parcel/watcher': false
   '@sentry/cli': true
   esbuild: true
   msgpackr-extract: true
+  unrs-resolver: false
 
 ignoredBuiltDependencies:
   - unrs-resolver
-
-minimumReleaseAgeExclude:
-  - lucide-react-native@1.38.0
 
 nodeLinker: hoisted
 

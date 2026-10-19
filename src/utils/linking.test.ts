@@ -18,7 +18,7 @@ describe('LinkingUtils', () => {
 
   describe('safeOpenURL', () => {
     it('should trigger Linking.openURL and not record any Sentry errors when URL is correctly open', async () => {
-      openURLSpy.mockResolvedValue(null);
+      openURLSpy.mockResolvedValue(undefined);
 
       await LinkingUtils.safeOpenURL(testURL);
 
