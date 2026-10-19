@@ -10,7 +10,11 @@ import { Button, Text } from '@/components/ui';
 import { useDailyPuzzlePresenceList } from '@/hooks/presence';
 import { useGameplaySettings } from '@/hooks/useGameplaySettings';
 import { useUser } from '@/hooks/useUser';
+import { horizontalSafePadding } from '@/styles/insets';
 import { getOsMajorVersion } from '@/utils/platform';
+
+const WORDMARK_ASPECT_RATIO = 1168 / 224;
+const WORDMARK_MAX_WIDTH = 400;
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -136,21 +140,20 @@ export default function HomeScreen() {
 const styles = StyleSheet.create((theme, rt) => ({
   container: {
     flex: 1,
-    paddingHorizontal: theme.spacing[7],
+    ...horizontalSafePadding(rt.insets, theme.spacing[7]),
     paddingBottom: Platform.select({ android: rt.insets.bottom, ios: getOsMajorVersion() > 18 ? rt.insets.bottom : 0 }),
     justifyContent: 'center',
   },
   spacer: {
     flex: 1,
   },
+  // Explicit size instead of breakpoints + `aspectRatio`, which isn't reapplied reliably when the window resizes
   image: {
-    aspectRatio: '1168/224',
     resizeMode: 'contain',
-    width: {
-      xs: '100%',
-      md: 400,
-    },
-    height: 'auto',
+    width: Math.min(rt.screen.width - rt.insets.left - rt.insets.right - 2 * theme.spacing[7], WORDMARK_MAX_WIDTH),
+    height:
+      Math.min(rt.screen.width - rt.insets.left - rt.insets.right - 2 * theme.spacing[7], WORDMARK_MAX_WIDTH) /
+      WORDMARK_ASPECT_RATIO,
     marginTop: Platform.select({
       ios: getOsMajorVersion() > 18 ? rt.insets.top + 128 : 128,
       android: 128 + rt.insets.top,
@@ -171,7 +174,7 @@ const styles = StyleSheet.create((theme, rt) => ({
   sheetContainer: {
     paddingTop: theme.spacing[4],
     paddingBottom: theme.spacing[4] + rt.insets.bottom,
-    paddingHorizontal: theme.spacing[5],
+    ...horizontalSafePadding(rt.insets, theme.spacing[5]),
   },
   sheetHeader: {
     gap: theme.spacing[1],
