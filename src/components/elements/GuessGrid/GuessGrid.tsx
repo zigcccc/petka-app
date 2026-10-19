@@ -1,10 +1,14 @@
-import { View } from 'react-native';
-import { StyleSheet } from 'react-native-unistyles';
+import { useState } from 'react';
+import { type LayoutRectangle, View } from 'react-native';
+import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { Text } from '@/components/ui';
 import { checkedLetterStatus } from '@/convex/puzzleGuessAttempts/models';
 
+import { getGuessGridCellSize } from './GuessGrid.helpers';
 import type { GuessGridCellProps, GuessGridProps } from './GuessGrid.types';
+
+const MAX_CELL_SIZE = 100;
 
 function GuessGridCell({ testID, value, idx, checkedLetters = [], cellWidth }: Readonly<GuessGridCellProps>) {
   const checkedLetter = checkedLetters.find(
@@ -23,27 +27,40 @@ function GuessGridCell({ testID, value, idx, checkedLetters = [], cellWidth }: R
   );
 }
 
+/**
+ * Fills the space it's given and sizes its cells to fit it, so the grid never pushes the keyboard off-screen in
+ * short or resized windows.
+ */
 export function GuessGrid({ attempts = [], grid, isValidating = false }: Readonly<GuessGridProps>) {
+  const { theme } = useUnistyles();
+  const [area, setArea] = useState<LayoutRectangle | null>(null);
+  const cellWidth = area
+    ? getGuessGridCellSize({ width: area.width, height: area.height, gap: theme.spacing[4], maxSize: MAX_CELL_SIZE })
+    : undefined;
+
   return (
-    <View style={styles.grid({ isValidating })}>
-      {grid.map((row, rowIdx) => {
-        const attempt = attempts[rowIdx];
-        return (
-          // biome-ignore lint/suspicious/noArrayIndexKey: Fine with it here
-          <View key={rowIdx} style={styles.row} testID={`guess-grid--row-${rowIdx}`}>
-            {row.map((cell, cellIdx) => (
-              <GuessGridCell
-                checkedLetters={attempt?.checkedLetters}
-                idx={cellIdx}
-                // biome-ignore lint/suspicious/noArrayIndexKey: Fine with it here
-                key={cellIdx}
-                testID={`guess-grid--row-${rowIdx}--cell-${cellIdx}`}
-                value={cell}
-              />
-            ))}
-          </View>
-        );
-      })}
+    <View onLayout={(event) => setArea(event.nativeEvent.layout)} style={styles.container}>
+      <View style={styles.grid({ isValidating })}>
+        {grid.map((row, rowIdx) => {
+          const attempt = attempts[rowIdx];
+          return (
+            // biome-ignore lint/suspicious/noArrayIndexKey: Fine with it here
+            <View key={rowIdx} style={styles.row} testID={`guess-grid--row-${rowIdx}`}>
+              {row.map((cell, cellIdx) => (
+                <GuessGridCell
+                  cellWidth={cellWidth}
+                  checkedLetters={attempt?.checkedLetters}
+                  idx={cellIdx}
+                  // biome-ignore lint/suspicious/noArrayIndexKey: Fine with it here
+                  key={cellIdx}
+                  testID={`guess-grid--row-${rowIdx}--cell-${cellIdx}`}
+                  value={cell}
+                />
+              ))}
+            </View>
+          );
+        })}
+      </View>
     </View>
   );
 }
@@ -51,6 +68,10 @@ export function GuessGrid({ attempts = [], grid, isValidating = false }: Readonl
 GuessGrid.Cell = GuessGridCell;
 
 const styles = StyleSheet.create((theme, rt) => ({
+  container: {
+    flex: 1,
+    alignSelf: 'stretch',
+  },
   grid: ({ isValidating }: Pick<GuessGridProps, 'isValidating'>) => ({
     flexDirection: 'column',
     gap: theme.spacing[4],
@@ -90,12 +111,15 @@ const styles = StyleSheet.create((theme, rt) => ({
             ? invalidColor
             : theme.colors.grey[20],
       borderWidth: 2,
-      // screen width - 2*20 padding - 4*12 gap
-      width: {
-        xs: cellWidth ?? (rt.screen.width - 40 - 4 * 12) / 5,
-        md: cellWidth ?? 100,
-      },
-      aspectRatio: '1/1',
+      // Explicit width and height once measured: `aspectRatio` combined with breakpoint styles isn't reapplied
+      // reliably when the window is resized (e.g. folding/unfolding the iPhone Duo).
+      ...(cellWidth === undefined
+        ? {
+            // Fallback before the grid is measured: screen width - 2*20 padding - 4*12 gap
+            width: { xs: (rt.screen.width - 40 - 4 * 12) / 5, md: MAX_CELL_SIZE },
+            aspectRatio: 1,
+          }
+        : { width: cellWidth, height: cellWidth }),
       alignItems: 'center',
       justifyContent: 'center',
     };

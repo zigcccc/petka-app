@@ -10,6 +10,7 @@ import { Button, Text } from '@/components/ui';
 import { usePresenceHeartbeat } from '@/hooks/presence';
 import { useDailyPuzzle } from '@/hooks/useDailyPuzzle';
 import { useUser } from '@/hooks/useUser';
+import { horizontalSafePadding } from '@/styles/insets';
 import { getOsMajorVersion } from '@/utils/platform';
 
 export function ErrorBoundary({ retry }: ErrorBoundaryProps) {
@@ -108,16 +109,12 @@ export default function DailyPuzzleScreen() {
       <View style={styles.content}>
         <GuessGrid attempts={attempts} grid={grid} isValidating={isValidating} />
       </View>
-      <View style={styles.spacer} />
       <Keyboard checkedLetters={allCheckedLetters} isDisabled={isDone} onKeyPress={onInput} />
     </View>
   );
 }
 
 const styles = StyleSheet.create((theme, rt) => ({
-  spacer: {
-    flex: 1,
-  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -132,13 +129,16 @@ const styles = StyleSheet.create((theme, rt) => ({
       android: rt.insets.bottom,
       ios: getOsMajorVersion() > 18 ? rt.insets.bottom : 0,
     }),
+    ...horizontalSafePadding(rt.insets, 0),
   },
   content: {
+    flex: 1,
     paddingTop: theme.spacing[6],
+    paddingBottom: theme.spacing[6],
     paddingHorizontal: theme.spacing[6],
   },
   errorContainer: {
-    paddingHorizontal: theme.spacing[8],
+    ...horizontalSafePadding(rt.insets, theme.spacing[8]),
     flex: 1,
     gap: theme.spacing[4],
     paddingTop: theme.spacing[8],

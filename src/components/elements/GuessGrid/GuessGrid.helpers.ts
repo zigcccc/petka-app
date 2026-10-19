@@ -2,6 +2,30 @@ import { deepClone } from '@/utils/clone';
 
 import type { KeyboardKey } from '../Keyboard';
 
+/**
+ * Largest square cell size that fits a `rows` x `columns` grid (with `gap` between cells) into the given area,
+ * capped at `maxSize`.
+ */
+export const getGuessGridCellSize = ({
+  width,
+  height,
+  gap,
+  maxSize,
+  rows = 6,
+  columns = 5,
+}: {
+  width: number;
+  height: number;
+  gap: number;
+  maxSize: number;
+  rows?: number;
+  columns?: number;
+}) => {
+  const sizeByWidth = (width - (columns - 1) * gap) / columns;
+  const sizeByHeight = (height - (rows - 1) * gap) / rows;
+  return Math.max(0, Math.min(sizeByWidth, sizeByHeight, maxSize));
+};
+
 export const findCurrentGridRowIdx = (grid: (string | null)[][]) => {
   const rowIdx = grid.findIndex((row) => !row.every(Boolean));
   return rowIdx >= 0 ? rowIdx : grid.length;
