@@ -13,7 +13,7 @@ import { PostHogProvider, usePostHog } from 'posthog-react-native';
 import { useEffect, useState } from 'react';
 import { Appearance, Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { StyleSheet, UnistylesRuntime, useUnistyles } from 'react-native-unistyles';
+import { StyleSheet, UnistylesRuntime } from 'react-native-unistyles';
 
 import { ActionSheetProvider } from '@/context/ActionSheet';
 import { PromptProvider } from '@/context/Prompt';
@@ -82,7 +82,6 @@ function RootLayout() {
     'Inter-SemiBold': require('@/assets/fonts/inter/Inter-SemiBold.ttf'),
     'Inter-Italic': require('@/assets/fonts/inter/Inter-Italic.ttf'),
   });
-  const { rt } = useUnistyles();
 
   const isReady = fontsLoaded && imagesLoaded && themeLoaded;
 
@@ -132,16 +131,12 @@ function RootLayout() {
       Appearance.setColorScheme(preferredTheme);
     } else {
       UnistylesRuntime.setAdaptiveThemes(true);
-      Appearance.setColorScheme(UnistylesRuntime.themeName ?? 'unspecified');
+      // Don't pin native UI to Unistyles' current theme: an explicit override stops the window from following the
+      // system, and native views (keyboard, header buttons) then drift from the Unistyles theme.
+      Appearance.setColorScheme('unspecified');
     }
     setThemeLoaded(true);
   }, []);
-
-  useEffect(() => {
-    if (Appearance.getColorScheme() !== rt.themeName) {
-      Appearance.setColorScheme(rt.themeName ?? 'unspecified');
-    }
-  }, [rt.themeName]);
 
   useEffect(() => {
     // Search params can now be typed as undefined; JSON serialization drops those keys anyway.
