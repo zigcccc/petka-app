@@ -97,6 +97,8 @@ export default function HomeScreen() {
         accessibilityLabel="Settings not configured alert"
         accessibilityRole="alert"
         backdropComponent={(props) => <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />}
+        backgroundStyle={styles.sheetBackground}
+        handleIndicatorStyle={styles.sheetHandleIndicator}
         onDismiss={setDefaultSettings}
         ref={sheetRef}
       >
@@ -170,6 +172,12 @@ const styles = StyleSheet.create((theme, rt) => ({
   buttonRow: {
     flexDirection: 'row',
     gap: theme.spacing[4],
+  },
+  sheetBackground: {
+    backgroundColor: theme.colors.background,
+  },
+  sheetHandleIndicator: {
+    backgroundColor: theme.colors.grey[30],
   },
   sheetContainer: {
     paddingTop: theme.spacing[4],
