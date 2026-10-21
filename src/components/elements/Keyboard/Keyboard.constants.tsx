@@ -1,4 +1,4 @@
-import { CornerDownRightIcon, DeleteIcon } from 'lucide-react-native';
+import { CornerDownRightIcon, DeleteIcon, type LucideIcon } from 'lucide-react-native';
 
 export const qwertyKeys = [
   ['e', 'r', 't', 'z', 'u', 'i', 'o', 'p', 'š', 'ž'],
@@ -16,7 +16,7 @@ export const keys = qwertyKeys;
 
 export type KeyboardKey = (typeof keys)[number][number];
 
-export const keysToIconMap = new Map([
-  ['{Backspace}', <DeleteIcon key="backspace" size={22} testID="keyboard-icon--backspace" />],
-  ['{Enter}', <CornerDownRightIcon key="enter" size={22} testID="keyboard-icon--enter" />],
+export const keysToIconMap = new Map<string, { icon: LucideIcon; testID: string }>([
+  ['{Backspace}', { icon: DeleteIcon, testID: 'keyboard-icon--backspace' }],
+  ['{Enter}', { icon: CornerDownRightIcon, testID: 'keyboard-icon--enter' }],
 ]);
