@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Pressable, View } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
-import { Text } from '@/components/ui';
+import { Icon, Text } from '@/components/ui';
 import { type CheckedLetter, checkedLetterStatus } from '@/convex/puzzleGuessAttempts/models';
 import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
 
@@ -32,6 +32,7 @@ export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Readon
             const isInvalid = checkedLetter?.status === checkedLetterStatus.enum.invalid;
             const isMisplaced = checkedLetter?.status === checkedLetterStatus.enum.misplaced;
             const isSpecialCharacter = key.startsWith('{') && key.endsWith('}');
+            const keyIcon = keysToIconMap.get(key);
 
             return (
               <Pressable
@@ -53,7 +54,16 @@ export function Keyboard({ isDisabled, onKeyPress, checkedLetters = [] }: Readon
                   style={styles.keyText({ isInvalid, isMisplaced, isCorrect, isSpecialCharacter })}
                   weight="bold"
                 >
-                  {keysToIconMap.get(key) ?? key}
+                  {keyIcon ? (
+                    <Icon
+                      icon={keyIcon.icon}
+                      size={22}
+                      testID={keyIcon.testID}
+                      uniProps={(theme) => ({ color: theme.colors.foreground })}
+                    />
+                  ) : (
+                    key
+                  )}
                 </Text>
               </Pressable>
             );

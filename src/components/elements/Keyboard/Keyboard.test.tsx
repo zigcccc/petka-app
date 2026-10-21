@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 
 import { checkedLetterStatus } from '@/convex/puzzleGuessAttempts/models';
 import { gameplayKeyboardType, useGameplaySettings } from '@/hooks/useGameplaySettings';
-import { defaultTheme } from '@/styles/themes';
+import { defaultTheme, lightTheme } from '@/styles/themes';
 
 import { Keyboard } from './Keyboard';
 
@@ -50,6 +50,13 @@ describe('<Keyboard />', () => {
 
     expect(screen.getByTestId('keyboard-icon--backspace')).toBeOnTheScreen();
     expect(screen.getByTestId('keyboard-icon--enter')).toBeOnTheScreen();
+  });
+
+  it('should color special key icons with the theme foreground color', async () => {
+    await render(<Keyboard checkedLetters={[]} isDisabled={false} onKeyPress={() => {}} />);
+
+    expect(screen.getByTestId('keyboard-icon--backspace')).toHaveStyle({ color: lightTheme.colors.foreground });
+    expect(screen.getByTestId('keyboard-icon--enter')).toHaveStyle({ color: lightTheme.colors.foreground });
   });
 
   it('should apply styles based on checked letters status', async () => {

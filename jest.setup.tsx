@@ -19,12 +19,12 @@ jest.mock('expo', () => ({
 
 jest.mock('lucide-react-native', () => {
   const { Text } = require('react-native');
-  const { defaultTheme } = jest.requireActual('./src/styles/themes');
+  const { lightTheme } = jest.requireActual('./src/styles/themes');
 
   const createMockIcon = (name: string) => {
     // biome-ignore lint/suspicious/noExplicitAny: Test mock, fine with any
     const MockIcon = ({ testID, accessibilityLabel, color, size, uniProps, ...rest }: Record<string, any>) => {
-      const transformed = uniProps ? uniProps(defaultTheme) : {};
+      const transformed = uniProps ? uniProps(lightTheme) : {};
       const resolvedColor = transformed?.color ?? color;
       return (
         <Text
